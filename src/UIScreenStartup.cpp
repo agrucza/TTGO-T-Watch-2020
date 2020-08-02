@@ -11,7 +11,7 @@ UIScreenStartup::UIScreenStartup(){
     _label  = "Startup";
 }
 
-void UIScreenStartup::draw(bool init)
+void UIScreenStartup::draw(bool init, bool task)
 {
     char* label         = "Starting up please wait...";
     uint16_t textWidth  = _tft->textWidth(label);

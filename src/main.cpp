@@ -66,9 +66,6 @@ void setup()
     //Execute your own GUI interface
     gui->setTTGO(ttgo);
     gui->init();
-
-    //When the initialization is complete, turn on the backlight
-    //ttgo->openBL();
 }
 
 void loop()

@@ -58,13 +58,16 @@ void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
     }
 }
 
-void UIScreenMain::draw(bool init)
+void UIScreenMain::draw(bool init, bool task)
 {
     uint8_t     iconSizeScreenW = 0;
     uint8_t     iconSizeScreenH = 0;
-    char buf[50];
 
-    _tft->fillScreen(TFT_BLACK);
+    if(!task)
+    {
+        _tft->fillScreen(TFT_BLACK);
+    }
+    
     _tft->setFreeFont(&FreeSansBold9pt7b);
     
     for(uint8_t iconY = 0; iconY < _displayIcons.size(); iconY++)

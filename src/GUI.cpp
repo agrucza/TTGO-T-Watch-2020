@@ -91,6 +91,15 @@ void GUI::init()
     {
         _batteryIcon = ICON_CHARGE;
     }
+    
+    xTaskCreate(
+        taskHandler,        // call GUI task hadler
+        "GUI task handler", // Name of the task (for debugging)
+        4096,               // Stack size (bytes)
+        NULL,               // Parameter to pass
+        1,                  // Task priority
+        &taskHandle         // Task handle
+    );
 }
 
 /**
@@ -168,46 +177,6 @@ void GUI::checkTouchScreen()
 void GUI::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
     _lastActionTime = millis();
-    /*
-    char *label;
-    uint16_t height = _tft->fontHeight() + 4;
-
-    _tft->setTextColor(TFT_WHITE, _tft->color565(255,0,0));
-    _tft->fillRect(TFT_WIDTH - height, 0, height, height, _tft->color565(255,0,0));
-    
-    switch(touchType)
-    {
-        case TouchMetrics::touch_t::SWIPE_TOP:
-            label   = "U";
-            break;
-        case TouchMetrics::touch_t::SWIPE_TOP_EDGE:
-            label   = "UE";
-            break;
-        case TouchMetrics::touch_t::SWIPE_RIGHT:
-            label   = "R";
-            break;
-        case TouchMetrics::touch_t::SWIPE_RIGHT_EDGE:
-            label   = "RE";
-            break;
-        case TouchMetrics::touch_t::SWIPE_BOTTOM:
-            label   = "D";
-            break;
-        case TouchMetrics::touch_t::SWIPE_BOTTOM_EDGE:
-            label   = "DE";
-            break;
-        case TouchMetrics::touch_t::SWIPE_LEFT:
-            label   = "L";
-            break;
-        case TouchMetrics::touch_t::SWIPE_LEFT_EDGE:
-            label   = "LE";
-            break;
-        default:
-            label = "T";
-    }
-
-    uint16_t width = _tft->textWidth(label);
-    _tft->drawString(label, TFT_WIDTH - (height/2) - (width/2), 2);
-    */
     // elevate touch action to child elements
     _screens[_activeScreen]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
 }
@@ -276,4 +245,13 @@ void GUI::setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_
 {
     _ttgo->rtc->setDateTime(year,month,day,hour,minute,second);
     //_ttgo->rtc->syncToRtc();
+}
+
+void GUI::taskHandler(void* parameters)
+{
+    for(;;){ // infinite loop
+        // Pause the task for 1000ms
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        _screens[_activeScreen]->draw(false, true);
+    }
 }

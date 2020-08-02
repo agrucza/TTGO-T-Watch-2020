@@ -7,13 +7,15 @@ extern GUI *gui;
 
 UIScreenCalendar::UIScreenCalendar()
 {
-    _gui        = gui;
-    _tft        = _gui->getTFT();
-    _label      = "Calendar";
-    _padding    = 10;
-    _iconSizeX  = 2;
-    _iconSizeY  = 2;
-    _iconColor  = _tft->color565(0,120,215);
+    _gui                = gui;
+    _tft                = _gui->getTFT();
+    _label              = "Calendar";
+    _padding            = 10;
+    _iconSizeX          = 2;
+    _iconSizeY          = 2;
+    _iconColor          = _tft->color565(0,120,215);
+    _todayLabelWidth    = 0;
+    _todayLabelHeight   = 0;
     _setDate(true);
 }
 
@@ -111,19 +113,32 @@ uint8_t UIScreenCalendar::_getDaysOfNextMonth(uint8_t month, uint16_t year)
     return _getDaysOfMonth(month, year);
 }
 
-void UIScreenCalendar::draw(bool init)
+void UIScreenCalendar::draw(bool init, bool task)
 {
     _setDate(init);
 
-    _tft->fillScreen(TFT_BLACK);
+    if(!task)
+    {
+        _tft->fillScreen(TFT_BLACK);
+    }
 
     // main UI
     _tft->setFreeFont(&FreeSansBold9pt7b);
     _tft->setTextColor(TFT_WHITE);
-    // print label
-    _tft->drawString(_label, _padding, _padding);
+    
+    // print today label/button
+    if(_displayMonth != _month && _displayYear != _year)
+    {
+        _tft->drawString("Today", _padding, _padding);
+    }
 
-    char buf[20];
+    if(_todayLabelWidth <= 0 && _todayLabelHeight <= 0)
+    {
+        _todayLabelWidth    = _tft->textWidth("Today");
+        _todayLabelHeight   = _tft->fontHeight();
+    }
+
+    char buf[30];
     strftime(buf, sizeof(buf), "%B %Y", &_displayTimeInfo);
     _tft->drawString(buf, TFT_WIDTH - _padding - _tft->textWidth(buf), _padding);
 
@@ -281,7 +296,17 @@ void UIScreenCalendar::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX,
         case TouchMetrics::SWIPE_RIGHT_EDGE:
         case TouchMetrics::SWIPE_TOP:
         case TouchMetrics::SWIPE_TOP_EDGE:
+            break;
         case TouchMetrics::TOUCH:
+            // today label click
+            if(
+                (_displayMonth != _month && _displayYear != _year)
+                && (lastX <= (_padding + _todayLabelWidth))
+                && (lastY <= (_padding + _todayLabelHeight))
+            )
+            {
+                draw(init);
+            }
             break;
     }
 }

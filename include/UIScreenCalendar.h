@@ -36,10 +36,12 @@ class UIScreenCalendar : public UIScreen{
     uint8_t     _iconSizeX;
     uint8_t     _iconSizeY;
     uint16_t    _iconColor;
+    uint8_t     _todayLabelWidth;
+    uint8_t     _todayLabelHeight;
 
     public:
         UIScreenCalendar();
-        void    draw(bool init = false);
+        void    draw(bool init = false, bool task = false);
         char*   getLabel(){return _label;};
         uint8_t getIconSizeX(){return _iconSizeX;};
         uint8_t getIconSizeY(){return _iconSizeY;};

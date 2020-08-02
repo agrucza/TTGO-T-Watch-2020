@@ -26,7 +26,7 @@ class UIScreen{
 
     public:
         virtual ~UIScreen(){};
-        virtual void    draw(bool init = false) = 0;
+        virtual void    draw(bool init = false, bool task = false) = 0;
         virtual uint8_t getIconSizeX() = 0;
         virtual uint8_t getIconSizeY() = 0;
         virtual void    drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h) = 0;

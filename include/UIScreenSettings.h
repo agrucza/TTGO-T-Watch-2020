@@ -26,7 +26,7 @@ class UIScreenSettings : public UIScreen{
 
     public:
         UIScreenSettings();
-        void    draw(bool init = false);
+        void    draw(bool init = false, bool task = false);
         char*   getLabel(){return _label;};
         uint8_t getIconSizeX(){return _iconSizeX;};
         uint8_t getIconSizeY(){return _iconSizeY;};

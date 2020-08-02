@@ -24,9 +24,10 @@ enum {
     Q_EVENT_AXP_INT,
 };
 
-TTGOClass   *Energy::_ttgo      = nullptr;
-GUI         *Energy::_gui       = nullptr;
-bool        Energy::_lenergy    = false;
+TTGOClass       *Energy::_ttgo      = nullptr;
+GUI             *Energy::_gui       = nullptr;
+bool            Energy::_lenergy    = false;
+TaskHandle_t    GUI::taskHandle;
 
 void Energy::setupAXPIRQ()
 {
@@ -124,6 +125,7 @@ void Energy::lowEnergy()
         _ttgo->displaySleep();
         if (!WiFi.isConnected()) {
             _lenergy = true;
+            vTaskSuspend(GUI::taskHandle);
             WiFi.mode(WIFI_OFF);
             // rtc_clk_cpu_freq_set(RTC_CPU_FREQ_2M);
             setCpuFrequencyMhz(20);
@@ -147,6 +149,7 @@ void Energy::lowEnergy()
 
         // go to standby screen
         _gui->setScreen(SCREEN_STANDBY, true);
+        vTaskResume(GUI::taskHandle);
     }
 }
 

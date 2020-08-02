@@ -17,9 +17,12 @@ UIScreenSettings::UIScreenSettings()
     _iconColor  = _tft->color565(0,120,215);
 }
 
-void UIScreenSettings::draw(bool init)
+void UIScreenSettings::draw(bool init, bool task)
 {
-    _tft->fillScreen(TFT_BLACK);
+    if(!task)
+    {
+        _tft->fillScreen(TFT_BLACK);
+    }
 
     // main UI
     _tft->setFreeFont(&FreeSansBold9pt7b);

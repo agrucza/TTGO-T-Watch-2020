@@ -25,7 +25,7 @@ class UIScreenStartup : public UIScreen{
     
     public:
         UIScreenStartup();
-        void    draw(bool init = false);
+        void    draw(bool init = false, bool task = false);
         uint8_t getIconSizeX(){return _iconSizeX;};
         uint8_t getIconSizeY(){return _iconSizeY;};
         void    drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h);

@@ -24,11 +24,13 @@ class UIScreenStandby: public UIScreen{
     uint8_t     _iconSizeX;
     uint8_t     _iconSizeY;
     uint16_t    _iconColor;
+    uint8_t     _lastMinute;
+    uint8_t     _lastMonth;
 
     void _fillArc(int x, int y, int start_angle, int seg_count, int rx, int ry, int w, unsigned int colour);
     public:
         UIScreenStandby();
-        void    draw(bool init = false);
+        void    draw(bool init = false, bool task = false);
         uint8_t getIconSizeX(){return _iconSizeX;};
         uint8_t getIconSizeY(){return _iconSizeY;};
         void    drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
