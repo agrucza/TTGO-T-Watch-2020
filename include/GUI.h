@@ -9,6 +9,7 @@
 #define __GUI_H
 
 #include "TouchMetrics.h"
+#include "UIScreen.h"
 
 typedef enum {
     ICON_BAT_EMPTY,
@@ -20,7 +21,8 @@ typedef enum {
     ICON_CALCULATION
 } icon_battery_t;
 
-enum screens_t{
+enum screens_t : uint8_t {
+    SCREEN_NONE,
     SCREEN_STARTUP,
     SCREEN_STANDBY,
     SCREEN_MAIN,
@@ -30,7 +32,6 @@ enum screens_t{
 
 class TTGOClass;
 class TFT_eSPI;
-class UIScreen;
 
 class GUI {
     struct touch_metrics_t {
@@ -93,6 +94,8 @@ class GUI {
         static void             setScreen(screens_t screen, bool init = false);
         static screens_t        getLastScreen(){return _lastScreen;};
         static screens_t        getActiveScreen(){return _activeScreen;};
+        static uint8_t          getUIScreenIconWidth(screens_t screen) { return _screens[screen]->getIconSizeX();};
+        static uint8_t          getUIScreenIconHeight(screens_t screen){ return _screens[screen]->getIconSizeY();};
         static void             drawUIScreenIcon(screens_t screen, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
         static char*            getUIScreenLabel(screens_t screen);
         static void             setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second);

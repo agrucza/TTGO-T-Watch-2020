@@ -11,7 +11,7 @@ TouchMetrics::TouchMetrics()
     _ttgo               = ttgo;
     _touch              = false;
     _swipeTolerance     = 10;
-    _swipeEdgeDetection = 20;
+    _swipeEdgeDetection = 30;
     _x = _y             = -1;
     _lastX = _lastY     = -1;
 }

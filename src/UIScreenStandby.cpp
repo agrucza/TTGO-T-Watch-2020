@@ -23,11 +23,11 @@ void UIScreenStandby::draw(bool init)
     time(&_currentTime);
     localtime_r(&_currentTime, &_timeInfo);
 
-    _tft->fillScreen(TFT_WHITE);
+    _tft->fillScreen(TFT_BLACK);
     
     // time label
     _tft->setFreeFont(&FreeSansBold24pt7b);
-    _tft->setTextColor(TFT_BLACK);
+    _tft->setTextColor(TFT_WHITE);
     strftime(label, sizeof(label), "%H : %M", &_timeInfo);
     textWidth = _tft->textWidth(label);
     _tft->drawString(label, (TFT_WIDTH - textWidth)/2, labelTop);
@@ -35,7 +35,7 @@ void UIScreenStandby::draw(bool init)
     
     // date label
     _tft->setFreeFont(&FreeSansBold9pt7b);
-    _tft->setTextColor(TFT_LIGHTGREY);
+    _tft->setTextColor(TFT_DARKGREY);
     strftime(label, sizeof(label), "%a %d %B", &_timeInfo);
     textWidth = _tft->textWidth(label);
     _tft->drawString(label, (TFT_WIDTH - textWidth)/2, labelTop);
@@ -50,7 +50,7 @@ void UIScreenStandby::draw(bool init)
     uint16_t barWidth   = _tft->textWidth(label) + 6;
     labelTop += 10;
     _tft->fillRoundRect((TFT_WIDTH - barWidth)/2, labelTop, barWidth, barHeight, 4, TFT_LIGHTGREY);
-    _tft->setTextColor(TFT_DARKGREY);
+    _tft->setTextColor(TFT_LIGHTGREY);
     _tft->drawString(label, (TFT_WIDTH - barWidth)/2, labelTop + 5);
 
     // swipe up text

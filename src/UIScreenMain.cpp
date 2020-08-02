@@ -8,69 +8,104 @@ extern GUI *gui;
 UIScreenMain::UIScreenMain(){
     _gui            = gui;
     _tft            = _gui->getTFT();
-    _screensX       = _screensY = 2;
-    _screensPerPage = _screensX * _screensY;
-    _page           = 0;
-    _padding        = 10;
-    _visibleScreen  = 0;
-    _firstScreen    = 0;
-    _lastScreen     = 0;
-    _screenCount    = SCREEN_COUNT - (SCREEN_MAIN+1);
-    _pageMax        = (_screenCount + (_screensX*_screensY) - 1) / (_screensX*_screensY);
+    _iconSizeX      = _iconSizeY = 2;
+    _iconsMax       = 4;
+    _padding        = 5;
     
-    if(_pageMax == 0){_pageMax = 1;}
+    _iconAreaWidth  = TFT_WIDTH - (2*_padding);
+    _iconAreaHeight = TFT_HEIGHT - (2*_padding);
+    _iconW          = (_iconAreaWidth - ((_iconsMax-1)*2))/_iconsMax;
+    _iconH          = (_iconAreaHeight - ((_iconsMax-1)*2))/_iconsMax;
 
-    _pageAmount = _pageMax - _page;
+    // setup screens
+    _setScreenIcon(SCREEN_CALENDAR, 0, 0, 2, 2);
+}
+
+void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY, uint8_t iconsX, uint8_t iconsY)
+{
+    uint8_t iconsAvailableY = _displayIcons.size();
+    
+    if(iconsAvailableY < (posY + 1 + iconsY)){
+        do{
+            std::vector<screens_t> row;
+            do{
+                row.push_back(SCREEN_NONE);
+            }while(row.size() < _iconsMax);
+            _displayIcons.push_back(row);
+        }while(_displayIcons.size() < (posY + 1 + iconsY));
+    }
+
+    uint8_t iconsAvailableX = _displayIcons[posX].size();
+    
+    if((iconsAvailableX <= (posX + 1)) && (iconsAvailableX < (posX + 1 + iconsX)))
+    {
+        // icon will be too wide but starts within visible area - shorten icon to remaining space
+        iconsX = iconsAvailableX - posX;
+        // TODO: set icon background to red to notify of wrong assignment?
+    }
+    
+    for(uint8_t y = posY; y < (posY + iconsY); y++)
+    {
+        for(uint8_t x = posY; x < (posX + iconsX); x++)
+        {
+            _displayIcons[y][x] = screen;
+        }
+    }
 }
 
 void UIScreenMain::draw(bool init)
 {
-    _tft->fillScreen(TFT_WHITE);
+    uint8_t     iconSizeScreenW = 0;
+    uint8_t     iconSizeScreenH = 0;
+    char buf[50];
 
+    _tft->fillScreen(TFT_BLACK);
     _tft->setFreeFont(&FreeSansBold9pt7b);
-    _tft->setTextColor(TFT_LIGHTGREY);
-
-    _visibleScreen                  = TFT_HEIGHT - _padding * 3;
-    uint8_t     nonVisibleScreen    = SCREEN_MAIN + _page * _screensX * _screensY;
-    _firstScreen                    = nonVisibleScreen + 1;
-    _lastScreen                     = SCREEN_MAIN + _screenCount;
-    _screenWidth                    = (TFT_WIDTH - ((_screensX+1)*_padding))/_screensX;
-    _screenHeight                   = (_visibleScreen - ((_screensY+1)*_padding))/_screensY;
-    char*       label;
-    uint8_t     screen              = 0;
-    uint8_t     labelHeight         = _tft->fontHeight();
     
-    for(uint8_t row = 0; row < _screensY; row++)
+    for(uint8_t iconY = 0; iconY < _displayIcons.size(); iconY++)
     {
-        for(uint8_t column = 0; column < _screensX; column++)
+        std::vector<screens_t> row  = _displayIcons[iconY];
+        //iconW = (iconAreaWidth - (row.size()-2))/row.size();
+        for(uint8_t iconX = 0; iconX < row.size(); iconX++)
         {
-            screen = _firstScreen + (row * _screensY) + column;
-            if(screen >= _firstScreen && screen <= _lastScreen)
+            // check if a screens is set to display an icon
+            if(row[iconX] != SCREEN_NONE)
             {
-                _gui->drawUIScreenIcon(
-                    static_cast<screens_t>(screen),
-                    _padding + column * (_padding + _screenWidth),
-                    _padding + row * (_padding + _screenHeight),
-                    _screenWidth,
-                    _screenHeight - labelHeight
+                iconSizeScreenW = _gui->getUIScreenIconWidth(row[iconX]);
+                iconSizeScreenH = _gui->getUIScreenIconHeight(row[iconX]);
+
+                // check if icon is bigger than 1x1 and check surrounding icon places
+                if(
+                    (iconSizeScreenW > 1 || iconSizeScreenH > 1)
+                    && (
+                        ((iconX>0) && (_displayIcons[iconY][iconX-1] == row[iconX]))
+                        || ((iconY>0) && (_displayIcons[iconY-1][iconX] == row[iconX]))
+                    )
+                )
+                {
+                    continue;
+                }
+                /*
+                sprintf(
+                    buf,
+                    "s: %d x: %d y: %d w: %d h: %d",
+                    row[iconX],
+                    iconSizeScreenW,
+                    iconSizeScreenH,
+                    (iconSizeScreenW * iconW) + (iconSizeScreenW-1 * 2),
+                    (iconSizeScreenH * iconH) + (iconSizeScreenH-1 * 2)
                 );
-                label = _gui->getUIScreenLabel(static_cast<screens_t>(screen));
-                _tft->drawString(
-                    label,
-                    _padding + column * (_padding + _screenWidth) + _screenWidth/2 - (_tft->textWidth(label)/2),
-                    _padding + _screenHeight + 5 + row * (_padding + _screenHeight) - labelHeight
+                _tft->drawString(buf,_padding, _padding);
+                */
+                _gui->drawUIScreenIcon(
+                    row[iconX],
+                    _padding + (iconX*(_iconW + 2)),
+                    _padding + (iconY*(_iconH + 2)),
+                    iconSizeScreenW * _iconW + (iconSizeScreenW-1 * 2),
+                    iconSizeScreenH * _iconH + (iconSizeScreenH-1 * 2)
                 );
             }
         }
-    }
-
-    uint8_t navigationWidth = (_pageAmount * _padding) + ((_pageAmount - 2) * _padding);
-
-    // draw navigation circles
-    for(uint8_t i = 0; i<_pageAmount; i++)
-    {
-        uint8_t pos = (TFT_WIDTH-navigationWidth)/2 + i*(2*_padding);
-        _tft->fillCircle(pos, TFT_HEIGHT - 1.5*_padding, _padding/2, (_page == i?TFT_BLACK:TFT_LIGHTGREY));
     }
 }
 
@@ -83,42 +118,38 @@ void UIScreenMain::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int
 {
     if(touchType == TouchMetrics::TOUCH)
     {
-        uint8_t screen = 0;
-        uint8_t leftEdge, topEdge = 0;
+        uint8_t x = (lastX-_padding)/(_iconW+2);
+        uint8_t y = (lastY-_padding)/(_iconH+2);
         
-        for(uint8_t row = 0; row < _screensY; row++)
+        /*
+        _tft->setFreeFont(&FreeSansBold9pt7b);
+        char buf[20];
+        sprintf(buf,"x: %d y: %d s: %d",x,y, _displayIcons[y][x]);
+        _tft->drawString(buf,_padding, _padding);
+        */
+        if(_displayIcons[y][x] != SCREEN_NONE)
         {
-            for(uint8_t column = 0; column < _screensX; column++)
-            {
-                screen      = _firstScreen + (row * _screensY) + column;
-                leftEdge    = _padding + column * (_padding + _screenWidth);
-                topEdge     = _padding + row * (_padding + _screenHeight);
-
-                if(
-                    screen <= _lastScreen
-                    && lastX >= leftEdge && lastX <= leftEdge + _screenWidth
-                    && lastY >= topEdge && lastY <= topEdge + _screenHeight
-                )
-                {
-                    _gui->setScreen(static_cast<screens_t>(screen), true);
-                }
-            }
+            _gui->setScreen(_displayIcons[y][x],true);
         }
     }
     else if (touchType == TouchMetrics::SWIPE_LEFT)
     {
         // go forth in navigation
+        /*
         if(_page < _pageMax-1){
             _page++;
             draw();
         }
+        */
     }
     else if (touchType == TouchMetrics::SWIPE_RIGHT)
     {
+        /*
         // go back in navigation
         if(_page > 0){
             _page--;
             draw();
         }
+        */
     }
 }

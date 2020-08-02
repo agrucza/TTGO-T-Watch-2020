@@ -11,6 +11,9 @@ UIScreenCalendar::UIScreenCalendar()
     _tft        = _gui->getTFT();
     _label      = "Calendar";
     _padding    = 10;
+    _iconSizeX  = 2;
+    _iconSizeY  = 2;
+    _iconColor  = _tft->color565(0,120,215);
     _setDate(true);
 }
 
@@ -112,17 +115,11 @@ void UIScreenCalendar::draw(bool init)
 {
     _setDate(init);
 
-    _tft->fillScreen(TFT_WHITE);
-    
-    // draw basic swite indicator
-    _tft->fillRoundRect(-4, TFT_HEIGHT/2 - _padding*1.5, _padding*1.5, _padding*3, 4, TFT_LIGHTGREY);
-    _tft->fillRect(2, TFT_HEIGHT/2 - 5, _padding*1.5-8, 2, TFT_BLACK);
-    _tft->fillRect(2, TFT_HEIGHT/2, _padding*1.5-8, 2, TFT_BLACK);
-    _tft->fillRect(2, TFT_HEIGHT/2 + 5, _padding*1.5-8, 2, TFT_BLACK);
+    _tft->fillScreen(TFT_BLACK);
 
     // main UI
     _tft->setFreeFont(&FreeSansBold9pt7b);
-    _tft->setTextColor(TFT_BLACK);
+    _tft->setTextColor(TFT_WHITE);
     // print label
     _tft->drawString(_label, _padding, _padding);
 
@@ -222,7 +219,40 @@ void UIScreenCalendar::_drawCalendar(uint16_t x, uint16_t y, uint16_t w, uint16_
 
 void UIScreenCalendar::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
-    _drawCalendar(x, y, w, h, 0, false);
+    char    label[20];
+    uint8_t weekdayHeight       = 0;
+    uint8_t dayOfMonthHeight    = 0;
+
+    _setDate(true);
+
+    // icon background
+    _tft->fillRect(x,y,w,h, _iconColor);
+    
+    _tft->setFreeFont(&FreeSansBold9pt7b);
+    weekdayHeight = _tft->fontHeight();
+
+    _tft->setFreeFont(&FreeSansBold24pt7b);
+    dayOfMonthHeight = _tft->fontHeight();
+
+    _tft->setTextColor(TFT_WHITE);
+    
+    // print weekday
+    _tft->setFreeFont(&FreeSansBold9pt7b);
+    strftime(label, sizeof(label), "%A", &_displayTimeInfo);
+    _tft->drawString(
+        label,
+        (x + (w/2)) - (_tft->textWidth(label)/2),
+        (y + (h/2)) - ((weekdayHeight+dayOfMonthHeight)/2)
+    );
+    
+    // print day of month
+    _tft->setFreeFont(&FreeSansBold24pt7b);
+    sprintf(label, "%d", _day);
+    _tft->drawString(
+        label,
+        (x + (w/2)) - (_tft->textWidth(label)/2),
+        (y + (h/2)) - ((weekdayHeight+dayOfMonthHeight)/2) + weekdayHeight
+    );
 }
 
 void UIScreenCalendar::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
@@ -243,7 +273,7 @@ void UIScreenCalendar::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX,
             _displayTime = mktime(&_displayTimeInfo);
             draw();
             break;
-        case TouchMetrics::SWIPE_LEFT_EDGE:
+        case TouchMetrics::SWIPE_BOTTOM_EDGE:
             _gui->setScreen(SCREEN_MAIN);
             break;
     }
