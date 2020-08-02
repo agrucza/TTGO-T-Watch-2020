@@ -18,12 +18,15 @@ UIScreenMain::UIScreenMain(){
     _iconH          = (_iconAreaHeight - ((_iconsMax-1)*2))/_iconsMax;
 
     // setup screens
-    _setScreenIcon(SCREEN_CALENDAR, 0, 0, 2, 2);
+    _setScreenIcon(SCREEN_CALENDAR, 0, 0);
+    //_setScreenIcon(SCREEN_SETTINGS, 0, 2);
 }
 
-void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY, uint8_t iconsX, uint8_t iconsY)
+void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
 {
     uint8_t iconsAvailableY = _displayIcons.size();
+    uint8_t iconsX          = _gui->getUIScreenIconWidth(screen);
+    uint8_t iconsY          = _gui->getUIScreenIconHeight(screen);
     
     if(iconsAvailableY < (posY + 1 + iconsY)){
         do{

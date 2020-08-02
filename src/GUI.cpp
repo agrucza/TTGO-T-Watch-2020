@@ -14,6 +14,7 @@
 #include "UIScreenStandby.h"
 #include "UIScreenMain.h"
 #include "UIScreenCalendar.h"
+//#include "UIScreenSettings.h"
 
 TTGOClass*              GUI::_ttgo              = nullptr;
 TFT_eSPI*               GUI::_tft               = nullptr;
@@ -77,7 +78,8 @@ void GUI::init()
     _screens[SCREEN_STANDBY]    = new UIScreenStandby();
     _screens[SCREEN_MAIN]       = new UIScreenMain();
     _screens[SCREEN_CALENDAR]   = new UIScreenCalendar();
-
+    //_screens[SCREEN_SETTINGS]   = new UIScreenSettings();
+    
     // as we init the GUI here we want to start the standby screen
     setScreen(SCREEN_STARTUP);
     

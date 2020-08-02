@@ -27,6 +27,7 @@ enum screens_t : uint8_t {
     SCREEN_STANDBY,
     SCREEN_MAIN,
     SCREEN_CALENDAR,
+    SCREEN_SETTINGS,
     SCREEN_COUNT
 };
 

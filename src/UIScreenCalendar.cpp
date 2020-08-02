@@ -129,7 +129,7 @@ void UIScreenCalendar::draw(bool init)
 
     _tft->fillRect(_padding, _padding+_tft->fontHeight(), TFT_WIDTH, 4, TFT_DARKGREY);
 
-    // print calendar;
+    // print calendar
     _drawCalendar(
         0,
         _padding + _tft->fontHeight() + 4,
