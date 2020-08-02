@@ -8,8 +8,9 @@
 extern GUI *gui;
 
 UIScreenStandby::UIScreenStandby(){
-    _gui = gui;
-    _tft = _gui->getTFT();
+    _gui    = gui;
+    _tft    = _gui->getTFT();
+    _label  = "Standby";
     //draw();
 }
 

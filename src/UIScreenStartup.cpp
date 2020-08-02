@@ -6,8 +6,9 @@
 extern GUI *gui;
 
 UIScreenStartup::UIScreenStartup(){
-    _gui = gui;
-    _tft = _gui->getTFT();
+    _gui    = gui;
+    _tft    = _gui->getTFT();
+    _label  = "Startup";
 }
 
 void UIScreenStartup::draw(bool init)

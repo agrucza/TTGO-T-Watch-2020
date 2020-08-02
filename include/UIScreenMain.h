@@ -12,10 +12,15 @@
 #include "UIScreen.h"
 #include "TouchMetrics.h"
 
+class GUI;
+class TFT_esPI;
+
+enum screens_t : uint8_t;
 
 class UIScreenMain : public UIScreen{
     GUI*        _gui;
     TFT_eSPI*   _tft;
+    char*       _label;
     uint8_t     _padding;
     uint8_t     _iconSizeX;
     uint8_t     _iconSizeY;

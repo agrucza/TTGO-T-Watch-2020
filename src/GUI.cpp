@@ -14,7 +14,7 @@
 #include "UIScreenStandby.h"
 #include "UIScreenMain.h"
 #include "UIScreenCalendar.h"
-//#include "UIScreenSettings.h"
+#include "UIScreenSettings.h"
 
 TTGOClass*              GUI::_ttgo              = nullptr;
 TFT_eSPI*               GUI::_tft               = nullptr;
@@ -76,10 +76,14 @@ void GUI::init()
     // creating screens
     _screens[SCREEN_STARTUP]    = new UIScreenStartup();
     _screens[SCREEN_STANDBY]    = new UIScreenStandby();
-    _screens[SCREEN_MAIN]       = new UIScreenMain();
     _screens[SCREEN_CALENDAR]   = new UIScreenCalendar();
-    //_screens[SCREEN_SETTINGS]   = new UIScreenSettings();
-    
+    _screens[SCREEN_SETTINGS]   = new UIScreenSettings();
+
+    // by now main needs to be initialized after all other screens
+    // otherwise there will be a fatal error when the launcher
+    // tries to access other screens methods
+    _screens[SCREEN_MAIN]       = new UIScreenMain();
+
     // as we init the GUI here we want to start the standby screen
     setScreen(SCREEN_STARTUP);
     
@@ -265,10 +269,7 @@ void GUI::drawUIScreenIcon(screens_t screen, uint16_t x, uint16_t y, uint16_t w,
 
 char* GUI::getUIScreenLabel(screens_t screen)
 {
-    if(screen > SCREEN_MAIN)
-    {
-        return _screens[screen]->getLabel();
-    }
+    return _screens[screen]->getLabel();
 }
 
 void GUI::setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second)

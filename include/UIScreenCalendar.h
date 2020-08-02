@@ -12,6 +12,9 @@
 #include "UIScreen.h"
 #include "TouchMetrics.h"
 
+class GUI;
+class TFT_esPI;
+
 class UIScreenCalendar : public UIScreen{
     GUI*        _gui;
     TFT_eSPI*   _tft;

@@ -12,9 +12,13 @@
 #include "UIScreen.h"
 #include "TouchMetrics.h"
 
+class GUI;
+class TFT_esPI;
+
 class UIScreenStandby: public UIScreen{
     GUI*        _gui;
     TFT_eSPI*   _tft;
+    char*       _label;
     time_t      _currentTime;
     struct tm   _timeInfo;
     uint8_t     _iconSizeX;

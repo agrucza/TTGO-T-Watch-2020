@@ -8,6 +8,7 @@ extern GUI *gui;
 UIScreenMain::UIScreenMain(){
     _gui            = gui;
     _tft            = _gui->getTFT();
+    _label          = "Main";
     _iconSizeX      = _iconSizeY = 2;
     _iconsMax       = 4;
     _padding        = 5;
@@ -19,12 +20,13 @@ UIScreenMain::UIScreenMain(){
 
     // setup screens
     _setScreenIcon(SCREEN_CALENDAR, 0, 0);
-    //_setScreenIcon(SCREEN_SETTINGS, 0, 2);
+    _setScreenIcon(SCREEN_SETTINGS, 2, 0);
 }
 
 void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
 {
     uint8_t iconsAvailableY = _displayIcons.size();
+    
     uint8_t iconsX          = _gui->getUIScreenIconWidth(screen);
     uint8_t iconsY          = _gui->getUIScreenIconHeight(screen);
     
@@ -49,7 +51,7 @@ void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
     
     for(uint8_t y = posY; y < (posY + iconsY); y++)
     {
-        for(uint8_t x = posY; x < (posX + iconsX); x++)
+        for(uint8_t x = posX; x < (posX + iconsX); x++)
         {
             _displayIcons[y][x] = screen;
         }
@@ -68,7 +70,6 @@ void UIScreenMain::draw(bool init)
     for(uint8_t iconY = 0; iconY < _displayIcons.size(); iconY++)
     {
         std::vector<screens_t> row  = _displayIcons[iconY];
-        //iconW = (iconAreaWidth - (row.size()-2))/row.size();
         for(uint8_t iconX = 0; iconX < row.size(); iconX++)
         {
             // check if a screens is set to display an icon
@@ -88,24 +89,13 @@ void UIScreenMain::draw(bool init)
                 {
                     continue;
                 }
-                /*
-                sprintf(
-                    buf,
-                    "s: %d x: %d y: %d w: %d h: %d",
-                    row[iconX],
-                    iconSizeScreenW,
-                    iconSizeScreenH,
-                    (iconSizeScreenW * iconW) + (iconSizeScreenW-1 * 2),
-                    (iconSizeScreenH * iconH) + (iconSizeScreenH-1 * 2)
-                );
-                _tft->drawString(buf,_padding, _padding);
-                */
+                
                 _gui->drawUIScreenIcon(
                     row[iconX],
                     _padding + (iconX*(_iconW + 2)),
                     _padding + (iconY*(_iconH + 2)),
-                    iconSizeScreenW * _iconW + (iconSizeScreenW-1 * 2),
-                    iconSizeScreenH * _iconH + (iconSizeScreenH-1 * 2)
+                    iconSizeScreenW * _iconW + ((iconSizeScreenW-1) * 2),
+                    iconSizeScreenH * _iconH + ((iconSizeScreenH-1) * 2)
                 );
             }
         }

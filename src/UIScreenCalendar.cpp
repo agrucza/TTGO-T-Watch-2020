@@ -259,7 +259,10 @@ void UIScreenCalendar::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX,
 {
     switch(touchType)
     {
-        case TouchMetrics::TOUCH:
+        case TouchMetrics::SWIPE_BOTTOM:
+            break;
+        case TouchMetrics::SWIPE_BOTTOM_EDGE:
+            _gui->setScreen(SCREEN_MAIN);
             break;
         case TouchMetrics::SWIPE_LEFT:
             _displayTimeInfo.tm_mday    = 1;
@@ -267,14 +270,18 @@ void UIScreenCalendar::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX,
             _displayTime = mktime(&_displayTimeInfo);
             draw();
             break;
+        case TouchMetrics::SWIPE_LEFT_EDGE:
+            break;
         case TouchMetrics::SWIPE_RIGHT:
             _displayTimeInfo.tm_mday    = 1;
             _displayTimeInfo.tm_mon     -= 1;
             _displayTime = mktime(&_displayTimeInfo);
             draw();
             break;
-        case TouchMetrics::SWIPE_BOTTOM_EDGE:
-            _gui->setScreen(SCREEN_MAIN);
+        case TouchMetrics::SWIPE_RIGHT_EDGE:
+        case TouchMetrics::SWIPE_TOP:
+        case TouchMetrics::SWIPE_TOP_EDGE:
+        case TouchMetrics::TOUCH:
             break;
     }
 }
