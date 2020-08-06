@@ -3,13 +3,14 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-UIElement::UIElement(UIContainer* parent, UIEOrientation_t orientation, UIESize_t sizeX, UIESize_t sizeY, UIDimensions_t sizeGap)
+UIElement::UIElement(UIContainer* parent, UIEOrientation_t orientation, UIESize_t sizeX, UIESize_t sizeY, UIDimensions_t dimension)
 {
     _parent = parent;
-    _orientation = orientation;
-    _sizeX = sizeX;
-    _sizeGap = sizeGap;
-
+    _orientation    = orientation;
+    _sizeX          = sizeX;
+    _sizeY          = sizeY;
+    _dimension      = dimension;
+    
     UIDimensions_t parentDimensions;
 
     if(_parent != NULL)

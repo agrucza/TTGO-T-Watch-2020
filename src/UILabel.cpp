@@ -16,12 +16,14 @@ UILabel::UILabel(char* label, const GFXfont *font, UIContainer *parent, UIEOrien
     _sizeY          = sizeY;
     _tft            = gui.getTFT();
     _font           = font;
-    
+    _setDimensions();
+}
+
+void UILabel::_setDimensions()
+{
     _tft->setFreeFont(_font);
 
-    _dimensions.topLeft.x       = -1;
-    _dimensions.topLeft.y       = -1;
-    _dimensions.bottomRight.x   = -1;
+    _dimensions                 = defaultUIDimensions;
     _dimensions.bottomRight.y   = _tft->fontHeight();
 }
 
@@ -39,4 +41,12 @@ void UILabel::draw(bool task)
 void UILabel::reDraw()
 {
     
+}
+
+void UILabel::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
+{
+    char buf[50];
+    _tft->setFreeFont();
+    sprintf(buf,"touched: %s", _label);
+    _tft->drawString(buf,0, TFT_HEIGHT - _tft->fontHeight());
 }

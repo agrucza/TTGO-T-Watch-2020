@@ -61,7 +61,6 @@ class GUI {
     static int              _batteryLevel;
 
     public:
-        static TaskHandle_t     taskHandle;
         static void             setTTGO(TTGOClass *ttgo);
         static TTGOClass        *getTTGO();
         static TFT_eSPI         *getTFT();
@@ -102,7 +101,6 @@ class GUI {
         static void             drawUIScreenIcon(screens_t screen, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
         static char*            getUIScreenLabel(screens_t screen);
         static void             setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second);
-        static void             taskHandler(void * parameters);
 };
 
 #endif /*__GUI_H */

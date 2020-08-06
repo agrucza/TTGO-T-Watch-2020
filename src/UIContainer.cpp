@@ -2,7 +2,7 @@
 #include "UIElement.h"
 #include "GUI.h"
 
-UIContainer::UIContainer(UIContainer* parent, UIEAlignment_t alignment, UIESize_t sizeX, UIESize_t sizeY, UIDimensions_t sizeGap)
+UIContainer::UIContainer(UIContainer* parent, UIEAlignment_t alignment, UIESize_t sizeX, UIESize_t sizeY, UIDimensions_t dimension)
 {
     _parent     = parent;
     _alignment  = alignment;
@@ -21,19 +21,35 @@ void UIContainer::addUIElement(UIElement* element)
     UIDimensions_t      dimensions = element->getDimensions();
     UIDimensions_t      tmpDimensions;
 
-    dimensions.topLeft.x = dimensions.topLeft.y = dimensions.bottomRight.x = 0;
+    dimensions.topLeft.x = dimensions.topLeft.y = 0;
 
     for(uint8_t i = 0; i < _element.size(); i++)
     {
         tmpDimensions = _element[i].element->getDimensions();
-        tmpDimensions.topLeft.y = dimensions.topLeft.y;
+        switch(_alignment){
+            case ALIGNMENT_VERTICAL:
+                tmpDimensions.topLeft.y = dimensions.topLeft.y;
+                dimensions.topLeft.y += tmpDimensions.bottomRight.y + 1;
+                break;
+            case ALIGNMENT_HORIZONTAL:
+                tmpDimensions.topLeft.x = dimensions.topLeft.x;
+                dimensions.topLeft.x += tmpDimensions.bottomRight.x + 1;
+                break;
+        }
         _element[i].element->setDimensions(tmpDimensions);
-        dimensions.topLeft.y += tmpDimensions.bottomRight.y + 1;
     }
     element->setDimensions(dimensions);
     newDetails.element      = element;
     newDetails.dimensions   = dimensions;
-    dimensions.topLeft.y += tmpDimensions.bottomRight.y;
+    switch(_alignment){
+        case ALIGNMENT_VERTICAL:
+            dimensions.topLeft.y += tmpDimensions.bottomRight.y;
+            break;
+        case ALIGNMENT_HORIZONTAL:
+            dimensions.topLeft.x += tmpDimensions.bottomRight.x + 1;
+            break;
+
+    }
     _element.push_back(newDetails);
 }
 
@@ -92,4 +108,40 @@ void UIContainer::draw(bool task)
 void UIContainer::reDraw()
 {
 
+}
+
+void UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
+{
+    bool eventDone = false;
+    UIDimensions_t dim;
+
+    for(uint8_t i = 0; i < _container.size(); i++)
+    {
+        dim = _container[i].dimensions;
+        if(
+            !eventDone
+            && lastX >= dim.topLeft.x
+            && lastX <= dim.topLeft.x + dim.bottomRight.x
+            && lastY >= dim.topLeft.y
+            && lastY <= dim.topLeft.y + dim.bottomRight.y
+        )
+        {
+            _container[i].container->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+        }
+    }
+
+    for(uint8_t i = 0; i < _element.size(); i++)
+    {
+        dim = _element[i].dimensions;
+        if(
+            !eventDone
+            //&& lastX >= dim.topLeft.x
+            //&& lastX <= dim.topLeft.x + dim.bottomRight.x
+            && lastY >= dim.topLeft.y
+            && lastY <= dim.topLeft.y + dim.bottomRight.y
+        )
+        {
+            _element[i].element->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+        }
+    }
 }

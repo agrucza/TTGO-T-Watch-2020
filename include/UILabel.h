@@ -26,6 +26,7 @@ class UILabel : public UIElement{
     const GFXfont*  _font;
     UIColor_t       _fgColor;
     UIColor_t       _bgColor;
+    void            _setDimensions();
 
     public:
         UILabel(char* label, const GFXfont* font, UIContainer *parent = NULL, UIEOrientation_t orientation = CENTER_CENTER, UIESize_t sizeX = FULL, UIESize_t sizeY = ELEMENT);
@@ -40,6 +41,7 @@ class UILabel : public UIElement{
             _bgColor.g  = g;
             _bgColor.b  = b;
         };
+        void    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
         void    draw(bool task = false);
         void    reDraw();
 };

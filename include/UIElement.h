@@ -22,11 +22,12 @@ class UIElement{
         UIEOrientation_t    _orientation;
         UIESize_t           _sizeX;
         UIESize_t           _sizeY;
-        UIDimensions_t      _sizeGap;
+        UIDimensions_t      _dimension;
         UIDimensions_t      _dimensions;
         TFT_eSprite*        _sprite;
+        virtual void        _setDimensions() = 0;
     public:
-        UIElement(UIContainer* parent = NULL, UIEOrientation_t orientation = CENTER_CENTER, UIESize_t sizeX = FULL, UIESize_t sizeY = ELEMENT, UIDimensions_t sizeGap = defaultUIDimensions);
+        UIElement(UIContainer* parent = NULL, UIEOrientation_t orientation = CENTER_CENTER, UIESize_t sizeX = FULL, UIESize_t sizeY = ELEMENT, UIDimensions_t dimension = defaultUIDimensions);
         ~UIElement(){};
         UIDimensions_t      getDimensions(){return _dimensions;};
         void                setDimensions(UIDimensions_t dimensions){_dimensions = dimensions;};
@@ -34,6 +35,7 @@ class UIElement{
         void                setTopLeft(UIPoint_t topLeft){_dimensions.topLeft = topLeft;};
         UIPoint_t           getBottomRight(){return _dimensions.bottomRight;}
         UIEOrientation_t    getOrientation(){return _orientation;};
+        virtual void        touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType) = 0;
         virtual void        draw(bool task = false) = 0;
         virtual void        reDraw() = 0;
 };
