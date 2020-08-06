@@ -13,6 +13,7 @@
 #include "UIScreenStartup.h"
 #include "UIScreenStandby.h"
 #include "UIScreenMain.h"
+#include "UIScreenTesting.h"
 #include "UIScreenCalendar.h"
 #include "UIScreenSettings.h"
 
@@ -76,6 +77,7 @@ void GUI::init()
     // creating screens
     _screens[SCREEN_STARTUP]    = new UIScreenStartup();
     _screens[SCREEN_STANDBY]    = new UIScreenStandby();
+    _screens[SCREEN_TESTING]    = new UIScreenTesting();
     _screens[SCREEN_CALENDAR]   = new UIScreenCalendar();
     _screens[SCREEN_SETTINGS]   = new UIScreenSettings();
 
