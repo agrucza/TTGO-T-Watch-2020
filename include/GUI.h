@@ -11,6 +11,8 @@
 #include "TouchMetrics.h"
 #include "UIScreen.h"
 
+#include "lvgl/src/lv_core/lv_obj.h"
+
 typedef enum {
     ICON_BAT_EMPTY,
     ICON_BAT_1,
@@ -89,6 +91,7 @@ class GUI {
         static void             updateBatteryLevel();
         static int              getBatteryLevel(){return _batteryLevel;};
         static void             updateBatteryIcon(icon_battery_t index);
+        static void             updateTime(lv_obj_t *timeLabel);
         static icon_battery_t   getBatteryIcon(){return _batteryIcon;};
         static void             wifiListAdd(const char *ssid);
         static void             checkTouchScreen();

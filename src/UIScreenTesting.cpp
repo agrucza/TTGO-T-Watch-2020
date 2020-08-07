@@ -11,27 +11,60 @@ UIScreenTesting::UIScreenTesting(){
     _label          = "Testing";
     _padding        = 5;
 
+    LV_IMG_DECLARE(bg);
+    LV_FONT_DECLARE(Ubuntu);
+    
     /*Create a screen*/
     _screen = lv_obj_create(NULL, NULL);
     lv_scr_load(_screen);          /*Load the screen*/
 
-    /*Create 2 buttons*/
-    lv_obj_t * btn1 = lv_btn_create(_screen, NULL);         /*Create a button on the screen*/
-    lv_btn_set_fit(btn1, true);                         /*Enable to automatically set the size according to the content*/
-    lv_obj_set_pos(btn1, 60, 40);              	        /*Set the position of the button*/
+    //Create wallpaper
+    void *images[] = {(void *) &bg};
+    lv_obj_t *scr = lv_scr_act();
+    lv_obj_t *img_bin = lv_img_create(scr, NULL);  /*Create an image object*/
+    lv_img_set_src(img_bin, images[0]);
+    lv_obj_align(img_bin, NULL, LV_ALIGN_CENTER, 0, 0);
+    
+    lv_obj_t *timeLabel = nullptr;
+    
+    //! main
+    lv_style_t mainStyle;
+    lv_style_init(&mainStyle);
+    
+    lv_style_set_radius(&mainStyle, LV_OBJ_PART_MAIN, 0);
+    lv_style_set_bg_color(&mainStyle, LV_OBJ_PART_MAIN, LV_COLOR_GRAY);
+    lv_style_set_bg_opa(&mainStyle, LV_OBJ_PART_MAIN, LV_OPA_0);
+    lv_style_set_border_width(&mainStyle, LV_OBJ_PART_MAIN, 0);
+    lv_style_set_text_color(&mainStyle, LV_OBJ_PART_MAIN, LV_COLOR_WHITE);
+    lv_style_set_image_recolor(&mainStyle, LV_OBJ_PART_MAIN, LV_COLOR_WHITE);
+    
+    //! Time
+    static lv_style_t timeStyle;
+    lv_style_copy(&timeStyle, &mainStyle);
+    lv_style_set_text_font(&timeStyle, LV_STATE_DEFAULT, &Ubuntu);
 
-    lv_obj_t * btn2 = lv_btn_create(_screen, btn1);         /*Copy the first button*/
-    lv_obj_set_pos(btn2, 180, 80);                      /*Set the position of the button*/
+    timeLabel = lv_label_create(_screen, NULL);
+    lv_obj_add_style(timeLabel, LV_OBJ_PART_MAIN, &timeStyle);
+    GUI::updateTime(timeLabel);
+    /*
+    // Create 2 buttons
+    lv_obj_t * btn1 = lv_btn_create(_screen, NULL);     // Create a button on the screen
+    lv_btn_set_fit(btn1, true);                         // Enable to automatically set the size according to the content
+    lv_obj_set_pos(btn1, 60, 40);              	        // Set the position of the button
 
-    /*Add labels to the buttons*/
-    lv_obj_t * label1 = lv_label_create(btn1, NULL);	/*Create a label on the first button*/
-    lv_label_set_text(label1, "Button 1");          	/*Set the text of the label*/
+    lv_obj_t * btn2 = lv_btn_create(_screen, btn1);     // Copy the first button
+    lv_obj_set_pos(btn2, 180, 80);                      // Set the position of the button
 
-    lv_obj_t * label2 = lv_label_create(btn2, NULL);  	/*Create a label on the second button*/
-    lv_label_set_text(label2, "Button 2");            	/*Set the text of the label*/
+    // Add labels to the buttons
+    lv_obj_t * label1 = lv_label_create(btn1, NULL);	// Create a label on the first button
+    lv_label_set_text(label1, "Button 1");          	// Set the text of the label
 
-    /*Delete the second label*/
+    lv_obj_t * label2 = lv_label_create(btn2, NULL);  	// Create a label on the second button
+    lv_label_set_text(label2, "Button 2");            	// Set the text of the label
+
+    // Delete the second label
     lv_obj_del(label2);
+    */
     /*
     _container      = new UIContainer(NULL); 
 

@@ -11,9 +11,9 @@
 #include <Arduino.h>
 #include "UITypes.h"
 #include "UIScreen.h"
-#include "config.h"
-#include "LilyGoWatch.h"
 #include "TouchMetrics.h"
+
+#include "lvgl/src/lv_core/lv_obj.h"
 
 class GUI;
 class TFT_esPI;

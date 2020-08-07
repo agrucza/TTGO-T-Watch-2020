@@ -149,6 +149,18 @@ void GUI::updateBatteryIcon(icon_battery_t index)
     _batteryIcon = index;
 }
 
+void GUI::updateTime(lv_obj_t* timeLabel)
+{
+    time_t now;
+    struct tm  info;
+    char buf[64];
+    time(&now);
+    localtime_r(&now, &info);
+    strftime(buf, sizeof(buf), "%H:%M", &info);
+    lv_label_set_text(timeLabel, buf);
+    lv_obj_align(timeLabel, NULL, LV_ALIGN_IN_TOP_MID, 0, 20);
+}
+
 /**
  * @brief  Adds an SSID to the wifi list
  * @note   
