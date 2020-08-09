@@ -8,10 +8,22 @@
 #ifndef __GUI_H
 #define __GUI_H
 
-#include "TouchMetrics.h"
-#include "UIScreen.h"
+#include "config.h"
+#include "LilyGoWatch.h"
 
-#include "lvgl/src/lv_core/lv_obj.h"
+class UIScreen;
+
+struct icon_t{
+    lv_obj_t*   obj;
+    char*       label;
+    bool        show;
+    bool        shownBefore;
+};
+
+enum screen_callback_t{
+    CALLBACK_NONE,
+    CALLBACK_SWITCH_SCREEN
+};
 
 typedef enum {
     ICON_BAT_EMPTY,
@@ -24,8 +36,6 @@ typedef enum {
 } icon_battery_t;
 
 enum screens_t : uint8_t {
-    SCREEN_NONE,
-    SCREEN_STARTUP,
     SCREEN_STANDBY,
     SCREEN_MAIN,
     SCREEN_TESTING,
@@ -34,76 +44,58 @@ enum screens_t : uint8_t {
     SCREEN_COUNT
 };
 
+class ScreenCallback{
+    UIScreen*           origin;
+    screen_callback_t   command;
+    screens_t           target;
+    public:
+        ScreenCallback(UIScreen* origin, screen_callback_t command, screens_t target)
+        {
+            this->origin    = origin;
+            this->command   = command;
+            this->target    = target;
+        };
+        UIScreen*           getOrigin(){return origin;};
+        screen_callback_t   getCommand(){return command;};
+        screens_t           getTarget(){return target;};
+};
+
 class TTGOClass;
 class TFT_eSPI;
 
 class GUI {
-    struct touch_metrics_t {
-        bool touching;
-        int16_t x, y, lastX, lastY;
-        uint8_t swipeTolerance = 10;
-    };
-
-    struct debug_t {
-        bool visible;
-        uint16_t *displayContent;
-        int16_t top,left,width,height;
-    };
-
-    static TTGOClass*        _ttgo;
-    static TFT_eSPI*         _tft;
-    static uint32_t         _stepCounter;
-    static TouchMetrics*     _touch;
-    static debug_t          _debug;
-    static unsigned long    _lastActionTime;
-    static UIScreen*        _screens[SCREEN_COUNT];
-    static screens_t        _lastScreen;
-    static screens_t        _activeScreen;
-    static icon_battery_t   _batteryIcon;
-    static int              _batteryLevel;
+    static TTGOClass*                   _ttgo;
+    static uint32_t                     _stepCounter;
+    static std::vector<UIScreen*>       _screens;
+    static screens_t                    _lastScreen;
+    static screens_t                    _activeScreen;
+    static int                          _batteryLevel;
 
     public:
-        static void             setTTGO(TTGOClass *ttgo);
-        static TTGOClass        *getTTGO();
-        static TFT_eSPI         *getTFT();
-        static void             init();
-        static void             touchAction(
-            int16_t _lastX,
-            int16_t _lasty,
-            int16_t _deltaX,
-            int16_t _deltaY,
-            TouchMetrics::touch_t touchType
-        );
-        static unsigned long    getInactivityTime()
-        {
-            if(millis() < _lastActionTime){
-                _lastActionTime = millis();
-            }
-            return millis() - _lastActionTime;
-        }
-        static void             setLastActionTime(unsigned long millis)
-        {
-            _lastActionTime = millis;
-        }
-        static void             wifiConnectStatus(bool set);
-        static void             updateStepCounter();
-        static uint32_t         getStepCounter();
-        static void             updateBatteryLevel();
-        static int              getBatteryLevel(){return _batteryLevel;};
-        static void             updateBatteryIcon(icon_battery_t index);
-        static void             updateTime(lv_obj_t *timeLabel);
-        static icon_battery_t   getBatteryIcon(){return _batteryIcon;};
-        static void             wifiListAdd(const char *ssid);
-        static void             checkTouchScreen();
-        static void             debugOutput(const char *str = nullptr);
-        static void             setScreen(screens_t screen, bool init = false);
-        static screens_t        getLastScreen(){return _lastScreen;};
-        static screens_t        getActiveScreen(){return _activeScreen;};
-        static uint8_t          getUIScreenIconWidth(screens_t screen) { return _screens[screen]->getIconSizeX();};
-        static uint8_t          getUIScreenIconHeight(screens_t screen){ return _screens[screen]->getIconSizeY();};
-        static void             drawUIScreenIcon(screens_t screen, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
-        static char*            getUIScreenLabel(screens_t screen);
-        static void             setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second);
+        static lv_style_t               borderlessStyle;
+        static bool                     isPluggedIn;
+        static bool                     isStillConnected;
+        static std::vector<icon_t>      systemIcons;
+
+        static void                     setTTGO(TTGOClass *ttgo);
+        static TTGOClass*               getTTGO();
+        static void                     init();
+        static void                     screenEventCallback(lv_obj_t * obj, lv_event_t event);
+        static void                     lvUpdateTask(struct _lv_task_t* data);
+        static void                     updateTimeLabel(lv_obj_t* label, char* format);
+        static void                     wifiConnectStatus(bool set);
+        static void                     updateStepCounter();
+        static uint32_t                 getStepCounter();
+        static void                     updateBatteryLevel();
+        static int                      getBatteryLevel(){return _batteryLevel;};
+        static char*                    getBatteryIcon();
+        static void                     wifiListAdd(const char *ssid);
+        static void                     showScreen(screens_t screen);
+        static screens_t                getLastScreen(){return _lastScreen;};
+        static screens_t                getActiveScreen(){return _activeScreen;};
+        static std::vector<screens_t>   getUIScreensForLauncher();
+        static char*                    getUIScreenLabel(screens_t screen);
+        static void                     setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second);
 };
 
 #endif /*__GUI_H */

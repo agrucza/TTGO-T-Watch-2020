@@ -6,64 +6,46 @@
 
 extern GUI *gui;
 
-UIScreenSettings::UIScreenSettings()
+UIScreenSettings::UIScreenSettings():UIScreen()
 {
-    _gui        = gui;
-    _tft        = _gui->getTFT();
-    _label      = "Settings";
-    _padding    = 10;
-    _iconSizeX  = 1;
-    _iconSizeY  = 1;
-    _iconColor  = _tft->color565(0,120,215);
-}
-
-void UIScreenSettings::draw(bool init, bool task)
-{
-    if(!task)
-    {
-        _tft->fillScreen(TFT_BLACK);
-    }
-
-    // main UI
-    _tft->setFreeFont(&FreeSansBold9pt7b);
-    _tft->setTextColor(TFT_WHITE);
-}
-
-void UIScreenSettings::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
-{
-    // icon background
-    _tft->fillRect(x,y,w,h, _iconColor);
+    _label              = "Settings";
+    _showInLauncher     = true;
     
-    // print cog weel
-    _tft->setFreeFont(&IconsFontsSup24pt7b);
-    _tft->drawString(
-        "C",
-        x + (w - _tft->textWidth("C"))/2,
-        y + 3 + (h - _tft->fontHeight())/2
-    );
+    // Create a window*/
+    _container = lv_win_create(lv_scr_act(), NULL);
+    lv_win_set_title(_container, _label);
+
+    // Add control button to the header
+    _closeBtn = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
+    
+    _callbackData = new ScreenCallback(this,CALLBACK_SWITCH_SCREEN,SCREEN_MAIN);
+
+    lv_obj_set_user_data(_closeBtn, _callbackData);
+    lv_obj_set_event_cb(_closeBtn,GUI::screenEventCallback);
+    
+    lv_win_add_btn(_container, LV_SYMBOL_SETTINGS);
+
+    // Add some dummy content
+    lv_obj_t * txt = lv_label_create(_container, NULL);
+    lv_label_set_text(txt, "This is the content of the window\n\n"
+                           "You can add control buttons to\n"
+                           "the window header\n\n"
+                           "The content area becomes\n"
+                           "automatically scrollable is it's \n"
+                           "large enough.\n\n"
+                           " You can scroll the content\n"
+                           "See the scroll bar on the right!");
 }
 
-void UIScreenSettings::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
+void UIScreenSettings::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback)
 {
-    switch(touchType)
-    {
-        case TouchMetrics::SWIPE_BOTTOM:
-            break;
-        case TouchMetrics::SWIPE_BOTTOM_EDGE:
-            _gui->setScreen(SCREEN_MAIN);
-            break;
-        case TouchMetrics::SWIPE_LEFT:
-            draw();
-            break;
-        case TouchMetrics::SWIPE_LEFT_EDGE:
-            break;
-        case TouchMetrics::SWIPE_RIGHT:
-            draw();
-            break;
-        case TouchMetrics::SWIPE_RIGHT_EDGE:
-        case TouchMetrics::SWIPE_TOP:
-        case TouchMetrics::SWIPE_TOP_EDGE:
-        case TouchMetrics::TOUCH:
-            break;
+    if(obj == _closeBtn){
+        // close the screen
+        _gui->showScreen(SCREEN_MAIN);
     }
+}
+
+void UIScreenSettings::lvUpdateTask(struct _lv_task_t* data)
+{
+
 }

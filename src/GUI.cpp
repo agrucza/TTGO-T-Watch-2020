@@ -6,11 +6,12 @@
 */
  
 // Please select the model you want to use in config.h
+
 #include "config.h"
 #include "LilyGoWatch.h"
+
 #include "GUI.h"
 
-#include "UIScreenStartup.h"
 #include "UIScreenStandby.h"
 #include "UIScreenMain.h"
 #include "UIScreenTesting.h"
@@ -18,16 +19,15 @@
 #include "UIScreenSettings.h"
 
 TTGOClass*              GUI::_ttgo              = nullptr;
-TFT_eSPI*               GUI::_tft               = nullptr;
 uint32_t                GUI::_stepCounter       = 0;
-TouchMetrics*           GUI::_touch;
-GUI::debug_t            GUI::_debug;
-unsigned long           GUI::_lastActionTime    = 0;
-UIScreen*               GUI::_screens[SCREEN_COUNT];
-screens_t               GUI::_lastScreen        = SCREEN_MAIN;
+std::vector<UIScreen*>  GUI::_screens;
+screens_t               GUI::_lastScreen        = SCREEN_STANDBY;
 screens_t               GUI::_activeScreen      = SCREEN_STANDBY;
-icon_battery_t          GUI::_batteryIcon       = ICON_CALCULATION;
 int                     GUI::_batteryLevel      = 0;
+lv_style_t              GUI::borderlessStyle;
+std::vector<icon_t>     GUI::systemIcons;
+bool                    GUI::isPluggedIn;
+bool                    GUI::isStillConnected;
 
 /**
  * @brief  Sets the TTGOClass object to the GUI class
@@ -38,7 +38,6 @@ int                     GUI::_batteryLevel      = 0;
 void GUI::setTTGO(TTGOClass *ttgo)
 {
     _ttgo = ttgo;
-    _tft = _ttgo->tft;
 }
 
 /**
@@ -46,19 +45,9 @@ void GUI::setTTGO(TTGOClass *ttgo)
  * @note   
  * @retval TTGOClass watch reference
  */
-TTGOClass *GUI::getTTGO()
+TTGOClass* GUI::getTTGO()
 {
     return _ttgo;
-}
-
-/**
- * @brief  Returns the TFT_eSPI tft reference
- * @note   
- * @retval TFT_eSPI reference
- */
-TFT_eSPI *GUI::getTFT()
-{
-    return _tft;
 }
 
 /**
@@ -68,33 +57,64 @@ TFT_eSPI *GUI::getTFT()
  */
 void GUI::init()
 {
-    _tft->fillScreen(TFT_BLACK);
-    _touch = new TouchMetrics();
-    _touch->setTouch(false);
-    _lastActionTime = millis();
+    
+    _ttgo->motor_begin();
+    lv_style_init(&borderlessStyle);
+    
+    lv_style_set_border_width(
+        &borderlessStyle,
+        LV_STATE_DEFAULT,
+        0
+    );
+
+    systemIcons.push_back({nullptr,LV_SYMBOL_BELL,false,false});
+    systemIcons.push_back({nullptr,LV_SYMBOL_WIFI,false,false});
+    systemIcons.push_back({nullptr,LV_SYMBOL_BLUETOOTH,false,false});
+    systemIcons.push_back({nullptr,LV_SYMBOL_CHARGE,true,true});
+
+    lv_task_create(lvUpdateTask, 1000, LV_TASK_PRIO_LOWEST, NULL);
     updateBatteryLevel();
 
     // creating screens
-    _screens[SCREEN_STARTUP]    = new UIScreenStartup();
-    _screens[SCREEN_STANDBY]    = new UIScreenStandby();
-    _screens[SCREEN_TESTING]    = new UIScreenTesting();
-    _screens[SCREEN_CALENDAR]   = new UIScreenCalendar();
-    _screens[SCREEN_SETTINGS]   = new UIScreenSettings();
-
-    // by now main needs to be initialized after all other screens
-    // otherwise there will be a fatal error when the launcher
-    // tries to access other screens methods
-    _screens[SCREEN_MAIN]       = new UIScreenMain();
+    _screens.push_back(new UIScreenStandby());
+    _screens.push_back(new UIScreenMain());
+    _screens.push_back(new UIScreenTesting());
+    _screens.push_back(new UIScreenSettings());
+    _screens.push_back(new UIScreenCalendar());
 
     // as we init the GUI here we want to start the standby screen
     _ttgo->openBL();
-    //setScreen(SCREEN_STARTUP);
-    setScreen(SCREEN_TESTING);
-    
-    if(_ttgo->power->isChargeing())
+    showScreen(SCREEN_STANDBY);
+}
+
+void GUI::lvUpdateTask(struct _lv_task_t* data){
+    //_ttgo->motor->onec();
+    updateBatteryLevel();
+    _screens[_activeScreen]->lvUpdateTask(data);
+};
+
+void GUI::screenEventCallback(lv_obj_t * obj, lv_event_t event)
+{
+    ScreenCallback* data = (ScreenCallback*)lv_obj_get_user_data(obj);
+    switch(data->getCommand())
     {
-        _batteryIcon = ICON_CHARGE;
+        case CALLBACK_SWITCH_SCREEN:
+            showScreen(data->getTarget());
+            break;
+        default:
+            data->getOrigin()->eventCallback(obj, event, data);
     }
+}
+
+void GUI::updateTimeLabel(lv_obj_t* label, char* format)
+{
+    time_t now;
+    struct tm  info;
+    char buf[64];
+    time(&now);
+    localtime_r(&now, &info);
+    strftime(buf, sizeof(buf), format, &info);
+    lv_label_set_text(label, buf);
 }
 
 /**
@@ -138,27 +158,37 @@ void GUI::updateBatteryLevel()
     _batteryLevel = _ttgo->power->getBattPercentage();
 }
 
-/**
- * @brief  Updates the battery icon with a new one
- * @note   
- * @param  index: icon
- * @retval None
- */
-void GUI::updateBatteryIcon(icon_battery_t index)
+char* GUI::getBatteryIcon()
 {
-    _batteryIcon = index;
-}
+    updateBatteryLevel();
 
-void GUI::updateTime(lv_obj_t* timeLabel)
-{
-    time_t now;
-    struct tm  info;
-    char buf[64];
-    time(&now);
-    localtime_r(&now, &info);
-    strftime(buf, sizeof(buf), "%H:%M", &info);
-    lv_label_set_text(timeLabel, buf);
-    lv_obj_align(timeLabel, NULL, LV_ALIGN_IN_TOP_MID, 0, 20);
+    if(isPluggedIn && isStillConnected){
+        return LV_SYMBOL_USB;
+    }
+    else if(isPluggedIn)
+    {
+        return LV_SYMBOL_CHARGE;
+    }
+    else if(_batteryLevel > 75 && _batteryLevel <= 100)
+    {
+        return LV_SYMBOL_BATTERY_FULL;
+    }
+    else if(_batteryLevel > 50 && _batteryLevel <= 75)
+    {
+        return LV_SYMBOL_BATTERY_3;
+    }
+    else if(_batteryLevel > 25 && _batteryLevel <= 50)
+    {
+        return LV_SYMBOL_BATTERY_2;
+    }
+    else if(_batteryLevel > 5 && _batteryLevel <= 25)
+    {
+        return LV_SYMBOL_BATTERY_1;
+    }
+    else
+    {
+        return LV_SYMBOL_BATTERY_EMPTY;
+    }
 }
 
 /**
@@ -171,76 +201,30 @@ void GUI::wifiListAdd(const char *ssid){
 
 }
 
-/**
- * @brief  Will check for touch gestures
- * @note   
- * @retval None
- */
-void GUI::checkTouchScreen()
-{
-    _touch->checkTouch();
-}
-
-void GUI::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
-{
-    _lastActionTime = millis();
-    // elevate touch action to child elements
-    _screens[_activeScreen]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
-}
-
-void GUI::debugOutput(const char *str)
-{
-    if(_debug.visible){
-        _tft->pushRect(_debug.left, _debug.top, _debug.width, _debug.height, _debug.displayContent);
-        free(_debug.displayContent);
-        _debug.visible = false;
-    }
-    
-    if(str != nullptr)
-    {
-        uint16_t textWidth  = _tft->textWidth(str);
-        uint16_t textHeight = _tft->fontHeight(2);
-        uint16_t boxHeight  = (textHeight * 2) + 7;
-        uint16_t boxWidth   = textWidth + (2*8);
-        uint16_t topStart   = (TFT_HEIGHT - boxHeight)/2;
-        uint16_t leftStart  = (TFT_WIDTH - boxWidth)/2;
-
-        _debug.top = topStart;
-        _debug.left = leftStart;
-        _debug.width = boxWidth;
-        _debug.height = boxHeight;
-
-        _debug.displayContent = ( uint16_t*) ps_calloc(boxWidth * boxHeight, sizeof(uint16_t));
-        _tft->readRect(leftStart, topStart, boxWidth, boxHeight, _debug.displayContent);
-        
-        // background
-        _tft->fillRect(leftStart, topStart, boxWidth, boxHeight, TFT_RED);
-        _tft->drawRect(leftStart + 1, topStart + textHeight, boxWidth - 2, boxHeight - textHeight -2, TFT_WHITE);
-
-        // element style
-        _tft->setTextFont(2);
-        _tft->setTextSize(1);
-        _tft->setTextColor(TFT_WHITE, TFT_RED);
-
-        _tft->drawString(" DEBUG: ", (TFT_WIDTH - _tft->textWidth(" DEBUG: "))/2, topStart);
-        _tft->drawString(str, (TFT_WIDTH - _tft->textWidth(str))/2, topStart + textHeight + 2);
-        _debug.visible = true;
-    }
-}
-
-void GUI::setScreen(screens_t screen, bool init)
+void GUI::showScreen(screens_t screen)
 {
     _lastScreen = _activeScreen;
     _activeScreen = screen;
-    _screens[screen]->draw(init);
+    _screens[_lastScreen]->hide();
+    _screens[_activeScreen]->show();
 }
 
-void GUI::drawUIScreenIcon(screens_t screen, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
+
+std::vector<screens_t> GUI::getUIScreensForLauncher()
 {
-    if(screen > SCREEN_MAIN)
+    std::vector<screens_t> screens;
+    
+    for(uint8_t i = 0; i < _screens.size(); i++)
     {
-        _screens[screen]->drawIcon(x, y,  w, h);
+        bool launcher = _screens[i]->showInLauncher();
+        
+        if(launcher)
+        {
+            screens.push_back(static_cast<screens_t>(i));
+        }
     }
+    
+    return screens;
 }
 
 char* GUI::getUIScreenLabel(screens_t screen)

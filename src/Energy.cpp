@@ -1,7 +1,5 @@
 #include <Arduino.h>
 #include <WiFi.h>
-#include "config.h"
-#include "LilyGoWatch.h"
 #include "GUI.h"
 #include "Energy.h"
 #include "Event.h"
@@ -120,6 +118,7 @@ void Energy::lowEnergy()
     if (_ttgo->bl->isOn()) {
         xEventGroupSetBits(Event::isrGroup, WATCH_FLAG_SLEEP_MODE);
         _ttgo->closeBL();
+        _ttgo->stopLvglTick();
         _ttgo->bma->enableStepCountInterrupt(false);
         _ttgo->displaySleep();
         if (!WiFi.isConnected()) {
@@ -135,17 +134,17 @@ void Energy::lowEnergy()
             esp_light_sleep_start();
         }
     } else {
+        _ttgo->startLvglTick();
         _ttgo->displayWakeup();
         _ttgo->rtc->syncToSystem();
         _gui->updateStepCounter();
         _gui->updateBatteryLevel();
-        _gui->updateBatteryIcon(ICON_CALCULATION);
         lv_disp_trig_activity(NULL);
         _ttgo->openBL();
         _ttgo->bma->enableStepCountInterrupt();
 
         // go to standby screen
-        _gui->setScreen(SCREEN_STANDBY, true);
+        _gui->showScreen(SCREEN_STANDBY);
     }
 }
 
@@ -200,13 +199,14 @@ void Energy::checkIRQ()
         case Q_EVENT_AXP_INT:
             _ttgo->power->readIRQ();
             if (_ttgo->power->isVbusPlugInIRQ()) {
-                _gui->updateBatteryIcon(ICON_CHARGE);
+                _gui->isPluggedIn = true;
             }
             if (_ttgo->power->isVbusRemoveIRQ()) {
-                _gui->updateBatteryIcon(ICON_CALCULATION);
+                _gui->isPluggedIn       = false;
+                _gui->isStillConnected  = false;
             }
             if (_ttgo->power->isChargingDoneIRQ()) {
-                _gui->updateBatteryIcon(ICON_CALCULATION);
+                _gui->isStillConnected = true;
             }
             if (_ttgo->power->isPEKShortPressIRQ()) {
                 _ttgo->power->clearIRQ();

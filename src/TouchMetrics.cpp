@@ -4,7 +4,7 @@
 #include "LilyGoWatch.h"
 #include "GUI.h"
 
-extern TTGOClass *ttgo;
+extern TTGOClass* ttgo;
 
 TouchMetrics::TouchMetrics()
 {
@@ -50,6 +50,7 @@ void TouchMetrics::checkTouch()
             // check for left swite
             if(deltaX>0)
             {
+                /*
                 GUI::touchAction(
                     _lastX,
                     _lastY,
@@ -58,9 +59,11 @@ void TouchMetrics::checkTouch()
                     // check for right screen edge
                     (_lastX>(TFT_WIDTH - _swipeEdgeDetection)?touch_t::SWIPE_RIGHT_EDGE:touch_t::SWIPE_LEFT)
                 );
+                */
             }
             else
             {
+                /*
                 GUI::touchAction(
                     _lastX,
                     _lastY,
@@ -69,6 +72,7 @@ void TouchMetrics::checkTouch()
                     // check for left screen edge
                     ((_lastX<_swipeEdgeDetection)?touch_t::SWIPE_LEFT_EDGE:touch_t::SWIPE_RIGHT)
                 );
+                */
             }
         }
         else if(!swipeX && (abs(deltaY) > (TFT_HEIGHT/_swipeTolerance)))
@@ -76,6 +80,7 @@ void TouchMetrics::checkTouch()
             // check for up swipe
             if(deltaY>0)
             {
+                /*
                 GUI::touchAction(
                     _lastX,
                     _lastY,
@@ -84,9 +89,11 @@ void TouchMetrics::checkTouch()
                     // check for top screen edge
                     (_lastY>(TFT_HEIGHT - _swipeEdgeDetection)?touch_t::SWIPE_BOTTOM_EDGE:touch_t::SWIPE_TOP)
                 );
+                */
             }
             else
             {
+                /*
                 // check for top screen edge
                 GUI::touchAction(
                     _lastX,
@@ -95,11 +102,12 @@ void TouchMetrics::checkTouch()
                     deltaY,
                     (_lastY<_swipeEdgeDetection?touch_t::SWIPE_TOP_EDGE:touch_t::SWIPE_TOP)
                 );
+                */
             }
         }
         else
         {
-            GUI::touchAction(_lastX, _lastY, deltaX, deltaY, touch_t::TOUCH);
+            //GUI::touchAction(_lastX, _lastY, deltaX, deltaY, touch_t::TOUCH);
         }
     }
 }

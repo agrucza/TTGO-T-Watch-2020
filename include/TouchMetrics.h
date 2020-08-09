@@ -32,18 +32,18 @@ class TouchMetrics {
         } touch_t;
 
         TouchMetrics();
-        void checkTouch();
-        bool getTouch(){return _touch;}
+        void    checkTouch();
+        bool    getTouch(){return _touch;}
         int16_t getSwipeEdgeDetection(){return _swipeEdgeDetection;}
-        void setTouch(bool touch){_touch = touch;}
+        void    setTouch(bool touch){_touch = touch;}
         int16_t getX(){return _x;}
-        void setX(int16_t x){_x = x;}
+        void    setX(int16_t x){_x = x;}
         int16_t getLastX(){return _lastX;}
-        void setLastX(int16_t x){_lastX = x;}
+        void    setLastX(int16_t x){_lastX = x;}
         int16_t getY(){return _y;}
-        void setY(int16_t y){_y = y;}
+        void    setY(int16_t y){_y = y;}
         int16_t getLastY(){return _lastY;}
-        void setLastY(int16_t y){_lastY = y;}
+        void    setLastY(int16_t y){_lastY = y;}
 };
 
 #endif /*__TOUCHMETRICS_H */

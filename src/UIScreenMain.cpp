@@ -5,147 +5,69 @@
 
 extern GUI *gui;
 
-UIScreenMain::UIScreenMain(){
-    _gui            = gui;
-    _tft            = _gui->getTFT();
-    _label          = "Main";
-    _iconSizeX      = _iconSizeY = 2;
-    _iconsMax       = 4;
-    _padding        = 5;
+UIScreenMain::UIScreenMain():UIScreen()
+{
+    _label              = "Launcher";
+    _showInLauncher     = false;
     
-    _iconAreaWidth  = TFT_WIDTH - (2*_padding);
-    _iconAreaHeight = TFT_HEIGHT - (2*_padding);
-    _iconW          = (_iconAreaWidth - ((_iconsMax-1)*2))/_iconsMax;
-    _iconH          = (_iconAreaHeight - ((_iconsMax-1)*2))/_iconsMax;
+    // Create a container
+    _container = lv_page_create(lv_scr_act(), NULL);
 
-    // setup screens
-    _setScreenIcon(SCREEN_CALENDAR, 0, 0);
-    _setScreenIcon(SCREEN_SETTINGS, 2, 0);
+    lv_obj_set_hidden(_container, true);
+    lv_obj_move_background(_container);
+    
+    lv_obj_set_size(_container, TFT_WIDTH, TFT_HEIGHT);
+    lv_obj_align(_container, NULL, LV_ALIGN_CENTER, 0, 0);
+    
+    lv_obj_add_style(_container,LV_CONT_PART_MAIN,&GUI::borderlessStyle);
+
+    lv_obj_t* cont = lv_page_get_scrl(_container);
+
+    lv_cont_set_layout(cont,LV_LAYOUT_GRID);
+
+    updateLauncherList();
 }
 
-void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
+void UIScreenMain::updateLauncherList()
 {
-    uint8_t iconsAvailableY = _displayIcons.size();
-    
-    uint8_t iconsX          = _gui->getUIScreenIconWidth(screen);
-    uint8_t iconsY          = _gui->getUIScreenIconHeight(screen);
-    
-    if(iconsAvailableY < (posY + 1 + iconsY)){
-        do{
-            std::vector<screens_t> row;
-            do{
-                row.push_back(SCREEN_NONE);
-            }while(row.size() < _iconsMax);
-            _displayIcons.push_back(row);
-        }while(_displayIcons.size() < (posY + 1 + iconsY));
-    }
+    std::vector<screens_t> tmp = _gui->getUIScreensForLauncher();
+    _callbackData.clear();
+    _launcherIcons.clear();
 
-    uint8_t iconsAvailableX = _displayIcons[posX].size();
-    
-    if((iconsAvailableX <= (posX + 1)) && (iconsAvailableX < (posX + 1 + iconsX)))
+    for(uint8_t i=0; i<tmp.size(); i++)
     {
-        // icon will be too wide but starts within visible area - shorten icon to remaining space
-        iconsX = iconsAvailableX - posX;
-        // TODO: set icon background to red to notify of wrong assignment?
-    }
-    
-    for(uint8_t y = posY; y < (posY + iconsY); y++)
-    {
-        for(uint8_t x = posX; x < (posX + iconsX); x++)
-        {
-            _displayIcons[y][x] = screen;
-        }
-    }
-}
+        screens_t screen = static_cast<screens_t>(tmp[i]);
+        icon_t icon;
+        _callbackData.push_back(new ScreenCallback(this,CALLBACK_SWITCH_SCREEN,screen));
 
-void UIScreenMain::draw(bool init, bool task)
-{
-    uint8_t     iconSizeScreenW = 0;
-    uint8_t     iconSizeScreenH = 0;
+        _launcherIcons.push_back(icon);
+        _launcherIcons[i].obj = lv_cont_create(_container,NULL);
 
-    if(!task)
-    {
-        _tft->fillScreen(TFT_BLACK);
-    }
-    
-    _tft->setFreeFont(&FreeSansBold9pt7b);
-    
-    for(uint8_t iconY = 0; iconY < _displayIcons.size(); iconY++)
-    {
-        std::vector<screens_t> row  = _displayIcons[iconY];
-        for(uint8_t iconX = 0; iconX < row.size(); iconX++)
-        {
-            // check if a screens is set to display an icon
-            if(row[iconX] != SCREEN_NONE)
-            {
-                iconSizeScreenW = _gui->getUIScreenIconWidth(row[iconX]);
-                iconSizeScreenH = _gui->getUIScreenIconHeight(row[iconX]);
+        // setup callback event
+        lv_obj_set_user_data(_launcherIcons[i].obj, _callbackData[i]);
+        lv_obj_set_event_cb(_launcherIcons[i].obj,GUI::screenEventCallback);
 
-                // check if icon is bigger than 1x1 and check surrounding icon places
-                if(
-                    (iconSizeScreenW > 1 || iconSizeScreenH > 1)
-                    && (
-                        ((iconX>0) && (_displayIcons[iconY][iconX-1] == row[iconX]))
-                        || ((iconY>0) && (_displayIcons[iconY-1][iconX] == row[iconX]))
-                    )
-                )
-                {
-                    continue;
-                }
-                
-                _gui->drawUIScreenIcon(
-                    row[iconX],
-                    _padding + (iconX*(_iconW + 2)),
-                    _padding + (iconY*(_iconH + 2)),
-                    iconSizeScreenW * _iconW + ((iconSizeScreenW-1) * 2),
-                    iconSizeScreenH * _iconH + ((iconSizeScreenH-1) * 2)
-                );
-            }
-        }
-    }
-}
-
-void UIScreenMain::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
-{
-    
-}
-
-void UIScreenMain::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
-{
-    if(touchType == TouchMetrics::TOUCH)
-    {
-        uint8_t x = (lastX-_padding)/(_iconW+2);
-        uint8_t y = (lastY-_padding)/(_iconH+2);
+        lv_cont_set_fit(_launcherIcons[i].obj, LV_FIT_TIGHT);
+        lv_cont_set_layout(_launcherIcons[i].obj, LV_LAYOUT_ROW_TOP);
+        //lv_obj_add_style(icons[i],LV_CONT_PART_MAIN,&GUI::borderlessStyle);
+        lv_obj_t* iconLabel = lv_label_create(_launcherIcons[i].obj,NULL);
+        lv_label_set_text(iconLabel, LV_SYMBOL_SETTINGS);
         
-        /*
-        _tft->setFreeFont(&FreeSansBold9pt7b);
-        char buf[20];
-        sprintf(buf,"x: %d y: %d s: %d",x,y, _displayIcons[y][x]);
-        _tft->drawString(buf,_padding, _padding);
-        */
-        if(_displayIcons[y][x] != SCREEN_NONE)
-        {
-            _gui->setScreen(_displayIcons[y][x],true);
-        }
+        _launcherIcons[i].label = _gui->getUIScreenLabel(tmp[i]);
+        lv_obj_t* textLabel = lv_label_create(_launcherIcons[i].obj,NULL);
+        lv_label_set_text(textLabel,_launcherIcons[i].label);
     }
-    else if (touchType == TouchMetrics::SWIPE_LEFT)
+}
+
+void UIScreenMain::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback)
+{
+    
+}
+
+void UIScreenMain::lvUpdateTask(struct _lv_task_t* data)
+{
+    if(_launcherIcons.size() < 1)
     {
-        // go forth in navigation
-        /*
-        if(_page < _pageMax-1){
-            _page++;
-            draw();
-        }
-        */
-    }
-    else if (touchType == TouchMetrics::SWIPE_RIGHT)
-    {
-        /*
-        // go back in navigation
-        if(_page > 0){
-            _page--;
-            draw();
-        }
-        */
+        updateLauncherList();
     }
 }
