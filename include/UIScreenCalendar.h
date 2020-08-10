@@ -16,14 +16,17 @@ class GUI;
 class TFT_esPI;
 
 class UIScreenCalendar : public UIScreen{
-    GUI*            _gui;
+    GUI*                _gui;
 
-    char*           _label;
-    bool            _showInLauncher;
+    char*               _label;
+    bool                _showInLauncher;
     
-    lv_obj_t*       _container;
-    lv_obj_t*       _closeBtn;
-    ScreenCallback* _callbackData;
+    lv_obj_t*           _container;
+    lv_obj_t*           _closeBtn;
+    ScreenCallback*     _callbackData;
+    uint8_t             _callbackElement;
+    lv_obj_t*           _calendar;
+    lv_calendar_date_t* _highlightedDays;
 
     public:
         UIScreenCalendar();

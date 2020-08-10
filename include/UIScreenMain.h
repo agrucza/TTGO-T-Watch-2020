@@ -26,6 +26,7 @@ class UIScreenMain : public UIScreen{
 
     std::vector<icon_t> _launcherIcons;
     std::vector<ScreenCallback*>   _callbackData;
+    uint8_t             _callbackElement;
 
     public:
         UIScreenMain();

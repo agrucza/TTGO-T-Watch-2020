@@ -14,22 +14,19 @@ UIScreenStandby::UIScreenStandby():UIScreen()
     _timeLabelFormat    = "%H:%M";
     _dateLabel          = nullptr;
     _dateLabelFormat    = "%a %d %B";
+    _callbackElement    = 0;
     
     _touched            = false;
 
     // Create a container
     _container = lv_cont_create(lv_scr_act(), NULL);
     
-    _callbackData = new ScreenCallback(this, CALLBACK_NONE, SCREEN_STANDBY);
+    _callbackData = new ScreenCallback(this, 0, CALLBACK_NONE);
 
     lv_obj_set_user_data(_container,_callbackData);
     lv_obj_set_event_cb(_container,GUI::screenEventCallback);
     
-    lv_obj_add_style(
-        _container,
-        LV_CONT_PART_MAIN,
-        &GUI::borderlessStyle
-    );
+    lv_obj_add_style(_container, LV_CONT_PART_MAIN, &GUI::borderlessStyle);
 
     lv_obj_set_auto_realign(_container, true);
     lv_obj_align_origo(_container, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -62,11 +59,7 @@ UIScreenStandby::UIScreenStandby():UIScreen()
 
     _iconContainer = lv_cont_create(_container, NULL);
     
-    lv_obj_add_style(
-        _iconContainer,
-        LV_CONT_PART_MAIN,
-        &_iconContainerStyle
-    );
+    lv_obj_add_style(_iconContainer, LV_CONT_PART_MAIN, &_iconContainerStyle);
 
     lv_obj_set_auto_realign(_iconContainer, true);
     lv_obj_align(_iconContainer, NULL, LV_ALIGN_CENTER, 0, 0);

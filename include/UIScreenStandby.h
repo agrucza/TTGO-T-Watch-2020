@@ -22,6 +22,7 @@ typedef _lv_obj_t lv_obj_t;
 class UIScreenStandby : public UIScreen{
     GUI*                _gui;
     ScreenCallback*     _callbackData;
+    uint8_t             _callbackElement;
 
     char*               _label;
     bool                _showInLauncher;

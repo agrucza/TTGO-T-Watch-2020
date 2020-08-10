@@ -46,16 +46,20 @@ enum screens_t : uint8_t {
 
 class ScreenCallback{
     UIScreen*           origin;
+    uint8_t             cbElement;
     screen_callback_t   command;
     screens_t           target;
+    
     public:
-        ScreenCallback(UIScreen* origin, screen_callback_t command, screens_t target)
+        ScreenCallback(UIScreen* origin, uint8_t cbElement, screen_callback_t command, screens_t target = SCREEN_STANDBY)
         {
             this->origin    = origin;
+            this->cbElement = cbElement;
             this->command   = command;
             this->target    = target;
         };
         UIScreen*           getOrigin(){return origin;};
+        uint8_t             getCbElement(){return cbElement;};
         screen_callback_t   getCommand(){return command;};
         screens_t           getTarget(){return target;};
 };

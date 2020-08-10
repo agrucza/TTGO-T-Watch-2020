@@ -22,8 +22,8 @@ class UIScreenSettings : public UIScreen{
     bool            _showInLauncher;
     
     lv_obj_t*       _container;
-    lv_obj_t*       _closeBtn;
     ScreenCallback* _callbackData;
+    uint8_t         _callbackElement;
 
     public:
         UIScreenSettings();

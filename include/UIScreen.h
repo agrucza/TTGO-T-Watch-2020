@@ -22,14 +22,13 @@ class UIScreen{
     bool                _showInLauncher;
     
     lv_obj_t*           _container;
-    lv_obj_t*           _closeBtn;
     ScreenCallback*     _callbackData;
+    uint8_t             _callbackElement;
 
     public:
         UIScreen(){
             _gui        = gui;
             _container  = nullptr;
-            _closeBtn   = nullptr;
         };
         virtual void    lvUpdateTask(struct _lv_task_t* data) = 0;
         virtual void    eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback) = 0;

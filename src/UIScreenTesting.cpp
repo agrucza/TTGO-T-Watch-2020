@@ -9,20 +9,22 @@ UIScreenTesting::UIScreenTesting():UIScreen()
 {
     _label              = "Testing";
     _showInLauncher     = true;
+    _callbackElement    = 0;
     
     // Create a window*/
     _container = lv_win_create(lv_scr_act(), NULL);
     lv_win_set_title(_container, _label);
 
     // Add control button to the header
-    _closeBtn = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
+    lv_obj_t* element = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
+    _callbackData = new ScreenCallback(this, _callbackElement++, CALLBACK_SWITCH_SCREEN, SCREEN_MAIN);
+    lv_obj_set_user_data(element, _callbackData);
+    lv_obj_set_event_cb(element, GUI::screenEventCallback);
     
-    _callbackData = new ScreenCallback(this,CALLBACK_SWITCH_SCREEN,SCREEN_MAIN);
-
-    lv_obj_set_user_data(_closeBtn, _callbackData);
-    lv_obj_set_event_cb(_closeBtn,GUI::screenEventCallback);
-    
-    lv_win_add_btn(_container, LV_SYMBOL_SETTINGS);
+    element = lv_win_add_btn(_container, LV_SYMBOL_SETTINGS);
+    _callbackData = new ScreenCallback(this, _callbackElement++, CALLBACK_SWITCH_SCREEN, SCREEN_MAIN);
+    lv_obj_set_user_data(element, _callbackData);
+    lv_obj_set_event_cb(element, GUI::screenEventCallback);
 
     // Add some dummy content
     lv_obj_t * txt = lv_label_create(_container, NULL);
@@ -38,6 +40,14 @@ UIScreenTesting::UIScreenTesting():UIScreen()
 
 void UIScreenTesting::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback)
 {
+    switch(callback->getCbElement()){
+        case 0:
+            // close button
+            _gui->showScreen(SCREEN_MAIN);
+        case 1:
+            // settings button
+            break;
+    }
     
 }
 
