@@ -16,6 +16,10 @@ UIScreenCalendar::UIScreenCalendar():UIScreen()
     
     // Create a window*/
     _container = lv_win_create(lv_scr_act(), NULL);
+
+    lv_obj_set_hidden(_container, true);
+    lv_obj_move_background(_container);
+    
     lv_win_set_scrollbar_mode(_container, LV_SCROLLBAR_MODE_OFF);
     lv_win_set_title(_container, _label);
 

@@ -20,14 +20,6 @@ enum screens_t : uint8_t;
 typedef _lv_obj_t lv_obj_t;
 
 class UIScreenStandby : public UIScreen{
-    GUI*                _gui;
-    ScreenCallback*     _callbackData;
-    uint8_t             _callbackElement;
-
-    char*               _label;
-    bool                _showInLauncher;
-
-    lv_obj_t*           _container;
     lv_style_t          _containerStyle;
     
     lv_obj_t*           _timeLabel;
@@ -48,10 +40,6 @@ class UIScreenStandby : public UIScreen{
 
     public:
         UIScreenStandby();
-        void    show(){if(_container != nullptr){lv_obj_set_hidden(_container,false);lv_obj_move_foreground(_container);}};
-        void    hide(){if(_container != nullptr){lv_obj_set_hidden(_container,true);lv_obj_move_background(_container);}};
-        bool    showInLauncher(){return _showInLauncher;};
-        char*   getLabel(){return _label;};
         void    eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback);
         void    lvUpdateTask(struct _lv_task_t* data);
         void    updateIcons();

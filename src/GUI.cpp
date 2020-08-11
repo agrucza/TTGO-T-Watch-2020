@@ -25,6 +25,7 @@ screens_t               GUI::_lastScreen        = SCREEN_STANDBY;
 screens_t               GUI::_activeScreen      = SCREEN_STANDBY;
 int                     GUI::_batteryLevel      = 0;
 lv_style_t              GUI::borderlessStyle;
+lv_style_t              GUI::modalStyle;
 std::vector<icon_t>     GUI::systemIcons;
 bool                    GUI::isPluggedIn;
 bool                    GUI::isStillConnected;
@@ -57,15 +58,16 @@ TTGOClass* GUI::getTTGO()
  */
 void GUI::init()
 {
-    
     _ttgo->motor_begin();
+
     lv_style_init(&borderlessStyle);
-    
-    lv_style_set_border_width(
-        &borderlessStyle,
-        LV_STATE_DEFAULT,
-        0
-    );
+    lv_style_set_border_width(&borderlessStyle,LV_STATE_DEFAULT,0);
+
+    lv_style_init(&modalStyle);
+    lv_style_set_bg_color(&modalStyle, LV_OBJ_PART_MAIN, LV_COLOR_BLACK);
+    lv_style_set_bg_opa(&modalStyle, LV_OBJ_PART_MAIN, LV_OPA_50);
+    lv_style_set_border_width(&modalStyle, LV_OBJ_PART_MAIN, 0);
+    lv_style_set_radius(&modalStyle, LV_OBJ_PART_MAIN, 0);
 
     systemIcons.push_back({nullptr,LV_SYMBOL_BELL,false,false});
     systemIcons.push_back({nullptr,LV_SYMBOL_WIFI,false,false});

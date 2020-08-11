@@ -14,12 +14,14 @@ UIScreenStandby::UIScreenStandby():UIScreen()
     _timeLabelFormat    = "%H:%M";
     _dateLabel          = nullptr;
     _dateLabelFormat    = "%a %d %B";
-    _callbackElement    = 0;
     
     _touched            = false;
 
     // Create a container
     _container = lv_cont_create(lv_scr_act(), NULL);
+
+    lv_obj_set_hidden(_container, true);
+    lv_obj_move_background(_container);
     
     _callbackData = new ScreenCallback(this, 0, CALLBACK_NONE);
 

@@ -77,6 +77,7 @@ class GUI {
 
     public:
         static lv_style_t               borderlessStyle;
+        static lv_style_t               modalStyle;
         static bool                     isPluggedIn;
         static bool                     isStillConnected;
         static std::vector<icon_t>      systemIcons;
