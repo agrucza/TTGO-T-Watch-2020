@@ -78,9 +78,7 @@ void UIScreenCalendar::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCall
     if(event == LV_EVENT_VALUE_CHANGED) {
         lv_calendar_date_t* date = lv_calendar_get_pressed_date(obj);
         if(date) {
-            char buf[50];
-            sprintf(buf, "Clicked date: %02d.%02d.%d", date->day, date->month, date->year);
-            _gui->getTTGO()->tft->drawString(buf,0,0);
+            // click action
         }
     }
     else

@@ -25,6 +25,9 @@ class UIScreenSettings : public UIScreen{
     ScreenCallback* _callbackData;
     uint8_t         _callbackElement;
 
+    std::vector<lv_obj_t*> _modals;
+    void            _modalVisibility(uint8_t element, bool visible);
+
     public:
         UIScreenSettings();
         void    show(){if(_container != nullptr){lv_obj_set_hidden(_container,false);lv_obj_move_foreground(_container);}};

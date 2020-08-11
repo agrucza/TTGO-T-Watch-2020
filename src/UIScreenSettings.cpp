@@ -51,6 +51,20 @@ UIScreenSettings::UIScreenSettings():UIScreen()
     _callbackData = new ScreenCallback(this, _callbackElement++, CALLBACK_NONE);
     lv_obj_set_user_data(element, _callbackData);
     lv_obj_set_event_cb(element, GUI::screenEventCallback);
+
+    // modal
+    lv_obj_t* modalCont = lv_obj_create(lv_scr_act(), NULL);
+    lv_obj_set_size(modalCont,TFT_WIDTH,TFT_HEIGHT);
+    lv_obj_set_pos(modalCont,0,0);
+    lv_obj_add_style(modalCont, LV_CONT_PART_MAIN, &GUI::borderlessStyle);
+    lv_obj_set_auto_realign(modalCont, true);
+    lv_obj_align_origo(modalCont, NULL, LV_ALIGN_CENTER, 0, 0);
+    //lv_cont_set_layout(modalCont, LV_LAYOUT_COLUMN_MID);
+    lv_obj_t* modal = lv_cont_create(modalCont, NULL);
+
+    // modal content
+
+    _modals.push_back(modalCont);
 }
 
 void UIScreenSettings::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback)
@@ -62,6 +76,7 @@ void UIScreenSettings::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCall
             break;
         case 1:
             // first list item (time & date)
+            _modalVisibility(1,true);
             break;
     }
 }
@@ -69,4 +84,25 @@ void UIScreenSettings::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCall
 void UIScreenSettings::lvUpdateTask(struct _lv_task_t* data)
 {
 
+}
+
+void UIScreenSettings::_modalVisibility(uint8_t element, bool visible)
+{
+    if(element > 0 && element <= _modals.size())
+    {
+        lv_obj_t* modal = _modals[element-1];
+        if(modal != nullptr)
+        {
+            if(visible)
+            {
+                lv_obj_set_hidden(modal,false);
+                lv_obj_move_foreground(modal);
+            }
+            else
+            {
+                lv_obj_set_hidden(modal,true);
+                lv_obj_move_background(modal);
+            }
+        }
+    }
 }
