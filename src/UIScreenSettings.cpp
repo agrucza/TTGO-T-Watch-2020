@@ -37,7 +37,7 @@ UIScreenSettings::UIScreenSettings():UIScreen()
     lv_obj_set_size(list, TFT_WIDTH, TFT_HEIGHT-lv_win_get_header_height(_container));
     lv_obj_align(list, NULL, LV_ALIGN_CENTER, 0, 0);
 
-    element = lv_list_add_btn(list, LV_SYMBOL_BELL, "Time & Date");
+    element = lv_list_add_btn(list, LV_SYMBOL_BELL, "Date & Time");
     _callbackData = new ScreenCallback(this, _callbackElement++, CALLBACK_NONE);
     lv_obj_set_user_data(element, _callbackData);
     lv_obj_set_event_cb(element, GUI::screenEventCallback);
@@ -52,14 +52,20 @@ UIScreenSettings::UIScreenSettings():UIScreen()
     lv_obj_set_user_data(element, _callbackData);
     lv_obj_set_event_cb(element, GUI::screenEventCallback);
 
-    lv_obj_t *modalCont = lv_cont_create(lv_scr_act(), nullptr);
-    lv_obj_set_size(modalCont,TFT_WIDTH,TFT_HEIGHT);
-    lv_cont_set_layout(modalCont, LV_LAYOUT_CENTER);
-    lv_obj_add_style(modalCont, LV_OBJ_PART_MAIN, &GUI::modalStyle);
+    lv_obj_t *modalContainer = lv_cont_create(lv_scr_act(), nullptr);
+    lv_obj_set_size(modalContainer,TFT_WIDTH,TFT_HEIGHT);
+    lv_cont_set_layout(modalContainer, LV_LAYOUT_CENTER);
+    lv_obj_add_style(modalContainer, LV_OBJ_PART_MAIN, &GUI::modalStyle);
 
-    lv_obj_t* modal = lv_cont_create(modalCont, NULL);
+    lv_obj_t* modalContent = lv_cont_create(modalContainer, NULL);
+    lv_cont_set_layout(modalContent, LV_LAYOUT_CENTER);
+    
     // modal content
-    _modals.push_back(modalCont);
+    element = lv_label_create(modalContent, NULL);
+    lv_label_set_text(element, "Date & Time");
+    
+    
+    _modals.push_back(modalContainer);
 }
 
 void UIScreenSettings::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback)
