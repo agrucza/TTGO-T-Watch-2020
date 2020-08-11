@@ -20,8 +20,6 @@ enum screens_t : uint8_t;
 typedef _lv_obj_t lv_obj_t;
 
 class UIScreenStandby : public UIScreen{
-    lv_style_t          _containerStyle;
-    
     lv_obj_t*           _timeLabel;
     char*               _timeLabelFormat;
     lv_style_t          _timeLabelStyle;

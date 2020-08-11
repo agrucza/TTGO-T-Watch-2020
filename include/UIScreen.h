@@ -25,8 +25,7 @@ class UIScreen{
         lv_obj_t*           _container;
         ScreenCallback*     _callbackData;
         uint8_t             _callbackElement;
-
-        lv_style_t          _modalStyle;
+        
         uint8_t             _activeModal;
 
         std::vector<lv_obj_t*> _modals;

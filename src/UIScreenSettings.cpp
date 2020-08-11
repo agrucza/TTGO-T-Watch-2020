@@ -13,10 +13,7 @@ UIScreenSettings::UIScreenSettings():UIScreen()
     _callbackElement    = 0;
     _activeModal        = 0;
 
-    // Add buttons
-    lv_obj_t* element;
-
-    // Create a window*/
+    // Create a window
     _container          = lv_win_create(lv_scr_act(), NULL);
 
     lv_obj_set_hidden(_container, true);
@@ -28,7 +25,7 @@ UIScreenSettings::UIScreenSettings():UIScreen()
     lv_win_set_title(_container, _label);
 
     // Add control button to the header
-    element = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
+    lv_obj_t* element = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
     _callbackData = new ScreenCallback(this, _callbackElement++, CALLBACK_SWITCH_SCREEN, SCREEN_MAIN);
     lv_obj_set_user_data(element, _callbackData);
     lv_obj_set_event_cb(element, GUI::screenEventCallback);

@@ -16,8 +16,6 @@ class GUI;
 class TFT_esPI;
 
 class UIScreenCalendar : public UIScreen{
-    lv_obj_t*           _closeBtn;
-
     lv_obj_t*           _calendar;
     lv_calendar_date_t* _highlightedDays;
 

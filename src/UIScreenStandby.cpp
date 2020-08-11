@@ -71,7 +71,7 @@ UIScreenStandby::UIScreenStandby():UIScreen()
 
     // label to notify of unlock
     _touchNotifyLabel = lv_label_create(_container, NULL);
-    lv_label_set_text(_touchNotifyLabel, "Press long to unlock");
+    lv_label_set_text(_touchNotifyLabel, "Press and hold to unlock");
 
     // label for unlock lock
     _touchLabel = lv_label_create(_container, NULL);
@@ -158,7 +158,9 @@ void UIScreenStandby::lvUpdateTask(struct _lv_task_t* data)
     {
         lv_obj_set_hidden(_touchLabel, true);
     }
-    updateIcons();
+    
     GUI::updateTimeLabel(_timeLabel, _timeLabelFormat);
     GUI::updateTimeLabel(_dateLabel, _dateLabelFormat);
+
+    updateIcons();
 }

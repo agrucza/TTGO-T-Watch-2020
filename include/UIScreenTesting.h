@@ -20,8 +20,6 @@ enum screens_t : uint8_t;
 typedef _lv_obj_t lv_obj_t;
 
 class UIScreenTesting : public UIScreen{
-    lv_obj_t*       _closeBtn;
-    
     public:
         UIScreenTesting();
         void    eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback);
