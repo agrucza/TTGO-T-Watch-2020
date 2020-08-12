@@ -24,9 +24,9 @@ void UIScreen::hide()
 
 void UIScreen::modalVisibility(uint8_t element, bool visible)
 {
-    if(element > 0 && element <= _modals.size())
+    if(element > 0 && element <= modals.size())
     {
-        lv_obj_t* modal = _modals[element-1];
+        lv_obj_t* modal = modals[element-1];
         if(modal != nullptr)
         {
             if(visible)

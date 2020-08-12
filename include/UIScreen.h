@@ -10,6 +10,7 @@
 
 #include <Arduino.h>
 #include "GUI.h"
+#include "UIModal.h"
 
 enum screens_t : uint8_t;
 
@@ -28,7 +29,7 @@ class UIScreen{
         
         uint8_t             _activeModal;
 
-        std::vector<lv_obj_t*> _modals;
+        std::vector<lv_obj_t*> modals;
         
         UIScreen(){
             _gui                = gui;

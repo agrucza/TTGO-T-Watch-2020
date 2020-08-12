@@ -1,4 +1,5 @@
 #include "UIScreenSettings.h"
+#include "UIModal.h"
 #include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
@@ -41,31 +42,19 @@ UIScreenSettings::UIScreenSettings():UIScreen()
     _callbackData = new ScreenCallback(this, _callbackElement++, CALLBACK_NONE);
     lv_obj_set_user_data(element, _callbackData);
     lv_obj_set_event_cb(element, GUI::screenEventCallback);
+    new UIModal(this, element, "Date & Time");
 
     element = lv_list_add_btn(list, LV_SYMBOL_WIFI, "WiFi");
     _callbackData = new ScreenCallback(this, _callbackElement++, CALLBACK_NONE);
     lv_obj_set_user_data(element, _callbackData);
     lv_obj_set_event_cb(element, GUI::screenEventCallback);
+    new UIModal(this, element, "WiFi");
 
     element = lv_list_add_btn(list, LV_SYMBOL_BLUETOOTH, "Bluetooth");
     _callbackData = new ScreenCallback(this, _callbackElement++, CALLBACK_NONE);
     lv_obj_set_user_data(element, _callbackData);
     lv_obj_set_event_cb(element, GUI::screenEventCallback);
-
-    lv_obj_t *modalContainer = lv_cont_create(lv_scr_act(), nullptr);
-    lv_obj_set_size(modalContainer,TFT_WIDTH,TFT_HEIGHT);
-    lv_cont_set_layout(modalContainer, LV_LAYOUT_CENTER);
-    lv_obj_add_style(modalContainer, LV_OBJ_PART_MAIN, &GUI::modalStyle);
-
-    lv_obj_t* modalContent = lv_cont_create(modalContainer, NULL);
-    lv_cont_set_layout(modalContent, LV_LAYOUT_CENTER);
-    
-    // modal content
-    element = lv_label_create(modalContent, NULL);
-    lv_label_set_text(element, "Date & Time");
-    
-    
-    _modals.push_back(modalContainer);
+    new UIModal(this, element, "Bluetooth");
 }
 
 void UIScreenSettings::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback)
@@ -77,7 +66,7 @@ void UIScreenSettings::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCall
             break;
         case 1:
             // first list item (time & date)
-            modalVisibility(1,true);
+            UIModal::show(this, obj);
             break;
     }
 }
