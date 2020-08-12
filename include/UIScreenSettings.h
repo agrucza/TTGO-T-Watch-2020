@@ -16,6 +16,9 @@ class GUI;
 class TFT_esPI;
 
 class UIScreenSettings : public UIScreen{
+    void    _createDateTimeModal();
+    void    _createWiFiModal();
+    void    _createBluetoothModal();
     public:
         UIScreenSettings();
         void    eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback);

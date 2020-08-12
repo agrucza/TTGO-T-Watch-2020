@@ -9,7 +9,6 @@ UIScreenMain::UIScreenMain():UIScreen()
 {
     _label              = "Launcher";
     _showInLauncher     = false;
-    _callbackElement    = 0;
     
     // Create a container
     _container = lv_page_create(lv_scr_act(), NULL);
@@ -39,7 +38,7 @@ void UIScreenMain::updateLauncherList()
     {
         screens_t screen = static_cast<screens_t>(tmp[i]);
         icon_t icon;
-        _callbackData.push_back(new ScreenCallback(this, i, CALLBACK_SWITCH_SCREEN,screen));
+        _callbackData.push_back(new ScreenCallback(this, CALLBACK_SWITCH_SCREEN,screen));
 
         _launcherIcons.push_back(icon);
         _launcherIcons[i].obj = lv_cont_create(_container,NULL);

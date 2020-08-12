@@ -3,6 +3,7 @@
 #include "GUI.h"
 #include "Energy.h"
 #include "Event.h"
+#include "UIModal.h"
 
 #define WATCH_FLAG_SLEEP_MODE       _BV(1)
 #define WATCH_FLAG_SLEEP_EXIT       _BV(2)
@@ -123,6 +124,7 @@ void Energy::lowEnergy()
         _ttgo->displaySleep();
         if (!WiFi.isConnected()) {
             _lenergy = true;
+            UIModal::hideAll();
             WiFi.mode(WIFI_OFF);
             // rtc_clk_cpu_freq_set(RTC_CPU_FREQ_2M);
             setCpuFrequencyMhz(20);

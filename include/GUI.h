@@ -46,20 +46,17 @@ enum screens_t : uint8_t {
 
 class ScreenCallback{
     UIScreen*           origin;
-    uint8_t             cbElement;
     screen_callback_t   command;
     screens_t           target;
     
     public:
-        ScreenCallback(UIScreen* origin, uint8_t cbElement, screen_callback_t command, screens_t target = SCREEN_STANDBY)
+        ScreenCallback(UIScreen* origin, screen_callback_t command, screens_t target = SCREEN_STANDBY)
         {
             this->origin    = origin;
-            this->cbElement = cbElement;
             this->command   = command;
             this->target    = target;
         };
         UIScreen*           getOrigin(){return origin;};
-        uint8_t             getCbElement(){return cbElement;};
         screen_callback_t   getCommand(){return command;};
         screens_t           getTarget(){return target;};
 };
@@ -86,6 +83,7 @@ class GUI {
         static TTGOClass*               getTTGO();
         static void                     init();
         static void                     screenEventCallback(lv_obj_t * obj, lv_event_t event);
+        static void                     modalEventCallback(lv_obj_t * obj, lv_event_t event);
         static void                     lvUpdateTask(struct _lv_task_t* data);
         static void                     updateTimeLabel(lv_obj_t* label, char* format);
         static void                     wifiConnectStatus(bool set);

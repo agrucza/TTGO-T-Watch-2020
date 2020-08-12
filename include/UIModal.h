@@ -16,13 +16,18 @@ class UIModal{
     UIScreen*   screen;
     lv_obj_t*   trigger;
     lv_obj_t*   modalContainer;
-    lv_obj_t*   modalContent;
-    uint8_t     modalID;
+    ScreenCallback* _callbackData;
+    lv_obj_t*   closeBtn;
+    lv_obj_t*   acceptBtn;
+
     public:
         UIModal(UIScreen* screen, lv_obj_t* trigger, char* head);
+        lv_obj_t*   modalContent;
         static void show(UIScreen* screen, lv_obj_t* trigger);
-        void show();
-        void hide();
+        static void hideAll();
+        void        show();
+        void        hide();
+        void        eventCallback(lv_obj_t* obj, lv_event_t event);
 };
 
 #endif /*__UIMODAL_H */

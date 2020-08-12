@@ -24,18 +24,16 @@ class UIScreen{
         bool                _showInLauncher;
         
         lv_obj_t*           _container;
+        lv_obj_t*           _callbackElement;
         ScreenCallback*     _callbackData;
-        uint8_t             _callbackElement;
-        
-        uint8_t             _activeModal;
 
-        std::vector<lv_obj_t*> modals;
+        lv_obj_t*           _closeBtn;
+        lv_obj_t*           _settingsBtn;
         
         UIScreen(){
             _gui                = gui;
             _container          = nullptr;
-            _callbackElement    = 0;
-            _activeModal        = 0;
+            _callbackElement    = nullptr;
         };
         
         bool            showInLauncher(){return _showInLauncher;};
@@ -43,8 +41,6 @@ class UIScreen{
         
         void            show();
         void            hide();
-
-        void            modalVisibility(uint8_t element, bool visible);
         
         virtual void    lvUpdateTask(struct _lv_task_t* data) = 0;
         virtual void    eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback) = 0;

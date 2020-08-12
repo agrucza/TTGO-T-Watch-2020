@@ -9,10 +9,6 @@ UIScreenCalendar::UIScreenCalendar():UIScreen()
 {
     _label              = "Calendar";
     _showInLauncher     = true;
-    _callbackElement    = 0;
-
-    // Add buttons
-    lv_obj_t* element;
     
     // Create a window*/
     _container = lv_win_create(lv_scr_act(), NULL);
@@ -24,20 +20,20 @@ UIScreenCalendar::UIScreenCalendar():UIScreen()
     lv_win_set_title(_container, _label);
 
     // Add control button to the header
-    element = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
-    _callbackData = new ScreenCallback(this, _callbackElement++, CALLBACK_SWITCH_SCREEN,SCREEN_MAIN);
-    lv_obj_set_user_data(element, _callbackData);
-    lv_obj_set_event_cb(element,GUI::screenEventCallback);
+    _closeBtn = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
+    _callbackData = new ScreenCallback(this, CALLBACK_SWITCH_SCREEN,SCREEN_MAIN);
+    lv_obj_set_user_data(_closeBtn, _callbackData);
+    lv_obj_set_event_cb(_closeBtn,GUI::screenEventCallback);
     
-    element = lv_win_add_btn(_container, LV_SYMBOL_SETTINGS);
-    _callbackData = new ScreenCallback(this, _callbackElement++, CALLBACK_NONE);
-    lv_obj_set_user_data(element, _callbackData);
-    lv_obj_set_event_cb(element,GUI::screenEventCallback);
+    _settingsBtn = lv_win_add_btn(_container, LV_SYMBOL_SETTINGS);
+    _callbackData = new ScreenCallback(this, CALLBACK_NONE);
+    lv_obj_set_user_data(_settingsBtn, _callbackData);
+    lv_obj_set_event_cb(_settingsBtn,GUI::screenEventCallback);
 
     // calendar
     _calendar = lv_calendar_create(_container, NULL);
     lv_obj_add_style(_calendar, LV_CONT_PART_MAIN, &GUI::borderlessStyle);
-    _callbackData = new ScreenCallback(this, _callbackElement++, CALLBACK_NONE);
+    _callbackData = new ScreenCallback(this, CALLBACK_NONE);
     lv_obj_set_pos(_calendar,0,0);
     lv_obj_set_width(_calendar, TFT_WIDTH);
     lv_obj_set_height(_calendar, TFT_HEIGHT-lv_win_get_header_height(_container));
@@ -79,25 +75,22 @@ UIScreenCalendar::UIScreenCalendar():UIScreen()
 
 void UIScreenCalendar::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback)
 {
-    if(event == LV_EVENT_VALUE_CHANGED) {
-        lv_calendar_date_t* date = lv_calendar_get_pressed_date(obj);
-        if(date) {
-            // click action
+    if(event == LV_EVENT_CLICKED)
+    {
+        if(obj == _closeBtn)
+        {
+            _gui->showScreen(SCREEN_MAIN);
+        }
+        else if(obj == _settingsBtn)
+        {
+
         }
     }
-    else
+    else if(event == LV_EVENT_VALUE_CHANGED)
     {
-        switch(callback->getCbElement()){
-            case 0:
-                // close button
-                _gui->showScreen(SCREEN_MAIN);
-                break;
-            case 1:
-                // settings button
-                break;
-            case 2:
-                // calendar
-                break;
+        lv_calendar_date_t* date = lv_calendar_get_pressed_date(obj);
+        if(date) {
+            // modal?
         }
     }
 }

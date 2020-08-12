@@ -101,11 +101,19 @@ void GUI::screenEventCallback(lv_obj_t * obj, lv_event_t event)
     switch(data->getCommand())
     {
         case CALLBACK_SWITCH_SCREEN:
-            showScreen(data->getTarget());
+            if(event == LV_EVENT_CLICKED){
+                showScreen(data->getTarget());
+            }
             break;
         default:
             data->getOrigin()->eventCallback(obj, event, data);
     }
+}
+
+void GUI::modalEventCallback(lv_obj_t * obj, lv_event_t event)
+{
+    UIModal* modal = (UIModal*)lv_obj_get_user_data(obj);
+    modal->eventCallback(obj, event);
 }
 
 void GUI::updateTimeLabel(lv_obj_t* label, char* format)

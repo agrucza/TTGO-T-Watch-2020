@@ -23,7 +23,7 @@ UIScreenStandby::UIScreenStandby():UIScreen()
     lv_obj_set_hidden(_container, true);
     lv_obj_move_background(_container);
     
-    _callbackData = new ScreenCallback(this, 0, CALLBACK_NONE);
+    _callbackData = new ScreenCallback(this, CALLBACK_NONE);
 
     lv_obj_set_user_data(_container,_callbackData);
     lv_obj_set_event_cb(_container,GUI::screenEventCallback);
@@ -45,9 +45,7 @@ UIScreenStandby::UIScreenStandby():UIScreen()
     GUI::updateTimeLabel(_timeLabel, _timeLabelFormat);
     
     // date label
-    //lv_style_init(&_dateLabelStyle);
     _dateLabel = lv_label_create(_container, NULL);
-    //lv_obj_add_style(_dateLabel, LV_OBJ_PART_MAIN, &_dateLabelStyle);
     GUI::updateTimeLabel(_dateLabel, _dateLabelFormat);
 
     // create a container with some icons
