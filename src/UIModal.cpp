@@ -1,4 +1,5 @@
 #include "UIModal.h"
+#include "UIKeyboard.h"
 
 std::vector<UIModal*> UIModal::store;
 
@@ -6,6 +7,7 @@ UIModal::UIModal(UIScreen* screen, lv_obj_t* trigger, char* header)
 {
     this->screen    = screen;
     this->trigger   = trigger;
+    showOnScreenOpen = false;
 
     modalContainer = lv_cont_create(lv_scr_act(), nullptr);
 
@@ -54,6 +56,7 @@ void UIModal::hideAll()
 
 void UIModal::show()
 {
+    showOnScreenOpen = true;
     lv_obj_set_hidden(modalContainer,false);
     lv_obj_move_foreground(modalContainer);
 }
@@ -62,6 +65,12 @@ void UIModal::hide()
 {
     lv_obj_set_hidden(modalContainer,true);
     lv_obj_move_background(modalContainer);
+}
+
+void UIModal::close()
+{
+    showOnScreenOpen = false;
+    hide();
 }
 
 void UIModal::eventCallback(lv_obj_t* obj, lv_event_t event)
@@ -75,6 +84,7 @@ void UIModal::eventCallback(lv_obj_t* obj, lv_event_t event)
         else if(obj == acceptBtn)
         {
             // send store to screen including modal pointer?
+            UIKeyboard::show();
         }
         else
         {

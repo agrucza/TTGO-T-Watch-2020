@@ -13,6 +13,7 @@
 
 class UIModal{
     static std::vector<UIModal*>    store;
+    bool        showOnScreenOpen;
     UIScreen*   screen;
     lv_obj_t*   trigger;
     lv_obj_t*   modalContainer;
@@ -27,6 +28,7 @@ class UIModal{
         static void hideAll();
         void        show();
         void        hide();
+        void        close();
         void        eventCallback(lv_obj_t* obj, lv_event_t event);
 };
 
