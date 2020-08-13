@@ -17,6 +17,7 @@ class UIKeyboard{
     static lv_obj_t*    kb;
     static lv_obj_t*    ta;
     static lv_obj_t*    boundObj;
+    static void         eventCallback(lv_obj_t * obj, lv_event_t event);
     
     public:
         static void bindObj(lv_obj_t* obj);

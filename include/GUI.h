@@ -82,8 +82,8 @@ class GUI {
         static void                     setTTGO(TTGOClass *ttgo);
         static TTGOClass*               getTTGO();
         static void                     init();
-        static void                     screenEventCallback(lv_obj_t * obj, lv_event_t event);
-        static void                     modalEventCallback(lv_obj_t * obj, lv_event_t event);
+        static void                     screenEventCallback(lv_obj_t* obj, lv_event_t event);
+        static void                     modalEventCallback(lv_obj_t* obj, lv_event_t event);
         static void                     lvUpdateTask(struct _lv_task_t* data);
         static void                     updateTimeLabel(lv_obj_t* label, char* format);
         static void                     wifiConnectStatus(bool set);

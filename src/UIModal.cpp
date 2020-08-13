@@ -26,6 +26,8 @@ UIModal::UIModal(UIScreen* screen, lv_obj_t* trigger, char* header)
     lv_obj_set_event_cb(closeBtn, GUI::modalEventCallback);
 
     acceptBtn   = lv_win_add_btn(modalContent, LV_SYMBOL_OK);
+    lv_obj_set_user_data(acceptBtn, this);
+    lv_obj_set_event_cb(acceptBtn, GUI::modalEventCallback);
     
     this->store.push_back(this);
 }
