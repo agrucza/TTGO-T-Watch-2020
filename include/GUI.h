@@ -79,6 +79,12 @@ class GUI {
         static bool                     isStillConnected;
         static std::vector<icon_t>      systemIcons;
 
+        static int8_t                   timeZone;
+        static char                     timeFormatHM[];
+        static char                     timeFormatHMS[];
+        static char                     dateFormat[];
+        static char                     dateFormatLong[];
+
         static void                     setTTGO(TTGOClass *ttgo);
         static TTGOClass*               getTTGO();
         static void                     init();
@@ -98,6 +104,9 @@ class GUI {
         static screens_t                getActiveScreen(){return _activeScreen;};
         static std::vector<screens_t>   getUIScreensForLauncher();
         static char*                    getUIScreenLabel(screens_t screen);
+        static RTC_Date                 getDateTime();
+        static const char*              getRTCHMS();
+        static const char*              getRTCDDMMYYYY();
         static void                     setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second);
 };
 

@@ -29,6 +29,11 @@ lv_style_t              GUI::modalStyle;
 std::vector<icon_t>     GUI::systemIcons;
 bool                    GUI::isPluggedIn;
 bool                    GUI::isStillConnected;
+int8_t                  GUI::timeZone           = 1;
+char                    GUI::timeFormatHM[]     = "%H:%M";
+char                    GUI::timeFormatHMS[]    = "%H:%M:%S";
+char                    GUI::dateFormat[]       = "%d.%m.%Y";
+char                    GUI::dateFormatLong[]   = "%a %d %B";
 
 /**
  * @brief  Sets the TTGOClass object to the GUI class
@@ -240,6 +245,21 @@ std::vector<screens_t> GUI::getUIScreensForLauncher()
 char* GUI::getUIScreenLabel(screens_t screen)
 {
     return _screens[screen]->getLabel();
+}
+
+RTC_Date GUI::getDateTime()
+{
+    return _ttgo->rtc->getDateTime();
+}
+
+const char* GUI::getRTCHMS()
+{
+    return _ttgo->rtc->formatDateTime(PCF_TIMEFORMAT_HMS);
+}
+
+const char* GUI::getRTCDDMMYYYY()
+{
+    return _ttgo->rtc->formatDateTime(PCF_TIMEFORMAT_DD_MM_YYYY);
 }
 
 void GUI::setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second)

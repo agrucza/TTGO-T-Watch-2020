@@ -12,15 +12,19 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
+class UIScreen;
+
 class UIKeyboard{
+    static UIScreen*    screen;
     static lv_obj_t*    modal;
     static lv_obj_t*    kb;
     static lv_obj_t*    ta;
     static lv_obj_t*    boundObj;
+    static void         UIKeyboardInit();
     static void         eventCallback(lv_obj_t * obj, lv_event_t event);
     
     public:
-        static void bindObj(lv_obj_t* obj);
+        static void bindObj(UIScreen* screen, lv_obj_t* obj);
         static void show();
         static void close();
 };

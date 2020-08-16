@@ -59,7 +59,7 @@ void UIScreenMain::updateLauncherList()
     }
 }
 
-void UIScreenMain::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback)
+void UIScreenMain::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback)
 {
     
 }

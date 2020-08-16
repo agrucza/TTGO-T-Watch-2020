@@ -48,32 +48,41 @@ UIScreenCalendar::UIScreenCalendar():UIScreen()
 
     /*Set today's date*/
     lv_calendar_date_t today;
-    today.year = 2020;
-    today.month = 8;
-    today.day = 10;
+    RTC_Date rtc_today  = GUI::getDateTime();
+    today.year          = rtc_today.year;
+    today.month         = rtc_today.month;
+    today.day           = rtc_today.day;
 
     lv_calendar_set_today_date(_calendar, &today);
     lv_calendar_set_showed_date(_calendar, &today);
 
     /*Highlight a few days*/
-    _highlightedDays = new lv_calendar_date_t[1];
+    /*
+    _highlightedDays = new lv_calendar_date_t[3];
     
     _highlightedDays[0].year = 2020;
     _highlightedDays[0].month = 8;
-    _highlightedDays[0].day = 11;
-    /*
-    highlighted_days[1].year = 2018;
-    highlighted_days[1].month = 10;
-    highlighted_days[1].day = 11;
+    _highlightedDays[0].day = 14;
+    
+    _highlightedDays[1].year = 2020;
+    _highlightedDays[1].month = 8;
+    _highlightedDays[1].day = 15;
 
-    highlighted_days[2].year = 2018;
-    highlighted_days[2].month = 11;
-    highlighted_days[2].day = 22;
+    _highlightedDays[2].year = 2020;
+    _highlightedDays[2].month = 8;
+    _highlightedDays[2].day = 16;
+    
+    lv_calendar_set_highlighted_dates(_calendar, _highlightedDays, 3);
     */
-    lv_calendar_set_highlighted_dates(_calendar, _highlightedDays, 1);
+
+    // modal
+    /*
+    UIModal* modal      = new UIModal(this, _callbackElement, "Events");
+    lv_win_set_layout(modal->modalContent, LV_LAYOUT_COLUMN_LEFT);
+    */
 }
 
-void UIScreenCalendar::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback)
+void UIScreenCalendar::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback)
 {
     if(event == LV_EVENT_CLICKED)
     {
@@ -90,7 +99,8 @@ void UIScreenCalendar::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCall
     {
         lv_calendar_date_t* date = lv_calendar_get_pressed_date(obj);
         if(date) {
-            // modal?
+            // modal
+
         }
     }
 }

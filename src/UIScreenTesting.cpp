@@ -41,7 +41,7 @@ UIScreenTesting::UIScreenTesting():UIScreen()
                            "See the scroll bar on the right!");
 }
 
-void UIScreenTesting::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback)
+void UIScreenTesting::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback)
 {
     if(event == LV_EVENT_CLICKED)
     {

@@ -16,12 +16,21 @@ class GUI;
 class TFT_esPI;
 
 class UIScreenSettings : public UIScreen{
-    void    _createDateTimeModal();
-    void    _createWiFiModal();
-    void    _createBluetoothModal();
+    // date & time
+    lv_obj_t*   _ddTimezone;
+    lv_obj_t*   _taTime;
+    lv_obj_t*   _taDate;
+    void        _createDateTimeModal();
+
+    // wifi
+    lv_obj_t*   _wiFiBtn = nullptr;
+    void        _createWiFiModal();
+    void        _createBluetoothModal();
+    void        _updateDateTimeModal();
+    void        _switchWiFi();
     public:
         UIScreenSettings();
-        void    eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback);
+        void    eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback = nullptr);
         void    lvUpdateTask(struct _lv_task_t* data);
 };
 

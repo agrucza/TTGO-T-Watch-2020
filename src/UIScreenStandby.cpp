@@ -11,9 +11,7 @@ UIScreenStandby::UIScreenStandby():UIScreen()
     _showInLauncher     = false;
 
     _timeLabel          = nullptr;
-    _timeLabelFormat    = "%H:%M";
     _dateLabel          = nullptr;
-    _dateLabelFormat    = "%a %d %B";
     
     _touched            = false;
 
@@ -42,11 +40,11 @@ UIScreenStandby::UIScreenStandby():UIScreen()
     lv_style_set_text_font(&_timeLabelStyle, LV_STATE_DEFAULT, &lv_font_montserrat_48);
     _timeLabel = lv_label_create(_container, NULL);
     lv_obj_add_style(_timeLabel, LV_LABEL_PART_MAIN, &_timeLabelStyle);
-    GUI::updateTimeLabel(_timeLabel, _timeLabelFormat);
+    GUI::updateTimeLabel(_timeLabel, GUI::timeFormatHM);
     
     // date label
     _dateLabel = lv_label_create(_container, NULL);
-    GUI::updateTimeLabel(_dateLabel, _dateLabelFormat);
+    GUI::updateTimeLabel(_dateLabel, GUI::dateFormatLong);
 
     // create a container with some icons
     lv_style_copy(&_iconContainerStyle, &GUI::borderlessStyle);
@@ -118,7 +116,7 @@ void UIScreenStandby::updateIcons()
     }
 }
 
-void UIScreenStandby::eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback)
+void UIScreenStandby::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback)
 {
     if(!_touched && event == LV_EVENT_PRESSED){
         _touched = true;
@@ -157,8 +155,8 @@ void UIScreenStandby::lvUpdateTask(struct _lv_task_t* data)
         lv_obj_set_hidden(_touchLabel, true);
     }
     
-    GUI::updateTimeLabel(_timeLabel, _timeLabelFormat);
-    GUI::updateTimeLabel(_dateLabel, _dateLabelFormat);
+    GUI::updateTimeLabel(_timeLabel, GUI::timeFormatHM);
+    GUI::updateTimeLabel(_dateLabel, GUI::dateFormatLong);
 
     updateIcons();
 }

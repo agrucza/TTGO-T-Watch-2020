@@ -1,17 +1,25 @@
 #include "UIKeyboard.h"
 #include "UIScreen.h"
 
-lv_obj_t*   UIKeyboard::modal      = nullptr;
-lv_obj_t*   UIKeyboard::kb         = nullptr;
-lv_obj_t*   UIKeyboard::ta         = nullptr;
-lv_obj_t*   UIKeyboard::boundObj   = nullptr;
+UIScreen*   UIKeyboard::screen      = nullptr;
+lv_obj_t*   UIKeyboard::modal       = nullptr;
+lv_obj_t*   UIKeyboard::kb          = nullptr;
+lv_obj_t*   UIKeyboard::ta          = nullptr;
+lv_obj_t*   UIKeyboard::boundObj    = nullptr;
 
-void UIKeyboard::bindObj(lv_obj_t* obj)
+void UIKeyboard::bindObj(UIScreen* scr, lv_obj_t* obj)
 {
-    boundObj = obj;
+    UIKeyboardInit();
+    screen      = scr;
+    boundObj    = obj;
+    lv_label_set_align(lv_textarea_get_label(ta), lv_label_get_align(lv_textarea_get_label(obj)));
+    lv_textarea_set_one_line(ta, lv_textarea_get_one_line(obj));
+    lv_textarea_set_accepted_chars(ta, lv_textarea_get_accepted_chars(obj));
+    lv_textarea_set_max_length(ta, lv_textarea_get_max_length(obj));
+    lv_textarea_set_text(ta,lv_textarea_get_text(obj));
 }
 
-void UIKeyboard::show()
+void UIKeyboard::UIKeyboardInit()
 {
     if(modal == nullptr)
     {
@@ -25,17 +33,21 @@ void UIKeyboard::show()
         kb = lv_keyboard_create(modal, NULL);
         lv_obj_set_event_cb(kb, eventCallback);
         lv_keyboard_set_cursor_manage(kb, true);
-        lv_obj_set_width(kb,TFT_WIDTH);
-        lv_obj_set_x(kb,0);
+        lv_obj_set_width(kb, TFT_WIDTH);
+        lv_obj_set_x(kb, 0);
     }
 
     if(ta == nullptr)
     {
         ta = lv_textarea_create(modal, NULL);
         lv_obj_set_width(ta, TFT_WIDTH);
+        lv_keyboard_set_textarea(kb, ta);
     }
+}
 
-    lv_textarea_set_text(ta, "");
+void UIKeyboard::show()
+{
+    UIKeyboardInit();
     lv_obj_set_hidden(modal,false);
     lv_obj_move_foreground(modal);
     lv_obj_set_hidden(kb,false);
@@ -50,14 +62,18 @@ void UIKeyboard::close()
 
 void UIKeyboard::eventCallback(lv_obj_t * obj, lv_event_t event)
 {
+    lv_keyboard_def_event_cb(kb, event);
     switch(event)
     {
         case LV_EVENT_APPLY:
+            // when apply we need to notify the screen of the changes
+            screen->eventCallback(boundObj, ta, LV_EVENT_VALUE_CHANGED);
+            close();
+            break;
         case LV_EVENT_CANCEL:
             close();
             break;
         default:
-            lv_keyboard_def_event_cb(kb, event);
             break;
     }
 }

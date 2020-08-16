@@ -72,7 +72,6 @@ void setup()
 void loop()
 {
     Energy::checkIRQ();
-    //GUI::checkTouchScreen();
 
     if (lv_disp_get_inactive_time(NULL) < DEFAULT_SCREEN_TIMEOUT) {
         lv_task_handler();
