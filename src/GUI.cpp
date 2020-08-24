@@ -95,6 +95,15 @@ void GUI::init()
     {
         _batteryIcon = ICON_CHARGE;
     }
+    
+    xTaskCreate(
+        taskHandler,        // call GUI task hadler
+        "GUI task handler", // Name of the task (for debugging)
+        4096,               // Stack size (bytes)
+        NULL,               // Parameter to pass
+        1,                  // Task priority
+        &taskHandle         // Task handle
+    );
 }
 
 /**

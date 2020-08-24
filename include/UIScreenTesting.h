@@ -11,15 +11,13 @@
 #include <Arduino.h>
 #include "UITypes.h"
 #include "UIScreen.h"
-#include "config.h"
-#include "LilyGoWatch.h"
+#include "UIContainer.h"
 #include "TouchMetrics.h"
 
 class GUI;
 class TFT_esPI;
 
 enum screens_t : uint8_t;
-typedef _lv_obj_t lv_obj_t;
 
 class UIScreenTesting : public UIScreen{
     GUI*            _gui;
@@ -28,8 +26,7 @@ class UIScreenTesting : public UIScreen{
     uint8_t         _padding;
     uint8_t         _iconSizeX;
     uint8_t         _iconSizeY;
-    //UIContainer*    _container;
-    lv_obj_t*       _screen;
+    UIContainer*    _container;
     
     public:
         UIScreenTesting();

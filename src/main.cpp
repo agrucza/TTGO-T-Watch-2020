@@ -12,6 +12,11 @@ Created by Lewis he on October 10, 2019.
 #include <FS.h>
 #include <SPI.h>
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/timers.h"
+#include "freertos/queue.h"
+#include <soc/rtc.h>
 #include "esp_wifi.h"
 #include "esp_sleep.h"
 #include <WiFi.h>
@@ -46,9 +51,6 @@ void setup()
 
     // Turn off unused power
     Energy::disableUnusedPower();
-    
-    //Initialize lvgl
-    ttgo->lvgl_begin();
 
     Energy::setupIRQ();
 
@@ -64,19 +66,14 @@ void setup()
     //Execute your own GUI interface
     gui->setTTGO(ttgo);
     gui->init();
-
-    //Clear lvgl counter
-    lv_disp_trig_activity(NULL);
 }
 
 void loop()
 {
     Energy::checkIRQ();
     GUI::checkTouchScreen();
-
-    if (lv_disp_get_inactive_time(NULL) < DEFAULT_SCREEN_TIMEOUT) {
-        lv_task_handler();
-    } else {
+    
+    if (ttgo->bl->isOn() && GUI::getInactivityTime() > DEFAULT_SCREEN_TIMEOUT) {
         Energy::lowEnergy();
     }
     
