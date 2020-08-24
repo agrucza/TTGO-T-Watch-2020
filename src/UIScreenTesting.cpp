@@ -56,7 +56,7 @@ void UIScreenTesting::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t eve
     }
 }
 
-void UIScreenTesting::lvUpdateTask(struct _lv_task_t* data)
+void UIScreenTesting::updateTask(struct _lv_task_t* data)
 {
 
 }

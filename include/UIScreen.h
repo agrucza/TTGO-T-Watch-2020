@@ -42,7 +42,7 @@ class UIScreen{
         void            show();
         void            hide();
         
-        virtual void    lvUpdateTask(struct _lv_task_t* data) = 0;
+        virtual void    updateTask(struct _lv_task_t* data) = 0;
         void            eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback = nullptr);
         virtual void    eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback = nullptr) = 0;
 };

@@ -17,12 +17,13 @@ class TFT_esPI;
 
 class UIScreenCalendar : public UIScreen{
     lv_obj_t*           _calendar;
+    lv_calendar_date_t  today;
     lv_calendar_date_t* _highlightedDays;
 
     public:
         UIScreenCalendar();
         void    eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback = nullptr);
-        void    lvUpdateTask(struct _lv_task_t* data);
+        void    updateTask(struct _lv_task_t* data);
 };
 
 #endif /*__UISCREENCALENDAR_H */

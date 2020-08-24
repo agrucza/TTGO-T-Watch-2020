@@ -73,11 +73,13 @@ class GUI {
     static int                          _batteryLevel;
 
     public:
+        static lv_task_t*               lvUpdateTask;
         static lv_style_t               borderlessStyle;
         static lv_style_t               modalStyle;
         static bool                     isPluggedIn;
         static bool                     isStillConnected;
         static std::vector<icon_t>      systemIcons;
+        static std::vector<String>      wifiSSIDs;
 
         static int8_t                   timeZone;
         static char                     timeFormatHM[];
@@ -90,7 +92,8 @@ class GUI {
         static void                     init();
         static void                     screenEventCallback(lv_obj_t* obj, lv_event_t event);
         static void                     modalEventCallback(lv_obj_t* obj, lv_event_t event);
-        static void                     lvUpdateTask(struct _lv_task_t* data);
+        static void                     updateTask(struct _lv_task_t* data);
+        static void                     lvUpdateTaskMethod(struct _lv_task_t* data){ lv_task_set_period(lvUpdateTask, lv_task_handler());};
         static void                     updateTimeLabel(lv_obj_t* label, char* format);
         static void                     wifiConnectStatus(bool set);
         static void                     updateStepCounter();
@@ -98,7 +101,6 @@ class GUI {
         static void                     updateBatteryLevel();
         static int                      getBatteryLevel(){return _batteryLevel;};
         static char*                    getBatteryIcon();
-        static void                     wifiListAdd(const char *ssid);
         static void                     showScreen(screens_t screen);
         static screens_t                getLastScreen(){return _lastScreen;};
         static screens_t                getActiveScreen(){return _activeScreen;};

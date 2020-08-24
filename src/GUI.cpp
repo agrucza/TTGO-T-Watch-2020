@@ -27,6 +27,7 @@ int                     GUI::_batteryLevel      = 0;
 lv_style_t              GUI::borderlessStyle;
 lv_style_t              GUI::modalStyle;
 std::vector<icon_t>     GUI::systemIcons;
+std::vector<String>     GUI::wifiSSIDs;
 bool                    GUI::isPluggedIn;
 bool                    GUI::isStillConnected;
 int8_t                  GUI::timeZone           = 1;
@@ -34,6 +35,7 @@ char                    GUI::timeFormatHM[]     = "%H:%M";
 char                    GUI::timeFormatHMS[]    = "%H:%M:%S";
 char                    GUI::dateFormat[]       = "%d.%m.%Y";
 char                    GUI::dateFormatLong[]   = "%a %d %B";
+lv_task_t*              GUI::lvUpdateTask;
 
 /**
  * @brief  Sets the TTGOClass object to the GUI class
@@ -79,7 +81,8 @@ void GUI::init()
     systemIcons.push_back({nullptr,LV_SYMBOL_BLUETOOTH,false,false});
     systemIcons.push_back({nullptr,LV_SYMBOL_CHARGE,true,true});
 
-    lv_task_create(lvUpdateTask, 1000, LV_TASK_PRIO_LOWEST, NULL);
+    lv_task_create(updateTask, 200, LV_TASK_PRIO_MID, NULL);
+    lvUpdateTask = lv_task_create(lvUpdateTaskMethod, lv_task_handler(), LV_TASK_PRIO_HIGH, NULL);
     updateBatteryLevel();
 
     // creating screens
@@ -94,10 +97,10 @@ void GUI::init()
     showScreen(SCREEN_STANDBY);
 }
 
-void GUI::lvUpdateTask(struct _lv_task_t* data){
+void GUI::updateTask(struct _lv_task_t* data){
     //_ttgo->motor->onec();
     updateBatteryLevel();
-    _screens[_activeScreen]->lvUpdateTask(data);
+    _screens[_activeScreen]->updateTask(data);
 };
 
 void GUI::screenEventCallback(lv_obj_t * obj, lv_event_t event)
@@ -171,12 +174,16 @@ uint32_t GUI::getStepCounter()
 void GUI::updateBatteryLevel()
 {
     _batteryLevel = _ttgo->power->getBattPercentage();
+    if(_ttgo->power->isChargeing())
+    {
+        isPluggedIn = true;
+        isStillConnected = false;
+    }
 }
 
 char* GUI::getBatteryIcon()
 {
     updateBatteryLevel();
-
     if(isPluggedIn && isStillConnected){
         return LV_SYMBOL_USB;
     }
@@ -204,16 +211,6 @@ char* GUI::getBatteryIcon()
     {
         return LV_SYMBOL_BATTERY_EMPTY;
     }
-}
-
-/**
- * @brief  Adds an SSID to the wifi list
- * @note   
- * @param  *ssid: name of ssid to add to the wifi list
- * @retval None
- */
-void GUI::wifiListAdd(const char *ssid){
-
 }
 
 void GUI::showScreen(screens_t screen)

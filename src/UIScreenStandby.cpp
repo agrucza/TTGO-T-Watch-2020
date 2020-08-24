@@ -144,7 +144,7 @@ void UIScreenStandby::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t eve
     }
 }
 
-void UIScreenStandby::lvUpdateTask(struct _lv_task_t* data)
+void UIScreenStandby::updateTask(struct _lv_task_t* data)
 {
     if(_touched && lv_obj_get_hidden(_touchLabel))
     {

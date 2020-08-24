@@ -25,7 +25,7 @@ class UIScreenMain : public UIScreen{
         UIScreenMain();
         void    updateLauncherList();
         void    eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback = nullptr);
-        void    lvUpdateTask(struct _lv_task_t* data);
+        void    updateTask(struct _lv_task_t* data);
 };
 
 #endif /*__UISCREENMAIN_H */

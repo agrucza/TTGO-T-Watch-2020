@@ -47,7 +47,6 @@ UIScreenCalendar::UIScreenCalendar():UIScreen()
     lv_obj_set_style_local_text_font(_calendar, LV_CALENDAR_PART_DATE, LV_STATE_DEFAULT, &lv_font_montserrat_12);
 
     /*Set today's date*/
-    lv_calendar_date_t today;
     RTC_Date rtc_today  = GUI::getDateTime();
     today.year          = rtc_today.year;
     today.month         = rtc_today.month;
@@ -105,7 +104,10 @@ void UIScreenCalendar::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t ev
     }
 }
 
-void UIScreenCalendar::lvUpdateTask(struct _lv_task_t* data)
+void UIScreenCalendar::updateTask(struct _lv_task_t* data)
 {
-    
+    RTC_Date rtc_today  = GUI::getDateTime();
+    today.year          = rtc_today.year;
+    today.month         = rtc_today.month;
+    today.day           = rtc_today.day;
 }
