@@ -22,14 +22,14 @@ class TFT_esPI;
 enum screens_t : uint8_t;
 
 class UILabel : public UIElement{
-    char*           _label;
+    String          _label;
     const GFXfont*  _font;
     UIColor_t       _fgColor;
     UIColor_t       _bgColor;
     void            _setDimensions();
 
     public:
-        UILabel(char* label, const GFXfont* font, UIContainer *parent = NULL, UIEOrientation_t orientation = CENTER_CENTER, UIESize_t sizeX = FULL, UIESize_t sizeY = ELEMENT);
+        UILabel(String label, const GFXfont* font, UIContainer* parent = NULL, UIEOrientation_t orientation = CENTER_CENTER, UIESize_t sizeX = FULL, UIESize_t sizeY = ELEMENT);
         void    setFont(const GFXfont* font){_font = font;};
         void    setTextColor(uint8_t r, uint8_t g, uint8_t b){
             _fgColor.r  = r;

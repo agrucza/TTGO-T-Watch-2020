@@ -4,12 +4,8 @@
 #include "LilyGoWatch.h"
 #include "TFT_eSPI/Fonts/Custom/IconsFontsSup24pt7b.h"
 
-extern GUI *gui;
-
 UIScreenSettings::UIScreenSettings()
 {
-    _gui        = gui;
-    _tft        = _gui->getTFT();
     _label      = "Settings";
     _padding    = 10;
     _iconSizeX  = 1;
@@ -21,12 +17,12 @@ void UIScreenSettings::draw(bool init, bool task)
 {
     if(!task)
     {
-        _tft->fillScreen(TFT_BLACK);
+        _tft->fillScreen(_backgroundColor);
     }
 
     // main UI
     _tft->setFreeFont(&FreeSansBold9pt7b);
-    _tft->setTextColor(TFT_WHITE);
+    _tft->setTextColor(_textColor);
 }
 
 void UIScreenSettings::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)

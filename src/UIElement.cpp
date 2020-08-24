@@ -1,11 +1,15 @@
 #include "UITypes.h"
 #include "UIElement.h"
+#include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
 
+extern GUI* gui;
+
 UIElement::UIElement(UIContainer* parent, UIEOrientation_t orientation, UIESize_t sizeX, UIESize_t sizeY, UIDimensions_t dimension)
 {
-    _parent = parent;
+    _tft            = gui->getTTGO()->tft;
+    _parent         = parent;
     _orientation    = orientation;
     _sizeX          = sizeX;
     _sizeY          = sizeY;

@@ -3,11 +3,7 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-extern GUI *gui;
-
 UIScreenMain::UIScreenMain(){
-    _gui            = gui;
-    _tft            = _gui->getTFT();
     _label          = "Main";
     _iconSizeX      = _iconSizeY = 2;
     _iconsMax       = 4;
@@ -65,7 +61,7 @@ void UIScreenMain::draw(bool init, bool task)
 
     if(!task)
     {
-        _tft->fillScreen(TFT_BLACK);
+        _tft->fillScreen(_backgroundColor);
     }
     
     _tft->setFreeFont(&FreeSansBold9pt7b);

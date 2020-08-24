@@ -16,20 +16,9 @@ class GUI;
 class TFT_esPI;
 
 class UIScreenSettings : public UIScreen{
-    GUI*        _gui;
-    TFT_eSPI*   _tft;
-    char*       _label;
-    uint8_t     _padding;
-    uint8_t     _iconSizeX;
-    uint8_t     _iconSizeY;
-    uint16_t    _iconColor;
-
     public:
         UIScreenSettings();
         void    draw(bool init = false, bool task = false);
-        char*   getLabel(){return _label;};
-        uint8_t getIconSizeX(){return _iconSizeX;};
-        uint8_t getIconSizeY(){return _iconSizeY;};
         void    drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
         void    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
 };

@@ -28,7 +28,6 @@ class UIElement{
         virtual void        _setDimensions() = 0;
     public:
         UIElement(UIContainer* parent = NULL, UIEOrientation_t orientation = CENTER_CENTER, UIESize_t sizeX = FULL, UIESize_t sizeY = ELEMENT, UIDimensions_t dimension = defaultUIDimensions);
-        ~UIElement(){};
         UIDimensions_t      getDimensions(){return _dimensions;};
         void                setDimensions(UIDimensions_t dimensions){_dimensions = dimensions;};
         UIPoint_t           getTopLeft(){return _dimensions.topLeft;}

@@ -5,11 +5,7 @@
 
 #define DEG2RAD 0.0174532925
 
-extern GUI *gui;
-
 UIScreenStandby::UIScreenStandby(){
-    _gui        = gui;
-    _tft        = _gui->getTFT();
     _label      = "Standby";
     _lastMinute = 0;
     _lastMonth  = 0;
@@ -27,17 +23,17 @@ void UIScreenStandby::draw(bool init, bool task)
 
     if(!task)
     {
-        _tft->fillScreen(TFT_BLACK);
+        _tft->fillScreen(_backgroundColor);
     }
     
     // time label
     _tft->setFreeFont(&FreeSansBold24pt7b);
-    _tft->setTextColor(TFT_WHITE,TFT_BLACK);
+    _tft->setTextColor(_textColor,_backgroundColor);
     strftime(label, sizeof(label), "%H : %M", &_timeInfo);
     textWidth = _tft->textWidth(label);
     if(init || (_lastMinute != _timeInfo.tm_min))
     {
-        _tft->fillRect(0,labelTop,TFT_WIDTH, _tft->fontHeight(), TFT_BLACK);
+        _tft->fillRect(0,labelTop,TFT_WIDTH, _tft->fontHeight(), _backgroundColor);
         _lastMinute = _timeInfo.tm_min;
         _tft->drawString(label, (TFT_WIDTH - textWidth)/2, labelTop);
     }
@@ -45,12 +41,12 @@ void UIScreenStandby::draw(bool init, bool task)
 
     // date label
     _tft->setFreeFont(&FreeSansBold9pt7b);
-    _tft->setTextColor(TFT_DARKGREY);
+    _tft->setTextColor(_tft->color565(127, 140, 141)); //#7f8c8d
     strftime(label, sizeof(label), "%a %d %B", &_timeInfo);
     textWidth = _tft->textWidth(label);
     if(init || (_lastMonth != _timeInfo.tm_mon))
     {
-        _tft->fillRect(0,labelTop,TFT_WIDTH, _tft->fontHeight(), TFT_BLACK);
+        _tft->fillRect(0,labelTop,TFT_WIDTH, _tft->fontHeight(), _backgroundColor);
         _lastMonth = _timeInfo.tm_mon;
         _tft->drawString(label, (TFT_WIDTH - textWidth)/2, labelTop);
     }
@@ -64,11 +60,12 @@ void UIScreenStandby::draw(bool init, bool task)
     sprintf(label, "TODO: icons %d", barHeight);
     uint16_t barWidth   = _tft->textWidth(label) + 6;
     labelTop += 10;
-    _tft->fillRoundRect((TFT_WIDTH - barWidth)/2, labelTop, barWidth, barHeight, 4, TFT_LIGHTGREY);
-    _tft->setTextColor(TFT_LIGHTGREY);
+    _tft->fillRoundRect((TFT_WIDTH - barWidth)/2, labelTop, barWidth, barHeight, 4, _tft->color565(189, 195, 199)); //#bdc3c7
+    _tft->setTextColor(_backgroundColor);
     _tft->drawString(label, (TFT_WIDTH - barWidth)/2, labelTop + 5);
 
     // swipe up text
+    _tft->setTextColor(_tft->color565(189, 195, 199));
     _tft->drawString("^ swipe up ^", (TFT_WIDTH - _tft->textWidth("^ swipe up ^"))/2, TFT_HEIGHT - _tft->fontHeight());
 }
 

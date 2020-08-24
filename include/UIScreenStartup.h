@@ -16,13 +16,6 @@ class GUI;
 class TFT_esPI;
 
 class UIScreenStartup : public UIScreen{
-    GUI*        _gui;
-    TFT_eSPI*   _tft;
-    char*       _label;
-    uint8_t     _iconSizeX;
-    uint8_t     _iconSizeY;
-    uint16_t    _iconColor;
-    
     public:
         UIScreenStartup();
         void    draw(bool init = false, bool task = false);

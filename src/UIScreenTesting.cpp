@@ -5,15 +5,12 @@
 #include "UIContainer.h"
 #include "UILabel.h"
 
-extern GUI *gui;
-
 UIScreenTesting::UIScreenTesting(){
-    _gui            = gui;
-    _tft            = _gui->getTFT();
     _label          = "Testing";
     _padding        = 5;
+    
     _container      = new UIContainer(NULL); 
-
+    
     UILabel* label1 = new UILabel("Test1", &FreeSansBold9pt7b, _container);
     UILabel* label2 = new UILabel("Test2", &FreeSansBold12pt7b, _container);
     UILabel* label3 = new UILabel("Test3", &FreeSansBold18pt7b, _container);
@@ -65,8 +62,8 @@ void UIScreenTesting::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, 
     case TouchMetrics::SWIPE_TOP_EDGE:
         break;
     case TouchMetrics::TOUCH:
+        _container->touchAction(lastX, lastY, deltaX, deltaY, TouchMetrics::TOUCH);
         break;
-    
     default:
         break;
     }

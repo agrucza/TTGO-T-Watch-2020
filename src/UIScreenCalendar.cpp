@@ -3,13 +3,13 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-extern GUI *gui;
-
 UIScreenCalendar::UIScreenCalendar()
 {
-    _gui                = gui;
-    _tft                = _gui->getTFT();
     _label              = "Calendar";
+    _weekDayColor       = _tft->color565(189, 195, 199);    //#bdc3c7
+    _weekEndColor       = _tft->color565(127, 140, 141);    //#7f8c8d
+    _todayColor         = _tft->color565(52, 73, 94);       //#34495e
+    _highlightDayColor  = _tft->color565(149, 165, 166);    //#95a5a6
     _padding            = 10;
     _iconSizeX          = 2;
     _iconSizeY          = 2;
@@ -119,12 +119,13 @@ void UIScreenCalendar::draw(bool init, bool task)
 
     if(!task)
     {
-        _tft->fillScreen(TFT_BLACK);
+        _tft->fillScreen(TFT_WHITE);
+        _tft->fillScreen(_backgroundColor);
     }
 
     // main UI
     _tft->setFreeFont(&FreeSansBold9pt7b);
-    _tft->setTextColor(TFT_WHITE);
+    _tft->setTextColor(_textColor);
     
     // print today label/button
     if(_displayMonth != _month && _displayYear != _year)
@@ -142,7 +143,7 @@ void UIScreenCalendar::draw(bool init, bool task)
     strftime(buf, sizeof(buf), "%B %Y", &_displayTimeInfo);
     _tft->drawString(buf, TFT_WIDTH - _padding - _tft->textWidth(buf), _padding);
 
-    _tft->fillRect(_padding, _padding+_tft->fontHeight(), TFT_WIDTH, 4, TFT_DARKGREY);
+    _tft->fillRect(_padding, _padding+_tft->fontHeight(), TFT_WIDTH, 4, _textColor);
 
     // print calendar
     _drawCalendar(
@@ -203,7 +204,7 @@ void UIScreenCalendar::_drawCalendar(uint16_t x, uint16_t y, uint16_t w, uint16_
                     y+padding+(week*(dayHeight+1)),
                     dayWidth,
                     dayHeight,
-                    (showToday?TFT_RED:(day<5?TFT_LIGHTGREY:TFT_DARKGREY))
+                    (showToday?_todayColor:(day<5?_weekDayColor:_weekEndColor))
                 );
             }
             
@@ -211,15 +212,17 @@ void UIScreenCalendar::_drawCalendar(uint16_t x, uint16_t y, uint16_t w, uint16_
             {
                 if(displayMonth && day<5 && !showToday)
                 {
-                    _tft->setTextColor(TFT_BLACK);
+                    _tft->setTextColor(_backgroundColor);
                 }
+                /*
                 else if(displayMonth)
                 {
-                    _tft->setTextColor(TFT_WHITE);
+                    _tft->setTextColor(_textColor);
                 }
+                */
                 else
                 {
-                    _tft->setTextColor(TFT_LIGHTGREY);
+                    _tft->setTextColor(_textColor);
                 }
                 _tft->drawString(
                     dayNumber,

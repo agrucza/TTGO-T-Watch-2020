@@ -87,9 +87,8 @@ void GUI::init()
     _screens[SCREEN_MAIN]       = new UIScreenMain();
 
     // as we init the GUI here we want to start the standby screen
-    _ttgo->openBL();
-    //setScreen(SCREEN_STARTUP);
-    setScreen(SCREEN_TESTING);
+    setScreen(SCREEN_STARTUP);
+    //setScreen(SCREEN_TESTING);
     
     if(_ttgo->power->isChargeing())
     {
@@ -240,7 +239,7 @@ void GUI::drawUIScreenIcon(screens_t screen, uint16_t x, uint16_t y, uint16_t w,
     }
 }
 
-char* GUI::getUIScreenLabel(screens_t screen)
+String GUI::getUIScreenLabel(screens_t screen)
 {
     return _screens[screen]->getLabel();
 }
@@ -249,4 +248,13 @@ void GUI::setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_
 {
     _ttgo->rtc->setDateTime(year,month,day,hour,minute,second);
     //_ttgo->rtc->syncToRtc();
+}
+
+void GUI::taskHandler(void* parameters)
+{
+    for(;;){ // infinite loop
+        // Pause the task for 1000ms
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        _screens[_activeScreen]->draw(false, true);
+    }
 }

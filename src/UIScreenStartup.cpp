@@ -3,17 +3,14 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-extern GUI *gui;
-
 UIScreenStartup::UIScreenStartup(){
-    _gui    = gui;
-    _tft    = _gui->getTFT();
     _label  = "Startup";
 }
 
 void UIScreenStartup::draw(bool init, bool task)
 {
-    char* label         = "Starting up please wait...";
+    String label        = "Starting up please wait...";
+    _tft->setFreeFont();
     uint16_t textWidth  = _tft->textWidth(label);
     uint16_t textHeight = _tft->fontHeight();
 
@@ -22,6 +19,9 @@ void UIScreenStartup::draw(bool init, bool task)
     _tft->fillRect(0,TFT_HEIGHT - 20, TFT_WIDTH, 20, TFT_RED);
     _tft->setTextColor(TFT_RED);
     _tft->drawString(label, (TFT_WIDTH - textWidth)/2, (TFT_HEIGHT - textHeight)/2);
+    
+    _gui->getTTGO()->openBL();
+    
     delay(1000);
     _gui->setScreen(SCREEN_STANDBY, true);
 }
