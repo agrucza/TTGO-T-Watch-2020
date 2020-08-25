@@ -163,7 +163,8 @@ void GUI::updateBatteryIcon(icon_battery_t index)
  * @param  *ssid: name of ssid to add to the wifi list
  * @retval None
  */
-void GUI::wifiListAdd(const char *ssid){
+void GUI::wifiListAdd(const String ssid)
+{
 
 }
 
@@ -180,13 +181,32 @@ void GUI::checkTouchScreen()
 void GUI::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
     _lastActionTime = millis();
-    // elevate touch action to child elements
-    _screens[_activeScreen]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+
+    // check for global touch gestures
+    if(_activeScreen != SCREEN_STANDBY && _activeScreen != SCREEN_MAIN)
+    {
+        switch(touchType)
+        {
+            case TouchMetrics::SWIPE_BOTTOM_EDGE:
+                setScreen(SCREEN_MAIN);
+                break;
+            default:
+                // elevate touch action to child elements
+                _screens[_activeScreen]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+                break;
+        }
+    }
+    else
+    {
+        // elevate touch action to child elements
+        _screens[_activeScreen]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+    }
 }
 
-void GUI::debugOutput(const char *str)
+void GUI::debugOutput(const String str)
 {
-    if(_debug.visible){
+    if(_debug.visible)
+    {
         _tft->pushRect(_debug.left, _debug.top, _debug.width, _debug.height, _debug.displayContent);
         free(_debug.displayContent);
         _debug.visible = false;
@@ -224,11 +244,11 @@ void GUI::debugOutput(const char *str)
     }
 }
 
-void GUI::setScreen(screens_t screen, bool init)
+void GUI::setScreen(screens_t screen, bool init, bool task)
 {
     _lastScreen = _activeScreen;
     _activeScreen = screen;
-    _screens[screen]->draw(init);
+    _screens[screen]->draw(init, task);
 }
 
 void GUI::drawUIScreenIcon(screens_t screen, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
@@ -252,7 +272,9 @@ void GUI::setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_
 
 void GUI::taskHandler(void* parameters)
 {
-    for(;;){ // infinite loop
+    // infinite loop
+    for(;;)
+    {
         // Pause the task for 1000ms
         vTaskDelay(1000 / portTICK_PERIOD_MS);
         _screens[_activeScreen]->draw(false, true);

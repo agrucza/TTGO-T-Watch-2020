@@ -8,7 +8,7 @@ UIScreenCalendar::UIScreenCalendar()
     _label              = "Calendar";
     _weekDayColor       = _tft->color565(189, 195, 199);    //#bdc3c7
     _weekEndColor       = _tft->color565(127, 140, 141);    //#7f8c8d
-    _todayColor         = _tft->color565(52, 73, 94);       //#34495e
+    _todayColor         = _tft->color565(41, 128, 185);     //#2980b9
     _highlightDayColor  = _tft->color565(149, 165, 166);    //#95a5a6
     _padding            = 10;
     _iconSizeX          = 2;
@@ -30,11 +30,13 @@ void UIScreenCalendar::_setDate(bool init)
     _startDayOfMonth    = _getDayOfWeek(1, _month, _year);
     _endOfMonth         = _getDaysOfMonth(_month, _year);
 
-    if(_startDayOfMonth < 1){
+    if(_startDayOfMonth < 1)
+    {
         _startDayOfMonth = 7;
     }
 
-    if(init){
+    if(init)
+    {
         _displayTimeInfo        = _timeInfo;
     }
 
@@ -43,7 +45,8 @@ void UIScreenCalendar::_setDate(bool init)
     _displayYear            = _displayTimeInfo.tm_year + 1900;
     _displayStartDayOfMonth = _getDayOfWeek(1, _displayMonth, _displayYear);
     
-    if(_displayStartDayOfMonth < 1){
+    if(_displayStartDayOfMonth < 1)
+    {
         _displayStartDayOfMonth = 7;
     }
 
@@ -64,7 +67,8 @@ uint8_t UIScreenCalendar::_getDaysOfMonth(uint8_t month, uint16_t year)
 	//leap year condition, if month is 2
 	if( month == 2)
 	{
-		if((year%400==0) || (year%4==0 && year%100!=0)){
+		if((year%400==0) || (year%4==0 && year%100!=0))
+        {
 			return 29;
         }
         else
@@ -119,41 +123,40 @@ void UIScreenCalendar::draw(bool init, bool task)
 
     if(!task)
     {
-        _tft->fillScreen(TFT_WHITE);
         _tft->fillScreen(_backgroundColor);
+
+        // main UI
+        _tft->setFreeFont(&FreeSansBold9pt7b);
+        _tft->setTextColor(_textColor);
+        
+        // print today label/button
+        if(_displayMonth != _month && _displayYear != _year)
+        {
+            _tft->drawString("Today", _padding, _padding);
+        }
+
+        if(_todayLabelWidth <= 0 && _todayLabelHeight <= 0)
+        {
+            _todayLabelWidth    = _tft->textWidth("Today");
+            _todayLabelHeight   = _tft->fontHeight();
+        }
+
+        char buf[30];
+        strftime(buf, sizeof(buf), "%B %Y", &_displayTimeInfo);
+        _tft->drawString(buf, TFT_WIDTH - _padding - _tft->textWidth(buf), _padding);
+
+        _tft->fillRect(_padding, _padding+_tft->fontHeight(), TFT_WIDTH, 4, _textColor);
+
+        // print calendar
+        _drawCalendar(
+            0,
+            _padding + _tft->fontHeight() + 4,
+            TFT_WIDTH,
+            TFT_HEIGHT - (_padding + _tft->fontHeight() + 4),
+            _padding,
+            true
+        );
     }
-
-    // main UI
-    _tft->setFreeFont(&FreeSansBold9pt7b);
-    _tft->setTextColor(_textColor);
-    
-    // print today label/button
-    if(_displayMonth != _month && _displayYear != _year)
-    {
-        _tft->drawString("Today", _padding, _padding);
-    }
-
-    if(_todayLabelWidth <= 0 && _todayLabelHeight <= 0)
-    {
-        _todayLabelWidth    = _tft->textWidth("Today");
-        _todayLabelHeight   = _tft->fontHeight();
-    }
-
-    char buf[30];
-    strftime(buf, sizeof(buf), "%B %Y", &_displayTimeInfo);
-    _tft->drawString(buf, TFT_WIDTH - _padding - _tft->textWidth(buf), _padding);
-
-    _tft->fillRect(_padding, _padding+_tft->fontHeight(), TFT_WIDTH, 4, _textColor);
-
-    // print calendar
-    _drawCalendar(
-        0,
-        _padding + _tft->fontHeight() + 4,
-        TFT_WIDTH,
-        TFT_HEIGHT - (_padding + _tft->fontHeight() + 4),
-        _padding,
-        true
-    );
 }
 
 void UIScreenCalendar::_drawCalendar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t padding, bool numbers)
@@ -174,7 +177,8 @@ void UIScreenCalendar::_drawCalendar(uint16_t x, uint16_t y, uint16_t w, uint16_
             displayMonth    = false;
             showToday       = false;
 
-            if(counter < 0){
+            if(counter < 0)
+            {
                 sprintf(dayNumber,"%d", _displayPrevEndOfMonth + (counter+1));
             }
             else if(counter >= 0 && counter < _displayEndOfMonth)
@@ -198,7 +202,8 @@ void UIScreenCalendar::_drawCalendar(uint16_t x, uint16_t y, uint16_t w, uint16_
                 sprintf(dayNumber,"%d",(counter+1) - _displayEndOfMonth);
             }
 
-            if(displayMonth){
+            if(displayMonth)
+            {
                 _tft->fillRect(
                     x+padding+(day*(dayWidth+1)),
                     y+padding+(week*(dayHeight+1)),
@@ -278,9 +283,7 @@ void UIScreenCalendar::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX,
     switch(touchType)
     {
         case TouchMetrics::SWIPE_BOTTOM:
-            break;
         case TouchMetrics::SWIPE_BOTTOM_EDGE:
-            _gui->setScreen(SCREEN_MAIN);
             break;
         case TouchMetrics::SWIPE_LEFT:
             _displayTimeInfo.tm_mday    = 1;
@@ -308,7 +311,7 @@ void UIScreenCalendar::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX,
                 && (lastY <= (_padding + _todayLabelHeight))
             )
             {
-                draw(init);
+                draw();
             }
             break;
     }

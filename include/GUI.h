@@ -75,7 +75,8 @@ class GUI {
         );
         static unsigned long    getInactivityTime()
         {
-            if(millis() < _lastActionTime){
+            if(millis() < _lastActionTime)
+            {
                 _lastActionTime = millis();
             }
             return millis() - _lastActionTime;
@@ -91,10 +92,10 @@ class GUI {
         static int              getBatteryLevel(){return _batteryLevel;};
         static void             updateBatteryIcon(icon_battery_t index);
         static icon_battery_t   getBatteryIcon(){return _batteryIcon;};
-        static void             wifiListAdd(const char *ssid);
+        static void             wifiListAdd(const String ssid);
         static void             checkTouchScreen();
-        static void             debugOutput(const char *str = nullptr);
-        static void             setScreen(screens_t screen, bool init = false);
+        static void             debugOutput(const String str);
+        static void             setScreen(screens_t screen, bool init = false, bool task = false);
         static screens_t        getLastScreen(){return _lastScreen;};
         static screens_t        getActiveScreen(){return _activeScreen;};
         static uint8_t          getUIScreenIconWidth(screens_t screen) { return _screens[screen]->getIconSizeX();};

@@ -24,7 +24,8 @@ void TouchMetrics::checkTouch()
         setX(touchX);
         setY(touchY);
 
-        if(!getTouch()){
+        if(!getTouch())
+        {
             // this is the finger comming down
             setLastX(touchX);
             setLastY(touchY);
@@ -32,7 +33,8 @@ void TouchMetrics::checkTouch()
         } else {
             // vector of touch?
         }
-    } else if(getTouch()){
+    } else if(getTouch())
+    {
         _touch = false;
         // no touch registered this will check if a previous touch was set
         // check for swipes?
@@ -93,7 +95,7 @@ void TouchMetrics::checkTouch()
                     _lastY,
                     deltaX,
                     deltaY,
-                    (_lastY<_swipeEdgeDetection?touch_t::SWIPE_TOP_EDGE:touch_t::SWIPE_TOP)
+                    (_lastY<_swipeEdgeDetection?touch_t::SWIPE_TOP_EDGE:touch_t::SWIPE_BOTTOM)
                 );
             }
         }

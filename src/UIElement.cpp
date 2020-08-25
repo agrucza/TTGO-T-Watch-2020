@@ -6,31 +6,20 @@
 
 extern GUI* gui;
 
-UIElement::UIElement(UIContainer* parent, UIEOrientation_t orientation, UIESize_t sizeX, UIESize_t sizeY, UIDimensions_t dimension)
+UIElement::UIElement(UIContainer* parent, UIEOrientation_t orientation)
 {
     _tft            = gui->getTTGO()->tft;
     _parent         = parent;
     _orientation    = orientation;
-    _sizeX          = sizeX;
-    _sizeY          = sizeY;
-    _dimension      = dimension;
-    
-    UIDimensions_t parentDimensions;
 
     if(_parent != NULL)
     {
-        parentDimensions = _parent->getDimensions();
+        _parentDimensions = _parent->getDimensions();
     }
     else
     {
-        parentDimensions.topLeft.x      = parentDimensions.topLeft.y = 0;
-        parentDimensions.bottomRight.x  = TFT_WIDTH;
-        parentDimensions.bottomRight.y  = TFT_HEIGHT;
-    }
-
-    if(sizeX == FULL)
-    {
-        _dimensions.topLeft.x = parentDimensions.topLeft.x;
-        _dimensions.bottomRight.x = parentDimensions.bottomRight.x;
+        _parentDimensions.topLeft.x      = _parentDimensions.topLeft.y = 0;
+        _parentDimensions.bottomRight.x  = TFT_WIDTH;
+        _parentDimensions.bottomRight.y  = TFT_HEIGHT;
     }
 }

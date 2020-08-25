@@ -25,7 +25,7 @@ class UIContainer{
     UIDimensions_t                      _dimensions;
 
     public:
-        UIContainer(UIContainer* parent = NULL, UIEAlignment_t alignment = ALIGNMENT_VERTICAL, UIESize_t sizeX = FULL, UIESize_t sizeY = FULL, UIDimensions_t dimension = defaultUIDimensions);
+        UIContainer(UIContainer* parent = NULL, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
         void            addUIContainer(UIContainer* container);
         void            addUIElement(UIElement* element);
         UIDimensions_t  getDimensions(){return _dimensions;};

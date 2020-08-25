@@ -3,7 +3,8 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-UIScreenMain::UIScreenMain(){
+UIScreenMain::UIScreenMain()
+{
     _label          = "Main";
     _iconSizeX      = _iconSizeY = 2;
     _iconsMax       = 4;
@@ -17,6 +18,7 @@ UIScreenMain::UIScreenMain(){
     // setup screens
     _setScreenIcon(SCREEN_CALENDAR, 0, 0);
     _setScreenIcon(SCREEN_SETTINGS, 2, 0);
+    //_setScreenIcon(SCREEN_TESTING, 3, 0);
 }
 
 void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
@@ -26,7 +28,8 @@ void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
     uint8_t iconsX          = _gui->getUIScreenIconWidth(screen);
     uint8_t iconsY          = _gui->getUIScreenIconHeight(screen);
     
-    if(iconsAvailableY < (posY + 1 + iconsY)){
+    if(iconsAvailableY < (posY + 1 + iconsY))
+    {
         do{
             std::vector<screens_t> row;
             do{
@@ -56,46 +59,46 @@ void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
 
 void UIScreenMain::draw(bool init, bool task)
 {
-    uint8_t     iconSizeScreenW = 0;
-    uint8_t     iconSizeScreenH = 0;
-
     if(!task)
     {
-        _tft->fillScreen(_backgroundColor);
-    }
-    
-    _tft->setFreeFont(&FreeSansBold9pt7b);
-    
-    for(uint8_t iconY = 0; iconY < _displayIcons.size(); iconY++)
-    {
-        std::vector<screens_t> row  = _displayIcons[iconY];
-        for(uint8_t iconX = 0; iconX < row.size(); iconX++)
-        {
-            // check if a screens is set to display an icon
-            if(row[iconX] != SCREEN_NONE)
-            {
-                iconSizeScreenW = _gui->getUIScreenIconWidth(row[iconX]);
-                iconSizeScreenH = _gui->getUIScreenIconHeight(row[iconX]);
+        uint8_t     iconSizeScreenW = 0;
+        uint8_t     iconSizeScreenH = 0;
 
-                // check if icon is bigger than 1x1 and check surrounding icon places
-                if(
-                    (iconSizeScreenW > 1 || iconSizeScreenH > 1)
-                    && (
-                        ((iconX>0) && (_displayIcons[iconY][iconX-1] == row[iconX]))
-                        || ((iconY>0) && (_displayIcons[iconY-1][iconX] == row[iconX]))
-                    )
-                )
+        _tft->fillScreen(_backgroundColor);
+    
+        _tft->setFreeFont(&FreeSansBold9pt7b);
+    
+        for(uint8_t iconY = 0; iconY < _displayIcons.size(); iconY++)
+        {
+            std::vector<screens_t> row  = _displayIcons[iconY];
+            for(uint8_t iconX = 0; iconX < row.size(); iconX++)
+            {
+                // check if a screens is set to display an icon
+                if(row[iconX] != SCREEN_NONE)
                 {
-                    continue;
+                    iconSizeScreenW = _gui->getUIScreenIconWidth(row[iconX]);
+                    iconSizeScreenH = _gui->getUIScreenIconHeight(row[iconX]);
+
+                    // check if icon is bigger than 1x1 and check surrounding icon places
+                    if(
+                        (iconSizeScreenW > 1 || iconSizeScreenH > 1)
+                        && (
+                            ((iconX>0) && (_displayIcons[iconY][iconX-1] == row[iconX]))
+                            || ((iconY>0) && (_displayIcons[iconY-1][iconX] == row[iconX]))
+                        )
+                    )
+                    {
+                        continue;
+                    }
+                    
+                    _gui->drawUIScreenIcon(
+                        row[iconX],
+                        _padding + (iconX*(_iconW + 2)),
+                        _padding + (iconY*(_iconH + 2)),
+                        iconSizeScreenW * _iconW + ((iconSizeScreenW-1) * 2),
+                        iconSizeScreenH * _iconH + ((iconSizeScreenH-1) * 2)
+                    );
                 }
-                
-                _gui->drawUIScreenIcon(
-                    row[iconX],
-                    _padding + (iconX*(_iconW + 2)),
-                    _padding + (iconY*(_iconH + 2)),
-                    iconSizeScreenW * _iconW + ((iconSizeScreenW-1) * 2),
-                    iconSizeScreenH * _iconH + ((iconSizeScreenH-1) * 2)
-                );
             }
         }
     }
@@ -121,14 +124,15 @@ void UIScreenMain::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int
         */
         if(_displayIcons[y][x] != SCREEN_NONE)
         {
-            _gui->setScreen(_displayIcons[y][x],true);
+            _gui->setScreen(_displayIcons[y][x], true);
         }
     }
     else if (touchType == TouchMetrics::SWIPE_LEFT)
     {
         // go forth in navigation
         /*
-        if(_page < _pageMax-1){
+        if(_page < _pageMax-1)
+        {
             _page++;
             draw();
         }
@@ -138,7 +142,8 @@ void UIScreenMain::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int
     {
         /*
         // go back in navigation
-        if(_page > 0){
+        if(_page > 0)
+        {
             _page--;
             draw();
         }

@@ -2,7 +2,7 @@
 #include "UIElement.h"
 #include "GUI.h"
 
-UIContainer::UIContainer(UIContainer* parent, UIEAlignment_t alignment, UIESize_t sizeX, UIESize_t sizeY, UIDimensions_t dimension)
+UIContainer::UIContainer(UIContainer* parent, UIEAlignment_t alignment)
 {
     _parent     = parent;
     _alignment  = alignment;
@@ -26,7 +26,8 @@ void UIContainer::addUIElement(UIElement* element)
     for(uint8_t i = 0; i < _element.size(); i++)
     {
         tmpDimensions = _element[i].element->getDimensions();
-        switch(_alignment){
+        switch(_alignment)
+        {
             case ALIGNMENT_VERTICAL:
                 tmpDimensions.topLeft.y = dimensions.topLeft.y;
                 dimensions.topLeft.y += tmpDimensions.bottomRight.y + 1;
@@ -41,7 +42,8 @@ void UIContainer::addUIElement(UIElement* element)
     element->setDimensions(dimensions);
     newDetails.element      = element;
     newDetails.dimensions   = dimensions;
-    switch(_alignment){
+    switch(_alignment)
+    {
         case ALIGNMENT_VERTICAL:
             dimensions.topLeft.y += tmpDimensions.bottomRight.y;
             break;

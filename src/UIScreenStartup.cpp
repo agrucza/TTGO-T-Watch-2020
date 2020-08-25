@@ -3,7 +3,8 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-UIScreenStartup::UIScreenStartup(){
+UIScreenStartup::UIScreenStartup()
+{
     _label  = "Startup";
 }
 

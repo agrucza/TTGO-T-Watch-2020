@@ -16,7 +16,7 @@ class GUI;
 class TFT_esPI;
 
 class UIScreenCalendar : public UIScreen{
-    uint16_t    _textColor, _weekDayColor, _weekEndColor, _todayColor, _highlightDayColor, _backgroundColor;
+    uint16_t    _weekDayColor, _weekEndColor, _todayColor, _highlightDayColor;
     time_t      _currentTime, _displayTime;
     struct tm   _timeInfo, _displayTimeInfo;
     uint8_t     _getDayOfWeek(uint8_t d, uint8_t m, uint16_t y);

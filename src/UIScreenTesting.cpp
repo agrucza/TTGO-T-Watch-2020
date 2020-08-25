@@ -5,7 +5,8 @@
 #include "UIContainer.h"
 #include "UILabel.h"
 
-UIScreenTesting::UIScreenTesting(){
+UIScreenTesting::UIScreenTesting()
+{
     _label          = "Testing";
     _padding        = 5;
     

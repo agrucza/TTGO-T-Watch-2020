@@ -3,14 +3,10 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-UILabel::UILabel(String label, const GFXfont* font, UIContainer* parent, UIEOrientation_t orientation, UIESize_t sizeX, UIESize_t sizeY)
+UILabel::UILabel(String label, const GFXfont* font, UIContainer* parent)
 {
     _label          = label;
     _bgColor.r      = _bgColor.g = _bgColor.b = -1;
-    _parent         = parent;
-    _orientation    = orientation;
-    _sizeX          = sizeX;
-    _sizeY          = sizeY;
     _font           = font;
     _setDimensions();
 }
@@ -19,7 +15,7 @@ void UILabel::_setDimensions()
 {
     _tft->setFreeFont(_font);
 
-    _dimensions                 = defaultUIDimensions;
+    //_dimensions                 = defaultUIDimensions;
     _dimensions.bottomRight.y   = _tft->fontHeight();
     _dimensions.bottomRight.x   = _tft->textWidth(_label);
 }
