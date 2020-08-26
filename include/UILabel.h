@@ -29,7 +29,7 @@ class UILabel : public UIElement{
     void            _setDimensions();
 
     public:
-        UILabel(String label, const GFXfont* font, UIContainer* parent = NULL);
+        UILabel(String label, const GFXfont* font, UIContainer* parent = NULL, UIEOrientation_t orientation = CENTER_CENTER);
         void    setFont(const GFXfont* font){_font = font;};
         void    setTextColor(uint8_t r, uint8_t g, uint8_t b)
         {

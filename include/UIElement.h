@@ -33,7 +33,8 @@ class UIElement{
         void                setDimensions(UIDimensions_t dimensions){_dimensions = dimensions;};
         UIPoint_t           getTopLeft(){return _dimensions.topLeft;}
         void                setTopLeft(UIPoint_t topLeft){_dimensions.topLeft = topLeft;};
-        UIPoint_t           getBottomRight(){return _dimensions.bottomRight;}
+        UIPoint_t           getBottomRight(){return _dimensions.bottomRight;};
+        void                setOrientation(UIEOrientation_t orientation){_orientation = orientation;};
         UIEOrientation_t    getOrientation(){return _orientation;};
         virtual void        touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType) = 0;
         virtual void        draw(bool task = false) = 0;
