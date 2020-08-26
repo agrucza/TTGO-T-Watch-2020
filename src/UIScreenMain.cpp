@@ -23,8 +23,6 @@ UIScreenMain::UIScreenMain()
 
 void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
 {
-    uint8_t iconsAvailableY = _displayIcons.size();
-    
     uint8_t iconsX          = _gui->getUIScreenIconWidth(screen);
     uint8_t iconsY          = _gui->getUIScreenIconHeight(screen);
     
