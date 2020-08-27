@@ -3,7 +3,7 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-UIScreenCalendar::UIScreenCalendar()
+UIScreenCalendar::UIScreenCalendar():UIScreen()
 {
     _label              = "Calendar";
     _weekDayColor       = _tft->color565(189, 195, 199);    //#bdc3c7

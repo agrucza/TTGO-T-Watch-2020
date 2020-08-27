@@ -4,7 +4,7 @@
 #include "LilyGoWatch.h"
 #include "TFT_eSPI/Fonts/Custom/IconsFontsSup24pt7b.h"
 
-UIScreenSettings::UIScreenSettings()
+UIScreenSettings::UIScreenSettings():UIScreen()
 {
     _label      = "Settings";
     _padding    = 10;

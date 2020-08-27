@@ -3,7 +3,7 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-UIScreenMain::UIScreenMain()
+UIScreenMain::UIScreenMain():UIScreen()
 {
     _label          = "Main";
     _iconSizeX      = _iconSizeY = 2;
@@ -18,30 +18,25 @@ UIScreenMain::UIScreenMain()
     // setup screens
     _setScreenIcon(SCREEN_CALENDAR, 0, 0);
     _setScreenIcon(SCREEN_SETTINGS, 2, 0);
-    //_setScreenIcon(SCREEN_TESTING, 3, 0);
+    _setScreenIcon(SCREEN_TESTING, 3, 0);
 }
 
 void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
 {
-    uint8_t iconsAvailableY = _displayIcons.size();
+    uint8_t iconsX  = _gui->getUIScreenIconWidth(screen);
+    uint8_t iconsY  = _gui->getUIScreenIconHeight(screen);
     
-    uint8_t iconsX          = _gui->getUIScreenIconWidth(screen);
-    uint8_t iconsY          = _gui->getUIScreenIconHeight(screen);
-    
-    if(iconsAvailableY < (posY + 1 + iconsY))
-    {
-        do{
-            std::vector<screens_t> row;
-            do{
-                row.push_back(SCREEN_NONE);
-            }while(row.size() < _iconsMax);
-            _displayIcons.push_back(row);
-        }while(_displayIcons.size() < (posY + 1 + iconsY));
+    while(_displayIcons.size() < (posY + iconsY)){
+        std::vector<screens_t> row;
+        while(row.size() < _iconsMax){
+            row.push_back(SCREEN_NONE);
+        }
+        _displayIcons.push_back(row);
     }
 
     uint8_t iconsAvailableX = _displayIcons[posX].size();
     
-    if((iconsAvailableX <= (posX + 1)) && (iconsAvailableX < (posX + 1 + iconsX)))
+    if((iconsAvailableX < posX) && (iconsAvailableX < (posX + iconsX)))
     {
         // icon will be too wide but starts within visible area - shorten icon to remaining space
         iconsX = iconsAvailableX - posX;

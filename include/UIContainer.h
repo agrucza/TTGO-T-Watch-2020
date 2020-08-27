@@ -21,8 +21,9 @@ class UIContainer{
     UIContainer*                        _parent;
     UIEAlignment_t                      _alignment;
     std::vector<UIContainerDetails_t>   _container;
-    std::vector<UIElementDetails_t>     _element;
+    std::vector<UIElementDetails_t>     _elements;
     UIDimensions_t                      _dimensions;
+    uint8_t                             _padding = 5;
 
     public:
         UIContainer(UIContainer* parent = NULL, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);

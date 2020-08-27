@@ -5,13 +5,13 @@
 #include "UIContainer.h"
 #include "UILabel.h"
 
-UIScreenTesting::UIScreenTesting()
+UIScreenTesting::UIScreenTesting():UIScreen()
 {
     _label          = "Testing";
     _padding        = 5;
     
-    _container      = new UIContainer(NULL); 
-    
+    _container      = new UIContainer(); 
+        
     UILabel* label1 = new UILabel("Test1", &FreeSansBold9pt7b, _container);
     UILabel* label2 = new UILabel("Test2", &FreeSansBold12pt7b, _container);
     UILabel* label3 = new UILabel("Test3", &FreeSansBold18pt7b, _container);
