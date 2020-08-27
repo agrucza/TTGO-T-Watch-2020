@@ -4,6 +4,7 @@
 #include "LilyGoWatch.h"
 
 UILabel::UILabel(String label, const GFXfont* font, UIContainer* parent, UIEOrientation_t orientation)
+:UIElement(parent,orientation)
 {
     _label          = label;
     _bgColor.r      = _bgColor.g = _bgColor.b = -1;

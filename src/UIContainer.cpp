@@ -51,6 +51,7 @@ void UIContainer::addUIElement(UIElement* element)
             tmpDimensions = element->getDimensions();
             size -= _padding;
         }
+
         switch(_alignment)
         {
             case ALIGNMENT_VERTICAL:
@@ -108,6 +109,7 @@ void UIContainer::addUIElement(UIElement* element)
     element->setDimensions(dimensions);
     newDetails.element      = element;
     newDetails.dimensions   = dimensions;
+    
     switch(_alignment)
     {
         case ALIGNMENT_VERTICAL:

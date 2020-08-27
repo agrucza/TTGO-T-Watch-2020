@@ -3,7 +3,7 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-UIScreenMain::UIScreenMain()
+UIScreenMain::UIScreenMain():UIScreen()
 {
     _label          = "Main";
     _iconSizeX      = _iconSizeY = 2;
@@ -23,14 +23,14 @@ UIScreenMain::UIScreenMain()
 
 void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
 {
-    uint8_t iconsX          = _gui->getUIScreenIconWidth(screen);
-    uint8_t iconsY          = _gui->getUIScreenIconHeight(screen);
+    uint8_t iconsX  = _gui->getUIScreenIconWidth(screen);
+    uint8_t iconsY  = _gui->getUIScreenIconHeight(screen);
     
     while(_displayIcons.size() < (posY + iconsY)){
         std::vector<screens_t> row;
-        do{
+        while(row.size() < _iconsMax){
             row.push_back(SCREEN_NONE);
-        }while(row.size() < _iconsMax);
+        }
         _displayIcons.push_back(row);
     }
 
