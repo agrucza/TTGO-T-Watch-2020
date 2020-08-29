@@ -13,7 +13,6 @@ UIScreenCalendar::UIScreenCalendar():UIScreen()
     _padding            = 10;
     _iconSizeX          = 2;
     _iconSizeY          = 2;
-    _iconColor          = _tft->color565(0,120,215);
     _todayLabelWidth    = 0;
     _todayLabelHeight   = 0;
     _setDate(true);

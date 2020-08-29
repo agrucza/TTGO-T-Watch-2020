@@ -8,7 +8,6 @@ UIScreenSettings::UIScreenSettings():UIScreen()
 {
     _label      = "Settings";
     _padding    = 10;
-    _iconColor  = _tft->color565(0,120,215);
 }
 
 void UIScreenSettings::draw(bool init, bool task)

@@ -24,9 +24,9 @@ class UIScreen{
         String          _label;
         uint16_t        _textColor;
         uint16_t        _backgroundColor;
+        uint16_t        _iconColor;
         uint8_t         _iconSizeX;
         uint8_t         _iconSizeY;
-        uint16_t        _iconColor;
         uint8_t         _padding;
         UIContainer*    _container = nullptr;
 
