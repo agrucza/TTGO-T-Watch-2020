@@ -4,11 +4,11 @@
 #include "UIElement.h"
 #include "GUI.h"
 
-UIContainer::UIContainer(UIContainer* parent, UIEAlignment_t alignment)
+UIContainer::UIContainer(UIElement* parent, UIEAlignment_t alignment)
+:UIElement(parent)
 {
-    //_type = UIETYPE_CONTAINER;
     Serial.println("UIContainer constructor");
-    _parent     = parent;
+    _type = UIETYPE_CONTAINER;
     _alignment  = alignment;
 
     Serial.println("Setting container dimensions");
@@ -38,11 +38,6 @@ UIContainer::UIContainer(UIContainer* parent, UIEAlignment_t alignment)
     _dimensionsInner.bottomRight.x -= 2*_padding;
     _dimensionsInner.bottomRight.y -= 2*_padding;
     Serial.println("UIContainer constructor done");
-}
-
-void UIContainer::addUIContainer(UIContainer* container)
-{
-    _container.push_back(container);
 }
 
 void UIContainer::addUIElement(UIElement* element)
@@ -131,23 +126,6 @@ void UIContainer::addUIElement(UIElement* element)
     _elements.push_back(element);
 }
 
-UIDimensions_t UIContainer::getContainerDimensions(UIContainer* container)
-{
-    UIDimensions_t fallback;
-
-    for(uint8_t i = 0; i < _container.size(); i++)
-    {
-        if(_container[i] == container)
-        {
-            return _container[i]->getDimensions();
-        }
-    }
-
-    fallback.topLeft.x = fallback.topLeft.y = fallback.bottomRight.x = fallback.bottomRight.y -1;
-
-    return fallback;
-}
-
 UIDimensions_t UIContainer::getElementDimensions(UIElement* element)
 {
     UIDimensions_t fallback;
@@ -168,13 +146,7 @@ UIDimensions_t UIContainer::getElementDimensions(UIElement* element)
 void UIContainer::draw(bool task)
 {
     //container have priority in processing
-    if(_container.size()>0)
-    {
-        for(uint8_t container = 0; container < _container.size(); container++)
-        {
-
-        }
-    } else if(_elements.size()>0)
+    if(_elements.size()>0)
     {
         for(uint8_t element = 0; element < _elements.size(); element++)
         {
@@ -191,20 +163,6 @@ void UIContainer::reDraw()
 bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
     UIDimensions_t dim;
-
-    for(uint8_t i = 0; i < _container.size(); i++)
-    {
-        dim = _container[i]->getDimensions();
-        if(
-            lastX >= dim.topLeft.x
-            && lastX <= dim.topLeft.x + dim.bottomRight.x
-            && lastY >= dim.topLeft.y
-            && lastY <= dim.topLeft.y + dim.bottomRight.y
-        )
-        {
-            return _container[i]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
-        }
-    }
 
     for(uint8_t i = 0; i < _elements.size(); i++)
     {

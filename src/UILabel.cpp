@@ -3,7 +3,7 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-UILabel::UILabel(String label, const GFXfont* font, UIContainer* parent, UIEOrientation_t orientation)
+UILabel::UILabel(String label, const GFXfont* font, UIElement* parent, UIEOrientation_t orientation)
 :UIElement(parent,orientation)
 {
     _label          = label;

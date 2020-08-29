@@ -10,29 +10,19 @@
 
 #include <Arduino.h>
 #include "UITypes.h"
-#include "TouchMetrics.h"
+#include "UIElement.h"
 
 extern UIDimensions_t defaultUIDimensions;
 
-class UIContainer;
-class UIElement;
-
-class UIContainer{
-    UIContainer*                _parent;
+class UIContainer : public UIElement{
     UIEAlignment_t              _alignment;
-    std::vector<UIContainer*>   _container;
     std::vector<UIElement*>     _elements;
-    UIDimensions_t              _dimensions;
-    UIDimensions_t              _dimensionsInner;
     uint8_t                     _padding = 5;
+    void                        _setDimensions(){};
 
     public:
-        UIContainer(UIContainer* parent = nullptr, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
-        void            addUIContainer(UIContainer* container);
+        UIContainer(UIElement* parent = nullptr, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
         void            addUIElement(UIElement* element);
-        UIDimensions_t  getDimensions(){return _dimensions;};
-        UIDimensions_t  getDimensionsInner(){return _dimensionsInner;};
-        UIDimensions_t  getContainerDimensions(UIContainer* container);
         UIDimensions_t  getElementDimensions(UIElement* element);
         bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
         void            draw(bool task = false);

@@ -10,25 +10,27 @@
 
 #include <Arduino.h>
 #include "UITypes.h"
-#include "UIContainer.h"
+#include "TouchMetrics.h"
 
 class TFT_eSPI;
 class TFT_eSprite;
 
 class UIElement{
-    protected:
+    public:
         TFT_eSPI*           _tft;
         UIElement_t         _type = UIETYPE_ELEMENT;
-        UIContainer*        _parent;
+        UIElement*          _parent;
         UIEOrientation_t    _orientation;
         UIDimensions_t      _dimensions;
+        UIDimensions_t      _dimensionsInner;
         UIDimensions_t      _parentDimensions;
         TFT_eSprite*        _sprite;
         virtual void        _setDimensions() = 0;
-    public:
-        UIElement(UIContainer* parent = NULL, UIEOrientation_t orientation = CENTER_CENTER);
+
+        UIElement(UIElement* parent = NULL, UIEOrientation_t orientation = CENTER_CENTER);
         UIDimensions_t      getDimensions(){return _dimensions;};
         void                setDimensions(UIDimensions_t dimensions){_dimensions = dimensions;};
+        UIDimensions_t      getDimensionsInner(){return _dimensionsInner;};
         virtual bool        touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType) = 0;
         virtual void        draw(bool task = false) = 0;
         virtual void        reDraw() = 0;

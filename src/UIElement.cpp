@@ -6,7 +6,7 @@
 
 extern GUI* gui;
 
-UIElement::UIElement(UIContainer* parent, UIEOrientation_t orientation)
+UIElement::UIElement(UIElement* parent, UIEOrientation_t orientation)
 {
     _tft            = gui->getTTGO()->tft;
     _parent         = parent;
