@@ -160,7 +160,6 @@ void UIScreenCalendar::draw(bool init, bool task)
 
 void UIScreenCalendar::_drawCalendar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t padding, bool numbers)
 {
-    //uint8_t weeks         = ((_displayStartDayOfMonth + _displayEndOfMonth)+7-1)/7;
     uint8_t weeks           = 6;
     uint8_t dayWidth        = (w-(padding*2)-(6))/7;
     uint8_t dayHeight       = (h-(padding*2)-(weeks-1))/weeks;
@@ -218,12 +217,6 @@ void UIScreenCalendar::_drawCalendar(uint16_t x, uint16_t y, uint16_t w, uint16_
                 {
                     _tft->setTextColor(_backgroundColor);
                 }
-                /*
-                else if(displayMonth)
-                {
-                    _tft->setTextColor(_textColor);
-                }
-                */
                 else
                 {
                     _tft->setTextColor(_textColor);
