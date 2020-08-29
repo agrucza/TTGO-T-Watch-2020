@@ -6,4 +6,6 @@
 // => Function select
 //#define LILYGO_WATCH_LVGL                   //To use LVGL, you need to enable the macro LVGL
 
+#define LOAD_GFXFF
+
 #include <LilyGoWatch.h>

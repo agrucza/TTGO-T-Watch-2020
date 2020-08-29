@@ -11,10 +11,7 @@
 #include <Arduino.h>
 #include "UITypes.h"
 #include "UIElement.h"
-
-#define LOAD_GFXFF
-
-#include "TFT_eSPI/Fonts/GFXFF/gfxfont.h"
+#include "gfxfont.h"
 
 class GUI;
 class TFT_esPI;

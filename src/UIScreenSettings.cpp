@@ -2,7 +2,7 @@
 #include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
-#include "TFT_eSPI/Fonts/Custom/IconsFontsSup24pt7b.h"
+#include "fonts/IconsFontsSup24pt7b.h"
 
 UIScreenSettings::UIScreenSettings():UIScreen()
 {
