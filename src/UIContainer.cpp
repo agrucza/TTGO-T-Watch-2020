@@ -6,6 +6,7 @@
 
 UIContainer::UIContainer(UIContainer* parent, UIEAlignment_t alignment)
 {
+    //_type = UIETYPE_CONTAINER;
     Serial.println("UIContainer constructor");
     _parent     = parent;
     _alignment  = alignment;
@@ -41,14 +42,11 @@ UIContainer::UIContainer(UIContainer* parent, UIEAlignment_t alignment)
 
 void UIContainer::addUIContainer(UIContainer* container)
 {
-    UIContainerDetails_t details;
-    details.container = container;
-    _container.push_back(details);
+    _container.push_back(container);
 }
 
 void UIContainer::addUIElement(UIElement* element)
 {
-    UIElementDetails_t  newDetails;
     UIDimensions_t      dimensions = element->getDimensions();
     UIDimensions_t      tmpDimensions;
     uint16_t            size = 0;
@@ -58,7 +56,7 @@ void UIContainer::addUIElement(UIElement* element)
     {
         if(i < _elements.size())
         {
-            tmpDimensions = _elements[i].element->getDimensions();
+            tmpDimensions = _elements[i]->getDimensions();
         }
         else
         {
@@ -103,7 +101,7 @@ void UIContainer::addUIElement(UIElement* element)
 
     for(uint8_t i = 0; i < _elements.size(); i++)
     {
-        tmpDimensions = _elements[i].element->getDimensions();
+        tmpDimensions = _elements[i]->getDimensions();
         switch(_alignment)
         {
             case ALIGNMENT_VERTICAL:
@@ -115,12 +113,10 @@ void UIContainer::addUIElement(UIElement* element)
                 dimensions.topLeft.x    += tmpDimensions.bottomRight.x + 1;
                 break;
         }
-        _elements[i].element->setDimensions(tmpDimensions);
+        _elements[i]->setDimensions(tmpDimensions);
     }
 
     element->setDimensions(dimensions);
-    newDetails.element      = element;
-    newDetails.dimensions   = dimensions;
     
     switch(_alignment)
     {
@@ -132,7 +128,7 @@ void UIContainer::addUIElement(UIElement* element)
             break;
 
     }
-    _elements.push_back(newDetails);
+    _elements.push_back(element);
 }
 
 UIDimensions_t UIContainer::getContainerDimensions(UIContainer* container)
@@ -141,9 +137,9 @@ UIDimensions_t UIContainer::getContainerDimensions(UIContainer* container)
 
     for(uint8_t i = 0; i < _container.size(); i++)
     {
-        if(_container[i].container == container)
+        if(_container[i] == container)
         {
-            return _container[i].dimensions;
+            return _container[i]->getDimensions();
         }
     }
 
@@ -158,9 +154,9 @@ UIDimensions_t UIContainer::getElementDimensions(UIElement* element)
 
     for(uint8_t i = 0; i < _elements.size(); i++)
     {
-        if(_elements[i].element == element)
+        if(_elements[i] == element)
         {
-            return _elements[i].dimensions;
+            return _elements[i]->getDimensions();
         }
     }
 
@@ -182,7 +178,7 @@ void UIContainer::draw(bool task)
     {
         for(uint8_t element = 0; element < _elements.size(); element++)
         {
-            _elements[element].element->draw();
+            _elements[element]->draw();
         }
     }
 }
@@ -192,38 +188,38 @@ void UIContainer::reDraw()
 
 }
 
-void UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
+bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
-    bool eventDone = false;
     UIDimensions_t dim;
 
     for(uint8_t i = 0; i < _container.size(); i++)
     {
-        dim = _container[i].dimensions;
+        dim = _container[i]->getDimensions();
         if(
-            !eventDone
-            && lastX >= dim.topLeft.x
+            lastX >= dim.topLeft.x
             && lastX <= dim.topLeft.x + dim.bottomRight.x
             && lastY >= dim.topLeft.y
             && lastY <= dim.topLeft.y + dim.bottomRight.y
         )
         {
-            _container[i].container->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+            return _container[i]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
         }
     }
 
     for(uint8_t i = 0; i < _elements.size(); i++)
     {
-        dim = _elements[i].dimensions;
+        dim = _elements[i]->getDimensions();
         if(
-            !eventDone
-            && lastX >= dim.topLeft.x
+            lastX >= dim.topLeft.x
             && lastX <= dim.topLeft.x + dim.bottomRight.x
             && lastY >= dim.topLeft.y
             && lastY <= dim.topLeft.y + dim.bottomRight.y
         )
         {
-            _elements[i].element->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+            return _elements[i]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
         }
     }
+
+    // if we are here we have a container touch
+    return true;
 }

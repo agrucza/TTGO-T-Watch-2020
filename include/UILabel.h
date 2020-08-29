@@ -30,7 +30,7 @@ class UILabel : public UIElement{
         void    setFont(const GFXfont* font){_font = font;};
         void    setTextColor(uint8_t r, uint8_t g, uint8_t b);
         void    setBackgroundColor(int16_t r, int16_t g, int16_t b);
-        void    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
+        bool    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
         void    draw(bool task = false);
         void    reDraw();
 };

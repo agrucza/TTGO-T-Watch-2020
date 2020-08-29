@@ -12,6 +12,11 @@
 class UIElement;
 class UIContainer;
 
+enum UIElement_t : uint8_t{
+    UIETYPE_ELEMENT,
+    UIETYPE_CONTAINER
+};
+
 enum UIEAlignment_t : uint8_t {
     ALIGNMENT_HORIZONTAL,
     ALIGNMENT_VERTICAL
@@ -52,16 +57,6 @@ struct UIColor_t{
     int16_t r;
     int16_t g;
     int16_t b;
-};
-
-struct UIElementDetails_t{
-    UIElement*      element;
-    UIDimensions_t  dimensions;
-};
-
-struct UIContainerDetails_t{
-    UIContainer*    container;
-    UIDimensions_t  dimensions;
 };
 
 #endif /*__UITYPES_H */
