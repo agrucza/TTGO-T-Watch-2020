@@ -31,8 +31,8 @@ void UIScreenSettings::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
     _tft->setFreeFont(&IconsFontsSup24pt7b);
     _tft->drawString(
         "C",
-        x + (w - _tft->textWidth("C"))/2,
-        y + 3 + (h - _tft->fontHeight())/2
+        x + (w/2),
+        y + (h/2)
     );
 }
 

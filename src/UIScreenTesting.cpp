@@ -50,8 +50,8 @@ void UIScreenTesting::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
     _tft->setFreeFont(&FreeSansBold9pt7b);
     _tft->drawString(
         "TEST",
-        x + ((w - _tft->textWidth("TEST")) / 2),
-        y + ((h - _tft->fontHeight())/2) + 4
+        x + (w/2),
+        y + (h/2)
     );
 }
 

@@ -68,6 +68,7 @@ TFT_eSPI *GUI::getTFT()
  */
 void GUI::init()
 {
+    _tft->setTextDatum(MC_DATUM);
     _tft->fillScreen(TFT_BLACK);
     _touch = new TouchMetrics();
     _touch->setTouch(false);

@@ -131,7 +131,11 @@ void UIScreenCalendar::draw(bool init, bool task)
         // print today label/button
         if(_displayMonth != _month && _displayYear != _year)
         {
-            _tft->drawString("Today", _padding, _padding);
+            _tft->drawString(
+                "Today",
+                _padding + _tft->textWidth("Today")/2,
+                _padding + _tft->fontHeight()/2
+            );
         }
 
         if(_todayLabelWidth <= 0 && _todayLabelHeight <= 0)
@@ -142,7 +146,11 @@ void UIScreenCalendar::draw(bool init, bool task)
 
         char buf[30];
         strftime(buf, sizeof(buf), "%B %Y", &_displayTimeInfo);
-        _tft->drawString(buf, TFT_WIDTH - _padding - _tft->textWidth(buf), _padding);
+        _tft->drawString(
+            buf,
+            TFT_WIDTH - _padding - _tft->textWidth(buf)/2,
+            _padding + _tft->fontHeight()/2
+        );
 
         _tft->fillRect(_padding, _padding+_tft->fontHeight(), TFT_WIDTH, 4, _textColor);
 
@@ -223,8 +231,8 @@ void UIScreenCalendar::_drawCalendar(uint16_t x, uint16_t y, uint16_t w, uint16_
                 }
                 _tft->drawString(
                     dayNumber,
-                    x+padding+(day*(dayWidth+1)) + (dayWidth-_tft->textWidth(dayNumber))/2,
-                    y+padding+(week*(dayHeight+1)) + (dayHeight - _tft->fontHeight())/2 + 4
+                    x+padding+(day*(dayWidth+1)) + dayWidth/2,
+                    y+padding+(week*(dayHeight+1)) + dayHeight/2
                 );
             }
             counter++;
@@ -256,8 +264,8 @@ void UIScreenCalendar::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
     strftime(label, sizeof(label), "%A", &_displayTimeInfo);
     _tft->drawString(
         label,
-        (x + (w/2)) - (_tft->textWidth(label)/2),
-        (y + (h/2)) - ((weekdayHeight+dayOfMonthHeight)/2)
+        (x + (w/2)),
+        (y + (h/2)) - ((weekdayHeight+dayOfMonthHeight)/2) + weekdayHeight/2
     );
     
     // print day of month
@@ -265,8 +273,8 @@ void UIScreenCalendar::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
     sprintf(label, "%d", _day);
     _tft->drawString(
         label,
-        (x + (w/2)) - (_tft->textWidth(label)/2),
-        (y + (h/2)) - ((weekdayHeight+dayOfMonthHeight)/2) + weekdayHeight
+        (x + (w/2)),
+        (y + (h/2)) + ((weekdayHeight+dayOfMonthHeight)/2) - dayOfMonthHeight/2
     );
 }
 
