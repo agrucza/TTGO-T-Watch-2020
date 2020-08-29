@@ -16,7 +16,7 @@ void UILabel::_setDimensions()
 {
     _tft->setFreeFont(_font);
 
-    _dimensions                 = defaultUIDimensions;
+    _dimensions                 = _parent->getDimensionsInner();
     _dimensions.bottomRight.y   = _tft->fontHeight();
     _dimensions.bottomRight.x   = _tft->textWidth(_label);
     
@@ -25,9 +25,28 @@ void UILabel::_setDimensions()
         case CENTER_TOP:
         case CENTER_CENTER:
         case CENTER_BOTTOM:
-            _dimensions.topLeft.x += (_parent->getDimensions().bottomRight.x-_dimensions.bottomRight.x)/2;
+            _dimensions.topLeft.x += (_parent->getDimensionsInner().bottomRight.x-_dimensions.bottomRight.x)/2;
+            break;
+        case RIGHT_TOP:
+        case RIGHT_CENTER:
+        case RIGHT_BOTTOM:
+            //_dimensions.topLeft.x 
             break;
     }
+}
+
+void UILabel::setTextColor(uint8_t r, uint8_t g, uint8_t b)
+{
+    _fgColor.r  = r;
+    _fgColor.g  = g;
+    _fgColor.b  = b;
+}
+
+void UILabel::setBackgroundColor(int16_t r, int16_t g, int16_t b)
+{
+    _bgColor.r  = r;
+    _bgColor.g  = g;
+    _bgColor.b  = b;
 }
 
 void UILabel::draw(bool task)

@@ -31,18 +31,8 @@ class UILabel : public UIElement{
     public:
         UILabel(String label, const GFXfont* font, UIContainer* parent = NULL, UIEOrientation_t orientation = CENTER_CENTER);
         void    setFont(const GFXfont* font){_font = font;};
-        void    setTextColor(uint8_t r, uint8_t g, uint8_t b)
-        {
-            _fgColor.r  = r;
-            _fgColor.g  = g;
-            _fgColor.b  = b;
-        };
-        void    setBackgroundColor(int16_t r, int16_t g, int16_t b)
-        {
-            _bgColor.r  = r;
-            _bgColor.g  = g;
-            _bgColor.b  = b;
-        };
+        void    setTextColor(uint8_t r, uint8_t g, uint8_t b);
+        void    setBackgroundColor(int16_t r, int16_t g, int16_t b);
         void    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
         void    draw(bool task = false);
         void    reDraw();

@@ -23,6 +23,7 @@ class UIContainer{
     std::vector<UIContainerDetails_t>   _container;
     std::vector<UIElementDetails_t>     _elements;
     UIDimensions_t                      _dimensions;
+    UIDimensions_t                      _dimensionsInner;
     uint8_t                             _padding = 5;
 
     public:
@@ -30,6 +31,7 @@ class UIContainer{
         void            addUIContainer(UIContainer* container);
         void            addUIElement(UIElement* element);
         UIDimensions_t  getDimensions(){return _dimensions;};
+        UIDimensions_t  getDimensionsInner(){return _dimensionsInner;};
         UIDimensions_t  getContainerDimensions(UIContainer* container);
         UIDimensions_t  getElementDimensions(UIElement* element);
         void            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);

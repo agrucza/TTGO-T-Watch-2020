@@ -23,6 +23,11 @@ UIContainer::UIContainer(UIContainer* parent, UIEAlignment_t alignment)
         _dimensions.bottomRight.x   = dim.bottomRight.x - 2*_padding;
         _dimensions.bottomRight.y   = dim.bottomRight.y - 2*_padding;
     }
+    _dimensionsInner = _dimensions;
+    _dimensionsInner.topLeft.x += _padding;
+    _dimensionsInner.topLeft.y += _padding;
+    _dimensionsInner.bottomRight.x -= 2*_padding;
+    _dimensionsInner.bottomRight.y -= 2*_padding;
 }
 
 void UIContainer::addUIContainer(UIContainer* container)
@@ -66,7 +71,6 @@ void UIContainer::addUIElement(UIElement* element)
     switch(_alignment)
     {
         case ALIGNMENT_VERTICAL:
-            dimensions.topLeft.x = 0;
             if(size > (_dimensions.bottomRight.y + (2*_padding)))
             {
                 dimensions.topLeft.y = _padding;
@@ -77,7 +81,6 @@ void UIContainer::addUIElement(UIElement* element)
             }
             break;
         case ALIGNMENT_HORIZONTAL:
-            dimensions.topLeft.y = 0;
             if(size > (_dimensions.bottomRight.x + (2*_padding)))
             {
                 dimensions.topLeft.x = 0;

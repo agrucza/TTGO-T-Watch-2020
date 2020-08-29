@@ -9,9 +9,9 @@ UIScreenTesting::UIScreenTesting():UIScreen()
 {
     _label          = "Testing";
     _padding        = 5;
+    /*
+    _container      = new UIContainer();
     
-    _container      = new UIContainer(); 
-        
     UILabel* label1 = new UILabel("Test1", &FreeSansBold9pt7b, _container);
     UILabel* label2 = new UILabel("Test2", &FreeSansBold12pt7b, _container);
     UILabel* label3 = new UILabel("Test3", &FreeSansBold18pt7b, _container);
@@ -26,13 +26,14 @@ UIScreenTesting::UIScreenTesting():UIScreen()
     _container->addUIElement(label2);
     _container->addUIElement(label3);
     _container->addUIElement(label4);
+    */
 }
 
 void UIScreenTesting::draw(bool init, bool task)
 {
     if(!task)
     {
-        _tft->fillScreen(TFT_BLACK);
+        _tft->fillScreen(_backgroundColor);
     }
     _container->draw();
 }
