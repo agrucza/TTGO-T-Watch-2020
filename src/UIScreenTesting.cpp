@@ -4,6 +4,7 @@
 #include "LilyGoWatch.h"
 #include "UIContainer.h"
 #include "UILabel.h"
+#include "UISwitch.h"
 
 UIScreenTesting::UIScreenTesting():UIScreen()
 {
@@ -15,23 +16,28 @@ UIScreenTesting::UIScreenTesting():UIScreen()
     _container      = new UIContainer();
     
     Serial.println("Init labels");
-    UILabel* label1 = new UILabel("Test1", &FreeSansBold9pt7b, _container);
-    UILabel* label2 = new UILabel("Test2", &FreeSansBold12pt7b, _container, LEFT_CENTER);
-    UILabel* label3 = new UILabel("Test3", &FreeSansBold18pt7b, _container, CENTER_CENTER);
-    UILabel* label4 = new UILabel("Test4", &FreeSansBold24pt7b, _container, RIGHT_CENTER);
+    UILabel* label1 = new UILabel("Test1", &FreeSansBold9pt7b, _container,LEFT_CENTER);
+    UILabel* label2 = new UILabel("Test2", &FreeSansBold12pt7b, _container, CENTER_CENTER);
+    UILabel* label3 = new UILabel("Test3", &FreeSansBold18pt7b, _container, RIGHT_CENTER);
     
     Serial.println("Set label color");
     label1->setTextColor(255,255,255);
     label2->setTextColor(255,255,255);
     label3->setTextColor(255,255,255);
-    label4->setTextColor(255,255,255);
 
     Serial.println("Add labels to container");
     _container->addUIElement(label1);
     _container->addUIElement(label2);
     _container->addUIElement(label3);
-    _container->addUIElement(label4);
-    
+
+    // test with new elements
+    UISwitch* switch1 = new UISwitch("TestSwitch1", &FreeSans9pt7b, _container);
+    UISwitch* switch2 = new UISwitch("TestSwitch2", &FreeSans12pt7b, _container);
+    switch1->setTextColor(255,255,255);
+    switch2->setTextColor(255,255,255);
+    _container->addUIElement(switch1);;
+    _container->addUIElement(switch2);
+
     Serial.println("Init UIScreenTesting done");
 }
 
