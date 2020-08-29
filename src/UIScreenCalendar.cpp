@@ -129,7 +129,7 @@ void UIScreenCalendar::draw(bool init, bool task)
         _tft->setTextColor(_textColor);
         
         // print today label/button
-        if(_displayMonth != _month && _displayYear != _year)
+        if(_displayMonth != _month || _displayYear != _year)
         {
             _tft->drawString(
                 "Today",
@@ -306,12 +306,12 @@ void UIScreenCalendar::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX,
         case TouchMetrics::TOUCH:
             // today label click
             if(
-                (_displayMonth != _month && _displayYear != _year)
+                (_displayMonth != _month || _displayYear != _year)
                 && (lastX <= (_padding + _todayLabelWidth))
                 && (lastY <= (_padding + _todayLabelHeight))
             )
             {
-                draw();
+                draw(true);
             }
             break;
     }
