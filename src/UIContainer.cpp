@@ -150,7 +150,7 @@ void UIContainer::draw(bool task)
     {
         for(uint8_t element = 0; element < _elements.size(); element++)
         {
-            _elements[element]->draw();
+            _elements[element]->draw(task);
         }
     }
 }

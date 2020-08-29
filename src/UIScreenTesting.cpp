@@ -41,7 +41,7 @@ void UIScreenTesting::draw(bool init, bool task)
     {
         _tft->fillScreen(_backgroundColor);
     }
-    _container->draw();
+    _container->draw(task);
 }
 
 void UIScreenTesting::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
