@@ -5,6 +5,7 @@
 
 UIScreenMain::UIScreenMain():UIScreen()
 {
+    Serial.println("UIScreenMain constructor");
     _label          = "Main";
     _iconSizeX      = _iconSizeY = 2;
     _iconsMax       = 4;
@@ -15,17 +16,22 @@ UIScreenMain::UIScreenMain():UIScreen()
     _iconW          = (_iconAreaWidth - ((_iconsMax-1)*2))/_iconsMax;
     _iconH          = (_iconAreaHeight - ((_iconsMax-1)*2))/_iconsMax;
 
+    Serial.println("Setting icon positions");
     // setup screens
     _setScreenIcon(SCREEN_CALENDAR, 0, 0);
     _setScreenIcon(SCREEN_SETTINGS, 2, 0);
     _setScreenIcon(SCREEN_TESTING, 3, 0);
+    Serial.println("UIScreenMain constructor done");
 }
 
 void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
 {
+    Serial.println("UIScreenMain::_setScreenIcon()");
+    Serial.println("UIScreenMain::_setScreenIcon: getting icons width/height");
     uint8_t iconsX  = _gui->getUIScreenIconWidth(screen);
     uint8_t iconsY  = _gui->getUIScreenIconHeight(screen);
     
+    Serial.println("UIScreenMain::_setScreenIcon: checking available height icon space");
     while(_displayIcons.size() < (posY + iconsY)){
         std::vector<screens_t> row;
         while(row.size() < _iconsMax){
@@ -43,6 +49,7 @@ void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
         // TODO: set icon background to red to notify of wrong assignment?
     }
     
+    Serial.println("UIScreenMain::_setScreenIcon: setting icons");
     for(uint8_t y = posY; y < (posY + iconsY); y++)
     {
         for(uint8_t x = posX; x < (posX + iconsX); x++)
@@ -50,6 +57,8 @@ void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
             _displayIcons[y][x] = screen;
         }
     }
+    
+    Serial.println("UIScreenMain::_setScreenIcon: done");
 }
 
 void UIScreenMain::draw(bool init, bool task)

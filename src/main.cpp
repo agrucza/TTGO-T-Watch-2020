@@ -32,7 +32,10 @@ GUI *gui;
 void setup()
 {
     Serial.begin(115200);
+
+    Serial.println("Setup...");
     
+    Serial.println("SPIFFS init");
     if (!SPIFFS.begin())
     {
         Serial.println("SPIFFS initialisation failed!");
@@ -41,28 +44,37 @@ void setup()
     
     ttgo = TTGOClass::getWatch();
 
+    Serial.println("Init TTGO");
     //Initialize TWatch
     ttgo->begin();
 
+    Serial.println("Energy setup");
     Energy::setup(ttgo, gui);
 
+    Serial.println("APX IRQ setup");
     // Turn on the IRQ used
     Energy::setupAXPIRQ();
 
+    Serial.println("Turning off unused power");
     // Turn off unused power
     Energy::disableUnusedPower();
 
+    Serial.println("IRQ setup");
     Energy::setupIRQ();
 
+    Serial.println("RTC check");
     //Check if the RTC clock matches, if not, use compile time
     ttgo->rtc->check();
 
+    Serial.println("RTC sync");
     //Synchronize time to system time
     ttgo->rtc->syncToSystem();
 
+    Serial.println("Network setup");
     //Setting up the network
     Energy::network();
 
+    Serial.println("GUI init");
     //Execute your own GUI interface
     gui->setTTGO(ttgo);
     gui->init();

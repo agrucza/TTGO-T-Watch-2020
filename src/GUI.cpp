@@ -74,18 +74,26 @@ void GUI::init()
     _lastActionTime = millis();
     updateBatteryLevel();
 
+    Serial.println("Screen setup");
     // creating screens
+    Serial.println("Calling UIScreenStartup()");
     _screens[SCREEN_STARTUP]    = new UIScreenStartup();
+    Serial.println("Calling UIScreenStandby()");
     _screens[SCREEN_STANDBY]    = new UIScreenStandby();
+    Serial.println("Calling UIScreenTesting()");
     _screens[SCREEN_TESTING]    = new UIScreenTesting();
+    Serial.println("Calling UIScreenCalendar()");
     _screens[SCREEN_CALENDAR]   = new UIScreenCalendar();
+    Serial.println("Calling UIScreenSettings()");
     _screens[SCREEN_SETTINGS]   = new UIScreenSettings();
 
     // by now main needs to be initialized after all other screens
     // otherwise there will be a fatal error when the launcher
     // tries to access other screens methods
+    Serial.println("Calling UIScreenMain()");
     _screens[SCREEN_MAIN]       = new UIScreenMain();
 
+    Serial.println("Setting SCREEN_STARTUP");
     // as we init the GUI here we want to start the standby screen
     setScreen(SCREEN_STARTUP);
     //setScreen(SCREEN_TESTING);

@@ -6,28 +6,37 @@
 
 UIContainer::UIContainer(UIContainer* parent, UIEAlignment_t alignment)
 {
+    Serial.println("UIContainer constructor");
     _parent     = parent;
     _alignment  = alignment;
-    
+
+    Serial.println("Setting container dimensions");
     if(_parent == nullptr)
     {
+        Serial.println("Container has no parent");
+        Serial.println("Dimensions will be screen dimensions");
         _dimensions.topLeft.x       = _dimensions.topLeft.y = 0;
         _dimensions.bottomRight.x   = TFT_WIDTH;
         _dimensions.bottomRight.y   = TFT_HEIGHT;
     }
     else
     {
+        Serial.println("Container has parent");
+        Serial.println("Dimensions will be parents inner dimensions");
         UIDimensions_t dim          = _parent->getDimensions();
         _dimensions.topLeft.x       = dim.topLeft.x + _padding;
         _dimensions.topLeft.y       = dim.topLeft.y + _padding;
         _dimensions.bottomRight.x   = dim.bottomRight.x - 2*_padding;
         _dimensions.bottomRight.y   = dim.bottomRight.y - 2*_padding;
     }
+    
+    Serial.println("Setting containers inner dimensions");
     _dimensionsInner = _dimensions;
     _dimensionsInner.topLeft.x += _padding;
     _dimensionsInner.topLeft.y += _padding;
     _dimensionsInner.bottomRight.x -= 2*_padding;
     _dimensionsInner.bottomRight.y -= 2*_padding;
+    Serial.println("UIContainer constructor done");
 }
 
 void UIContainer::addUIContainer(UIContainer* container)
