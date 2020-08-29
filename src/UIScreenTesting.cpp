@@ -16,9 +16,9 @@ UIScreenTesting::UIScreenTesting():UIScreen()
     
     Serial.println("Init labels");
     UILabel* label1 = new UILabel("Test1", &FreeSansBold9pt7b, _container);
-    UILabel* label2 = new UILabel("Test2", &FreeSansBold12pt7b, _container);
-    UILabel* label3 = new UILabel("Test3", &FreeSansBold18pt7b, _container);
-    UILabel* label4 = new UILabel("Test4", &FreeSansBold24pt7b, _container);
+    UILabel* label2 = new UILabel("Test2", &FreeSansBold12pt7b, _container, LEFT_CENTER);
+    UILabel* label3 = new UILabel("Test3", &FreeSansBold18pt7b, _container, CENTER_CENTER);
+    UILabel* label4 = new UILabel("Test4", &FreeSansBold24pt7b, _container, RIGHT_CENTER);
     
     Serial.println("Set label color");
     label1->setTextColor(255,255,255);

@@ -30,7 +30,7 @@ void UILabel::_setDimensions()
         case RIGHT_TOP:
         case RIGHT_CENTER:
         case RIGHT_BOTTOM:
-            //_dimensions.topLeft.x 
+            _dimensions.topLeft.x += _parent->getDimensionsInner().bottomRight.x - _dimensions.bottomRight.x;
             break;
     }
 }
