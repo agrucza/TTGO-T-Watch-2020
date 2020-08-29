@@ -10,7 +10,7 @@ UIScreenTesting::UIScreenTesting():UIScreen()
     Serial.println("Init UIScreenTesting");
     _label          = "Testing";
     _padding        = 5;
-    /*
+    
     Serial.println("Init container");
     _container      = new UIContainer();
     
@@ -31,7 +31,7 @@ UIScreenTesting::UIScreenTesting():UIScreen()
     _container->addUIElement(label2);
     _container->addUIElement(label3);
     _container->addUIElement(label4);
-    */
+    
     Serial.println("Init UIScreenTesting done");
 }
 

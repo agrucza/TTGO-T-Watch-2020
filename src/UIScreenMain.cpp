@@ -40,8 +40,8 @@ void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
         _displayIcons.push_back(row);
     }
 
-    uint8_t iconsAvailableX = _displayIcons[posX].size();
-    
+    uint8_t iconsAvailableX = _displayIcons[posY].size();
+
     if((iconsAvailableX < posX) && (iconsAvailableX < (posX + iconsX)))
     {
         // icon will be too wide but starts within visible area - shorten icon to remaining space
