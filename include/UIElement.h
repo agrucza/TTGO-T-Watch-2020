@@ -24,10 +24,10 @@ class UIElement{
         UIDimensions_t      _dimensions;
         UIDimensions_t      _dimensionsInner;
         UIDimensions_t      _parentDimensions;
-        TFT_eSprite*        _sprite;
+        TFT_eSprite*        _sprite = nullptr;
         virtual void        _setDimensions() = 0;
 
-        UIElement(UIElement* parent = NULL, UIEOrientation_t orientation = CENTER_CENTER);
+        UIElement(UIElement* parent = nullptr, UIEOrientation_t orientation = CENTER_CENTER);
         UIDimensions_t      getDimensions(){return _dimensions;};
         void                setDimensions(UIDimensions_t dimensions){_dimensions = dimensions;};
         UIDimensions_t      getDimensionsInner(){return _dimensionsInner;};

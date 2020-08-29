@@ -12,7 +12,7 @@ UIElement::UIElement(UIElement* parent, UIEOrientation_t orientation)
     _parent         = parent;
     _orientation    = orientation;
 
-    if(_parent != NULL)
+    if(_parent != nullptr)
     {
         _parentDimensions = _parent->getDimensions();
     }
