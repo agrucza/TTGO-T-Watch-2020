@@ -46,7 +46,13 @@ void UIScreenTesting::draw(bool init, bool task)
 
 void UIScreenTesting::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
-    
+    _tft->fillRect(x,y,w,h, _iconColor);
+    _tft->setFreeFont(&FreeSansBold9pt7b);
+    _tft->drawString(
+        "TEST",
+        x + ((w - _tft->textWidth("TEST")) / 2),
+        y + ((h - _tft->fontHeight())/2) + 4
+    );
 }
 
 void UIScreenTesting::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
