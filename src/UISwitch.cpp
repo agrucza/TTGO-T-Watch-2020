@@ -6,10 +6,13 @@
 UISwitch::UISwitch(String label, const GFXfont* font, UIElement* parent, UIEOrientation_t orientation)
 :UIElement(parent,orientation)
 {
-    _label          = label;
-    _bgColor.r      = _bgColor.g = _bgColor.b = -1;
-    _font           = font;
-    _paddingInner   = 10;
+    _label              = label;
+    _bgColor.r          = _bgColor.g = _bgColor.b = -1;
+    _font               = font;
+    _paddingInner       = 10;
+    _switchEnabled      = false;
+    _swColorActive      = _tft->color565(41,128,185); //#2980b9
+    _swColorInactive    = _tft->color565(127,140,141); //#7f8c8d
     _setDimensions();
 }
 
@@ -56,31 +59,52 @@ void UISwitch::draw(bool task)
 {
     if(!task)
     {
+        UIPoint_t posSwitchE;
+        uint16_t textWidth,textHeight;
+
         _tft->setFreeFont(_font);
         _tft->setTextColor(_tft->color565(_textColor.r,_textColor.g,_textColor.b));
 
+        textWidth   = _tft->textWidth(_label);
+        textHeight  = _tft->fontHeight();
+
         _tft->drawString(
             _label,
-            _dimensions.topLeft.x + (_tft->textWidth(_label)/2),
+            _dimensions.topLeft.x + (textWidth/2),
             _dimensions.topLeft.y + (_dimensions.bottomRight.y/2)
         );
 
+        posSwitchE.x = _dimensions.topLeft.x + textWidth + _paddingInner;
+        posSwitchE.y = _dimensions.topLeft.y;
+
+        // switch outline
         _tft->fillRoundRect(
-            _dimensions.topLeft.x + _tft->textWidth(_label) + _paddingInner,
-            _dimensions.topLeft.y,
+            posSwitchE.x,
+            posSwitchE.y,
             _switchSize,
-            _tft->fontHeight(),
-            _tft->fontHeight()/2,
+            textHeight,
+            textHeight/2,
             _tft->color565(_textColor.r,_textColor.g,_textColor.b)
         );
 
+        // switch inner
         _tft->fillRoundRect(
-            _dimensions.topLeft.x + _tft->textWidth(_label) + _paddingInner + 2,
-            _dimensions.topLeft.y + 2,
+            posSwitchE.x + 2,
+            posSwitchE.y + 2,
             _switchSize - 4,
-            _tft->fontHeight() - 4,
-            (_tft->fontHeight()-4)/2,
+            textHeight - 4,
+            (textHeight-4)/2,
             _tft->color565(52,73,94) //#34495e
+        );
+
+        // switch element
+        _tft->fillRoundRect(
+            posSwitchE.x + (_switchEnabled? _switchSize - (textHeight -8) - 4 : 4),
+            posSwitchE.y + 4,
+            textHeight - 8,
+            textHeight - 8,
+            (textHeight-8)/2,
+            (_switchEnabled ? _swColorActive : _swColorInactive)
         );
     }
 }
@@ -92,6 +116,16 @@ void UISwitch::reDraw()
 
 bool UISwitch::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
+    switch (touchType)
+    {
+    case TouchMetrics::TOUCH:
+        _switchEnabled ^= true;
+        draw();
+        break;
+    
+    default:
+        break;
+    }
     /*
     char buf[50];
     _tft->setFreeFont();

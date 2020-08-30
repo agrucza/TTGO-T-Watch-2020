@@ -35,7 +35,9 @@ UIScreenTesting::UIScreenTesting():UIScreen()
     UISwitch* switch2 = new UISwitch("TestSwitch2", &FreeSans12pt7b, _container);
     switch1->setTextColor(255,255,255);
     switch2->setTextColor(255,255,255);
-    _container->addUIElement(switch1);;
+    switch1->setEnabled(false);
+    switch2->setEnabled(true);
+    _container->addUIElement(switch1);
     _container->addUIElement(switch2);
 
     Serial.println("Init UIScreenTesting done");

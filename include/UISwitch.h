@@ -20,9 +20,9 @@ class UISwitch : public UIElement{
     String          _label;
     const GFXfont*  _font;
     UIColor_t       _textColor;
-    UIColor_t       _swColorActive;
-    UIColor_t       _swColorInactive;
     UIColor_t       _bgColor;
+    uint16_t        _swColorActive;
+    uint16_t        _swColorInactive;
     uint8_t         _paddingInner;
     uint8_t         _switchSize;
     bool            _switchEnabled;
