@@ -16,8 +16,6 @@
 class GUI;
 class TFT_esPI;
 
-enum screens_t : uint8_t;
-
 class UILabel : public UIElement{
     String          _label;
     const GFXfont*  _font;

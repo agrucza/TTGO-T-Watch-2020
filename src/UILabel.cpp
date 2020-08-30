@@ -54,7 +54,7 @@ void UILabel::draw(bool task)
     if(!task)
     {
         _tft->setFreeFont(_font);
-        _tft->setTextColor(_tft->color565(_fgColor.r,_fgColor.g,_fgColor.b), _tft->color565(255,0,0));
+        _tft->setTextColor(_tft->color565(_fgColor.r,_fgColor.g,_fgColor.b));
 
         _tft->drawString(
             _label,
