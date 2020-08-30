@@ -24,9 +24,9 @@ enum {
     Q_EVENT_AXP_INT,
 };
 
-TTGOClass       *Energy::_ttgo      = nullptr;
-GUI             *Energy::_gui       = nullptr;
-bool            Energy::_lenergy    = false;
+TTGOClass       *Energy::_ttgo          = nullptr;
+GUI             *Energy::_gui           = nullptr;
+bool            Energy::_lowEnergy      = false;
 TaskHandle_t    GUI::taskHandle;
 
 void Energy::setupAXPIRQ()
@@ -124,7 +124,7 @@ void Energy::lowEnergy()
         _ttgo->bma->enableStepCountInterrupt(false);
         _ttgo->displaySleep();
         if (!WiFi.isConnected()) {
-            _lenergy = true;
+            _lowEnergy = true;
             vTaskSuspend(GUI::taskHandle);
             WiFi.mode(WIFI_OFF);
             // rtc_clk_cpu_freq_set(RTC_CPU_FREQ_2M);
@@ -134,7 +134,7 @@ void Energy::lowEnergy()
             gpio_wakeup_enable ((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
             gpio_wakeup_enable ((gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL);
             esp_sleep_enable_gpio_wakeup ();
-            esp_light_sleep_start();
+            setSleep();
         }
     } else {
         _ttgo->displayWakeup();
@@ -160,8 +160,8 @@ void Energy::checkIRQ()
     //! Fast response wake-up interrupt
     EventBits_t  bits = xEventGroupGetBits(Event::isrGroup);
     if (bits & WATCH_FLAG_SLEEP_EXIT) {
-        if (_lenergy) {
-            _lenergy = false;
+        if (_lowEnergy) {
+            _lowEnergy = false;
             // rtc_clk_cpu_freq_set(RTC_CPU_FREQ_160M);
             setCpuFrequencyMhz(160);
         }
@@ -230,4 +230,31 @@ void Energy::checkIRQ()
             break;
         }
     }
+}
+
+void Energy::getWakeup()
+{
+    esp_sleep_wakeup_cause_t wakeup_reason;
+
+    wakeup_reason = esp_sleep_get_wakeup_cause();
+
+    switch(wakeup_reason)
+    {
+        case ESP_SLEEP_WAKEUP_TIMER:
+            // handle tasks
+            _gui->sleepTaskHandler();
+            // set light sleep
+            Energy::setSleep();
+        break;
+        default:
+            //Serial.println("NO Wakeup timer");
+            break;
+    }
+}
+
+void Energy::setSleep()
+{
+    // timer wakeup every 2 seconds
+    esp_sleep_enable_timer_wakeup(2000000);
+    esp_light_sleep_start();
 }

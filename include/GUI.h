@@ -104,6 +104,7 @@ class GUI {
         static String           getUIScreenLabel(screens_t screen);
         static void             setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second);
         static void             taskHandler(void * parameters);
+        static void             sleepTaskHandler();
 };
 
 #endif /*__GUI_H */

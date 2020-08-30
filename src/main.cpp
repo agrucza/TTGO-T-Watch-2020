@@ -88,6 +88,9 @@ void loop()
     if (ttgo->bl->isOn() && GUI::getInactivityTime() > DEFAULT_SCREEN_TIMEOUT) {
         Energy::lowEnergy();
     }
+
+    // if wakeup get reason
+    Energy::getWakeup();
     
     delay(50);
 }
