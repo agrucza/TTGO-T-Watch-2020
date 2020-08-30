@@ -3,8 +3,8 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 #include "UIContainer.h"
-#include "UILabel.h"
-#include "UISwitch.h"
+#include "UIElementLabel.h"
+#include "UIElementSwitch.h"
 
 UIScreenTesting::UIScreenTesting():UIScreen()
 {
@@ -16,9 +16,9 @@ UIScreenTesting::UIScreenTesting():UIScreen()
     _container      = new UIContainer();
     
     Serial.println("Init labels");
-    UILabel* label1 = new UILabel("Test1", &FreeSansBold9pt7b, _container,LEFT_CENTER);
-    UILabel* label2 = new UILabel("Test2", &FreeSansBold12pt7b, _container, CENTER_CENTER);
-    UILabel* label3 = new UILabel("Test3", &FreeSansBold18pt7b, _container, RIGHT_CENTER);
+    UIElementLabel* label1 = new UIElementLabel("Test1", &FreeSansBold9pt7b, _container,LEFT_CENTER);
+    UIElementLabel* label2 = new UIElementLabel("Test2", &FreeSansBold12pt7b, _container, CENTER_CENTER);
+    UIElementLabel* label3 = new UIElementLabel("Test3", &FreeSansBold18pt7b, _container, RIGHT_CENTER);
     
     Serial.println("Set label color");
     label1->setTextColor(FLAT_UI_V1_CLOUDS);
@@ -32,8 +32,8 @@ UIScreenTesting::UIScreenTesting():UIScreen()
 
     Serial.println("Create switches");
     // test with new elements
-    UISwitch* switch1 = new UISwitch("TestSwitch1", &FreeSans9pt7b, _container);
-    UISwitch* switch2 = new UISwitch("TestSwitch2", &FreeSans12pt7b, _container);
+    UIElementSwitch* switch1 = new UIElementSwitch("TestSwitch1", &FreeSans9pt7b, _container);
+    UIElementSwitch* switch2 = new UIElementSwitch("TestSwitch2", &FreeSans12pt7b, _container);
 
     Serial.println("Switches text color");
     switch1->setTextColor(FLAT_UI_V1_CLOUDS);

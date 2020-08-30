@@ -1,12 +1,12 @@
 /**
-    This is the UILabel class
-    @file UILabel.h
+    This is the UIlementELabel class
+    @file UIElementLabel.h
     @author Alexander Grucza
     @version 0.1 8/03/2020
 */
 
-#ifndef __UILABEL_H
-#define __UILABEL_H
+#ifndef __UIELEMENTLABEL_H
+#define __UIELEMENTLABEL_H
 
 #include <Arduino.h>
 #include "UITypes.h"
@@ -16,7 +16,7 @@
 class GUI;
 class TFT_esPI;
 
-class UILabel : public UIElement{
+class UIElementLabel : public UIElement{
     String          _label;
     const GFXfont*  _font;
     uint16_t        _fgColor;
@@ -24,7 +24,7 @@ class UILabel : public UIElement{
     void            _setDimensions();
 
     public:
-        UILabel(String label, const GFXfont* font, UIElement* parent = nullptr, UIEOrientation_t orientation = CENTER_CENTER);
+        UIElementLabel(String label, const GFXfont* font, UIElement* parent = nullptr, UIEOrientation_t orientation = CENTER_CENTER);
         void    setFont(const GFXfont* font){_font = font;};
         void    setTextColor(uint16_t color){_fgColor = color;};
         void    setBackgroundColor(int16_t color){_bgColor = color;};
@@ -33,4 +33,4 @@ class UILabel : public UIElement{
         void    reDraw();
 };
 
-#endif /*__UILABEL_H */
+#endif /*__UIELEMENTLABEL_H */

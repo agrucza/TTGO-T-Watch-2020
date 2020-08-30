@@ -1,12 +1,12 @@
 /**
-    This is the UISwitch class
-    @file UISwitch.h
+    This is the UIElementSwitch class
+    @file UIElementSwitch.h
     @author Alexander Grucza
     @version 0.1 8/29/2020
 */
 
-#ifndef __UISWITCH_H
-#define __UISWITCH_H
+#ifndef __UIELEMENTSWITCH_H
+#define __UIELEMENTSWITCH_H
 
 #include <Arduino.h>
 #include "UITypes.h"
@@ -16,7 +16,7 @@
 class GUI;
 class TFT_esPI;
 
-class UISwitch : public UIElement{
+class UIElementSwitch : public UIElement{
     String          _label;
     const GFXfont*  _font;
     uint16_t        _textColor;
@@ -29,7 +29,7 @@ class UISwitch : public UIElement{
     void            _setDimensions();
 
     public:
-        UISwitch(String label, const GFXfont* font, UIElement* parent = nullptr, UIEOrientation_t orientation = CENTER_CENTER);
+        UIElementSwitch(String label, const GFXfont* font, UIElement* parent = nullptr, UIEOrientation_t orientation = CENTER_CENTER);
         void    setTextColor(uint16_t color){_textColor = color;};
         void    setBackgroundColor(uint16_t color){_bgColor = color;};
         void    setEnabled(bool enable){_switchEnabled = enable;};
@@ -39,4 +39,4 @@ class UISwitch : public UIElement{
         void    reDraw();
 };
 
-#endif /*__UISWITCH_H */
+#endif /*__UIELEMENTSWITCH_H */
