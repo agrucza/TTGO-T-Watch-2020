@@ -1,4 +1,5 @@
 #include "UIScreenCalendar.h"
+#include "UIColors.h"
 #include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
@@ -6,10 +7,10 @@
 UIScreenCalendar::UIScreenCalendar():UIScreen()
 {
     _label              = "Calendar";
-    _weekDayColor       = _tft->color565(189, 195, 199);    //#bdc3c7
-    _weekEndColor       = _tft->color565(127, 140, 141);    //#7f8c8d
-    _todayColor         = _tft->color565(41, 128, 185);     //#2980b9
-    _highlightDayColor  = _tft->color565(149, 165, 166);    //#95a5a6
+    _weekDayColor       = FLAT_UI_V1_SILVER;
+    _weekEndColor       = FLAT_UI_V1_ASBESTOS;
+    _todayColor         = FLAT_UI_V1_BELIZE_HOLE;
+    _highlightDayColor  = FLAT_UI_V1_PETER_RIVER;
     _padding            = 10;
     _iconSizeX          = 2;
     _iconSizeY          = 2;

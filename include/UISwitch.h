@@ -19,8 +19,8 @@ class TFT_esPI;
 class UISwitch : public UIElement{
     String          _label;
     const GFXfont*  _font;
-    UIColor_t       _textColor;
-    UIColor_t       _bgColor;
+    uint16_t        _textColor;
+    uint16_t        _bgColor;
     uint16_t        _swColorActive;
     uint16_t        _swColorInactive;
     uint8_t         _paddingInner;
@@ -30,8 +30,8 @@ class UISwitch : public UIElement{
 
     public:
         UISwitch(String label, const GFXfont* font, UIElement* parent = nullptr, UIEOrientation_t orientation = CENTER_CENTER);
-        void    setTextColor(uint8_t r, uint8_t g, uint8_t b);
-        void    setBackgroundColor(int16_t r, int16_t g, int16_t b);
+        void    setTextColor(uint16_t color){_textColor = color;};
+        void    setBackgroundColor(uint16_t color){_bgColor = color;};
         void    setEnabled(bool enable){_switchEnabled = enable;};
         bool    getEnabled(){return _switchEnabled;};
         bool    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);

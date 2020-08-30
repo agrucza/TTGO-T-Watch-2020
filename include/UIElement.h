@@ -11,6 +11,7 @@
 #include <Arduino.h>
 #include "UITypes.h"
 #include "TouchMetrics.h"
+#include "UIColors.h"
 
 class TFT_eSPI;
 class TFT_eSprite;

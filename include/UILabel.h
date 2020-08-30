@@ -19,15 +19,15 @@ class TFT_esPI;
 class UILabel : public UIElement{
     String          _label;
     const GFXfont*  _font;
-    UIColor_t       _fgColor;
-    UIColor_t       _bgColor;
+    uint16_t        _fgColor;
+    uint16_t        _bgColor;
     void            _setDimensions();
 
     public:
         UILabel(String label, const GFXfont* font, UIElement* parent = nullptr, UIEOrientation_t orientation = CENTER_CENTER);
         void    setFont(const GFXfont* font){_font = font;};
-        void    setTextColor(uint8_t r, uint8_t g, uint8_t b);
-        void    setBackgroundColor(int16_t r, int16_t g, int16_t b);
+        void    setTextColor(uint16_t color){_fgColor = color;};
+        void    setBackgroundColor(int16_t color){_bgColor = color;};
         bool    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
         void    draw(bool task = false);
         void    reDraw();

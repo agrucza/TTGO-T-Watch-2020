@@ -21,9 +21,9 @@ UIScreenTesting::UIScreenTesting():UIScreen()
     UILabel* label3 = new UILabel("Test3", &FreeSansBold18pt7b, _container, RIGHT_CENTER);
     
     Serial.println("Set label color");
-    label1->setTextColor(255,255,255);
-    label2->setTextColor(255,255,255);
-    label3->setTextColor(255,255,255);
+    label1->setTextColor(FLAT_UI_V1_CLOUDS);
+    label2->setTextColor(FLAT_UI_V1_CLOUDS);
+    label3->setTextColor(FLAT_UI_V1_CLOUDS);
 
     Serial.println("Add labels to container");
     _container->addUIElement(label1);
@@ -33,8 +33,8 @@ UIScreenTesting::UIScreenTesting():UIScreen()
     // test with new elements
     UISwitch* switch1 = new UISwitch("TestSwitch1", &FreeSans9pt7b, _container);
     UISwitch* switch2 = new UISwitch("TestSwitch2", &FreeSans12pt7b, _container);
-    switch1->setTextColor(255,255,255);
-    switch2->setTextColor(255,255,255);
+    switch1->setTextColor(FLAT_UI_V1_CLOUDS);
+    switch2->setTextColor(FLAT_UI_V1_CLOUDS);
     switch1->setEnabled(false);
     switch2->setEnabled(true);
     _container->addUIElement(switch1);

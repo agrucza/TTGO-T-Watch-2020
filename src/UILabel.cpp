@@ -7,7 +7,6 @@ UILabel::UILabel(String label, const GFXfont* font, UIElement* parent, UIEOrient
 :UIElement(parent,orientation)
 {
     _label          = label;
-    _bgColor.r      = _bgColor.g = _bgColor.b = -1;
     _font           = font;
     _setDimensions();
 }
@@ -35,26 +34,12 @@ void UILabel::_setDimensions()
     }
 }
 
-void UILabel::setTextColor(uint8_t r, uint8_t g, uint8_t b)
-{
-    _fgColor.r  = r;
-    _fgColor.g  = g;
-    _fgColor.b  = b;
-}
-
-void UILabel::setBackgroundColor(int16_t r, int16_t g, int16_t b)
-{
-    _bgColor.r  = r;
-    _bgColor.g  = g;
-    _bgColor.b  = b;
-}
-
 void UILabel::draw(bool task)
 {
     if(!task)
     {
         _tft->setFreeFont(_font);
-        _tft->setTextColor(_tft->color565(_fgColor.r,_fgColor.g,_fgColor.b));
+        _tft->setTextColor(_fgColor);
 
         _tft->drawString(
             _label,

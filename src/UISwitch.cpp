@@ -7,12 +7,11 @@ UISwitch::UISwitch(String label, const GFXfont* font, UIElement* parent, UIEOrie
 :UIElement(parent,orientation)
 {
     _label              = label;
-    _bgColor.r          = _bgColor.g = _bgColor.b = -1;
     _font               = font;
     _paddingInner       = 10;
     _switchEnabled      = false;
-    _swColorActive      = _tft->color565(41,128,185); //#2980b9
-    _swColorInactive    = _tft->color565(127,140,141); //#7f8c8d
+    _swColorActive      = FLAT_UI_V1_PETER_RIVER;
+    _swColorInactive    = FLAT_UI_V1_ASBESTOS;
     _setDimensions();
 }
 
@@ -41,20 +40,6 @@ void UISwitch::_setDimensions()
     }
 }
 
-void UISwitch::setTextColor(uint8_t r, uint8_t g, uint8_t b)
-{
-    _textColor.r  = r;
-    _textColor.g  = g;
-    _textColor.b  = b;
-}
-
-void UISwitch::setBackgroundColor(int16_t r, int16_t g, int16_t b)
-{
-    _bgColor.r  = r;
-    _bgColor.g  = g;
-    _bgColor.b  = b;
-}
-
 void UISwitch::draw(bool task)
 {
     if(!task)
@@ -63,7 +48,7 @@ void UISwitch::draw(bool task)
         uint16_t textWidth,textHeight;
 
         _tft->setFreeFont(_font);
-        _tft->setTextColor(_tft->color565(_textColor.r,_textColor.g,_textColor.b));
+        _tft->setTextColor(_textColor);
 
         textWidth   = _tft->textWidth(_label);
         textHeight  = _tft->fontHeight();
@@ -84,7 +69,7 @@ void UISwitch::draw(bool task)
             _switchSize,
             textHeight,
             textHeight/2,
-            _tft->color565(_textColor.r,_textColor.g,_textColor.b)
+            _textColor
         );
 
         // switch inner
@@ -94,7 +79,7 @@ void UISwitch::draw(bool task)
             _switchSize - 4,
             textHeight - 4,
             (textHeight-4)/2,
-            _tft->color565(52,73,94) //#34495e
+            FLAT_UI_V1_SILVER
         );
 
         // switch element
