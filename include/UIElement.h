@@ -12,6 +12,7 @@
 #include "UITypes.h"
 #include "TouchMetrics.h"
 #include "UIColors.h"
+#include "UIScreen.h"
 
 class TFT_eSPI;
 class TFT_eSprite;
@@ -28,10 +29,15 @@ class UIElement{
         TFT_eSprite*        _sprite = nullptr;
         virtual void        _setDimensions() = 0;
 
+        ui_event_cb_t       _eventCallback = nullptr;
+        ui_event_data_t     _eventData;
+
         UIElement(UIElement* parent = nullptr, UIEOrientation_t orientation = CENTER_CENTER);
         UIDimensions_t      getDimensions(){return _dimensions;};
         void                setDimensions(UIDimensions_t dimensions){_dimensions = dimensions;};
         UIDimensions_t      getDimensionsInner(){return _dimensionsInner;};
+        void                setEventData(ui_event_data_t* data);
+        void                setEventCallback(ui_event_cb_t eventCallback){_eventCallback = eventCallback;};
         virtual bool        touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType) = 0;
         virtual void        draw(bool task = false) = 0;
         virtual void        reDraw() = 0;

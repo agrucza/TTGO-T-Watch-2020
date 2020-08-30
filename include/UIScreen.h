@@ -10,6 +10,7 @@
 
 #include <Arduino.h>
 #include "TouchMetrics.h"
+#include "UITypes.h"
 
 class GUI;
 class TFT_eSPI;
@@ -38,6 +39,7 @@ class UIScreen{
         virtual void    draw(bool init = false, bool task = false) = 0;
         virtual void    drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h) = 0;
         virtual void    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType) = 0;
+        virtual void    elementEventHandler(ui_event_data_t* eventData) = 0;
         virtual void    sleepTaskHandler() = 0;
 };
 

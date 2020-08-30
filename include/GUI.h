@@ -10,6 +10,7 @@
 
 #include "TouchMetrics.h"
 #include "UIScreen.h"
+#include "UITypes.h"
 
 typedef enum {
     ICON_BAT_EMPTY,
@@ -105,6 +106,7 @@ class GUI {
         static void             setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second);
         static void             taskHandler(void * parameters);
         static void             sleepTaskHandler();
+        static void             handleEventCallback(ui_event_data_t* eventData);
 };
 
 #endif /*__GUI_H */

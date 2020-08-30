@@ -12,7 +12,7 @@ UIElement::UIElement(UIElement* parent, UIEOrientation_t orientation)
     _parent         = parent;
     _orientation    = orientation;
 
-    if(_parent != nullptr)
+    if(_parent)
     {
         _parentDimensions = _parent->getDimensions();
     }
@@ -22,4 +22,11 @@ UIElement::UIElement(UIElement* parent, UIEOrientation_t orientation)
         _parentDimensions.bottomRight.x  = TFT_WIDTH;
         _parentDimensions.bottomRight.y  = TFT_HEIGHT;
     }
+}
+
+void UIElement::setEventData(ui_event_data_t* data)
+{
+    _eventData.event    = data->event;
+    _eventData.screen   = data->screen;
+    _eventData.source   = data->source;
 }

@@ -9,6 +9,8 @@
 #define __UITYPES_H
 
 #include <Arduino.h>
+
+class UIScreen;
 class UIElement;
 class UIContainer;
 
@@ -58,5 +60,15 @@ struct UIColor_t{
     int16_t g;
     int16_t b;
 };
+
+typedef void *ui_event_void_t;
+
+struct ui_event_data_t{
+    UIElement*      source;
+    UIScreen*       screen;
+    ui_event_void_t event;
+};
+
+typedef void (*ui_event_cb_t)(ui_event_data_t* eventData);
 
 #endif /*__UITYPES_H */

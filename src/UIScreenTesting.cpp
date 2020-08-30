@@ -30,13 +30,31 @@ UIScreenTesting::UIScreenTesting():UIScreen()
     _container->addUIElement(label2);
     _container->addUIElement(label3);
 
+    Serial.println("Create switches");
     // test with new elements
     UISwitch* switch1 = new UISwitch("TestSwitch1", &FreeSans9pt7b, _container);
     UISwitch* switch2 = new UISwitch("TestSwitch2", &FreeSans12pt7b, _container);
+
+    Serial.println("Switches text color");
     switch1->setTextColor(FLAT_UI_V1_CLOUDS);
     switch2->setTextColor(FLAT_UI_V1_CLOUDS);
+
+    Serial.println("Switches enablement");
     switch1->setEnabled(false);
     switch2->setEnabled(true);
+
+    Serial.println("switch1 event data");
+    ui_event_data_t eventData;
+    eventData.screen = this;
+    eventData.source = switch1;
+    Serial.println(eventData.screen->getLabel());
+    Serial.println("switch1 set event data");
+    switch1->setEventData(&eventData);
+
+    Serial.println("switch1 set callback");
+    switch1->setEventCallback(GUI::handleEventCallback);
+
+    Serial.println("Add switches to container");
     _container->addUIElement(switch1);
     _container->addUIElement(switch2);
 
@@ -89,4 +107,9 @@ void UIScreenTesting::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, 
     default:
         break;
     }
+}
+
+void UIScreenTesting::elementEventHandler(ui_event_data_t* eventData)
+{
+    
 }

@@ -221,7 +221,7 @@ void GUI::debugOutput(const String str)
         _debug.visible = false;
     }
     
-    if(str != nullptr)
+    if(str)
     {
         uint16_t textWidth  = _tft->textWidth(str);
         uint16_t textHeight = _tft->fontHeight(2);
@@ -297,5 +297,13 @@ void GUI::sleepTaskHandler()
     for(uint8_t i = SCREEN_NONE+1; i < SCREEN_COUNT; i++)
     {
         _screens[static_cast<screens_t>(i)]->sleepTaskHandler();
+    }
+}
+
+void GUI::handleEventCallback(ui_event_data_t* eventData)
+{
+    if(eventData->screen)
+    {
+        eventData->screen->elementEventHandler(eventData);
     }
 }

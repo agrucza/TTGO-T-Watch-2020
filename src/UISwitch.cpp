@@ -106,6 +106,11 @@ bool UISwitch::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t
     case TouchMetrics::TOUCH:
         _switchEnabled ^= true;
         draw();
+        Serial.println("Switch changed");
+        if(_eventCallback)
+        {
+            _eventCallback(&_eventData);
+        }
         break;
     
     default:
