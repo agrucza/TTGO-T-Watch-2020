@@ -290,13 +290,13 @@ void GUI::taskHandler(void* parameters)
     }
 }
 
-void GUI::sleepTaskHandler()
+void GUI::backgroundTaskHandler()
 {
     // this will be the place where the GUI will handle tasks while in sleep mode
     // e.g. alarm or timer or other thingies
     for(uint8_t i = SCREEN_NONE+1; i < SCREEN_COUNT; i++)
     {
-        _screens[static_cast<screens_t>(i)]->sleepTaskHandler();
+        _screens[static_cast<screens_t>(i)]->backgroundTaskHandler();
     }
 }
 

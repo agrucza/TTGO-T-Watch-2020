@@ -39,7 +39,7 @@ class UIScreenCalendar : public UIScreen{
         void    drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
         void    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
         void    elementEventHandler(ui_event_data_t* eventData){};
-        void    sleepTaskHandler(){};
+        void    backgroundTaskHandler(){};
 };
 
 #endif /*__UISCREENCALENDAR_H */

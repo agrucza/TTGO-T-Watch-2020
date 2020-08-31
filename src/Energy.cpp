@@ -242,7 +242,7 @@ void Energy::getWakeup()
     {
         case ESP_SLEEP_WAKEUP_TIMER:
             // handle tasks
-            _gui->sleepTaskHandler();
+            _gui->backgroundTaskHandler();
             // set light sleep
             Energy::setSleep();
         break;
