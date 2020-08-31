@@ -8,6 +8,7 @@
 UIScreenStandby::UIScreenStandby():UIScreen()
 {
     _label      = "Standby";
+    _showHeader = false;
     _lastMinute = 0;
     _lastMonth  = 0;
 }

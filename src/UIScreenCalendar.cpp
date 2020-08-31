@@ -7,6 +7,7 @@
 UIScreenCalendar::UIScreenCalendar():UIScreen()
 {
     _label              = "Calendar";
+    _showHeader         = false;
     _weekDayColor       = FLAT_UI_V1_SILVER;
     _weekEndColor       = FLAT_UI_V1_ASBESTOS;
     _todayColor         = FLAT_UI_V1_BELIZE_HOLE;

@@ -2,95 +2,65 @@
 #include "LilyGoWatch.h"
 #include "UIContainer.h"
 #include "UIElement.h"
+#include "UIElementLabel.h"
 #include "GUI.h"
 
-UIContainer::UIContainer(UIElement* parent, UIEAlignment_t alignment)
+UIContainer::UIContainer(UIElement* parent, UIESize_t size, UIEAlignment_t alignment)
 :UIElement(parent)
 {
     Serial.println("UIContainer constructor");
-    _type = UIETYPE_CONTAINER;
+    _size       = size;
     _alignment  = alignment;
-
-    Serial.println("Setting container dimensions");
-    if(_parent == nullptr)
+    
+    //Serial.println("Setting container dimensions");
+    if(_parent)
+    {
+        Serial.println("Container has parent");
+        _dimensions = _parent->getRemainingSpace();
+    }
+    else
     {
         Serial.println("Container has no parent");
-        Serial.println("Dimensions will be screen dimensions");
         _dimensions.topLeft.x       = _dimensions.topLeft.y = 0;
         _dimensions.bottomRight.x   = TFT_WIDTH;
         _dimensions.bottomRight.y   = TFT_HEIGHT;
     }
-    else
-    {
-        Serial.println("Container has parent");
-        Serial.println("Dimensions will be parents inner dimensions");
-        UIDimensions_t dim          = _parent->getDimensions();
-        _dimensions.topLeft.x       = dim.topLeft.x + _padding;
-        _dimensions.topLeft.y       = dim.topLeft.y + _padding;
-        _dimensions.bottomRight.x   = dim.bottomRight.x - 2*_padding;
-        _dimensions.bottomRight.y   = dim.bottomRight.y - 2*_padding;
-    }
-    
-    Serial.println("Setting containers inner dimensions");
+
+    //Serial.println("Setting containers remaining space");
+    _remainingSpace = _dimensions;
+
+    //Serial.println("Setting containers inner dimensions");
     _dimensionsInner = _dimensions;
     _dimensionsInner.topLeft.x += _padding;
     _dimensionsInner.topLeft.y += _padding;
     _dimensionsInner.bottomRight.x -= 2*_padding;
     _dimensionsInner.bottomRight.y -= 2*_padding;
-    Serial.println("UIContainer constructor done");
+    //Serial.println("UIContainer constructor done");
+}
+
+UIContainer::UIContainer(UIScreen* screen, UIESize_t size, UIEAlignment_t alignment)
+:UIContainer()
+{
+    Serial.println("UIContainer with screen constructor");
+    _screen     = screen;
+    _size       = size;
+    _alignment  = alignment;
 }
 
 void UIContainer::addUIElement(UIElement* element)
 {
     UIDimensions_t      dimensions = element->getDimensions();
     UIDimensions_t      tmpDimensions;
-    uint16_t            size = 0;
 
-    // to calculate the orientation bounds we need to know if the size of all elements
-    for(uint8_t i = 0; i <= _elements.size(); i++)
-    {
-        if(i < _elements.size())
-        {
-            tmpDimensions = _elements[i]->getDimensions();
-        }
-        else
-        {
-            tmpDimensions = element->getDimensions();
-            size -= _padding;
-        }
-
-        switch(_alignment)
-        {
-            case ALIGNMENT_VERTICAL:
-                size += tmpDimensions.bottomRight.y + _padding;
-                break;
-            case ALIGNMENT_HORIZONTAL:
-                size += tmpDimensions.bottomRight.x + _padding;
-                break;
-        }
-    }
+    char buf[50];
 
     switch(_alignment)
     {
         case ALIGNMENT_VERTICAL:
-            if(size > (_dimensions.bottomRight.y + (2*_padding)))
-            {
-                dimensions.topLeft.y = _padding;
-            }
-            else
-            {
-                dimensions.topLeft.y = _padding+((_dimensions.bottomRight.y-size)/2);
-            }
+            dimensions.topLeft.y = _dimensions.topLeft.y + _padding;
             break;
         case ALIGNMENT_HORIZONTAL:
-            if(size > (_dimensions.bottomRight.x + (2*_padding)))
-            {
-                dimensions.topLeft.x = 0;
-            }
-            else
-            {
-                dimensions.topLeft.x = _padding+((_dimensions.bottomRight.x-size)/2);
-            }
+            dimensions.topLeft.x = _dimensions.topLeft.x + _padding;
             break;
     }
 
@@ -101,28 +71,71 @@ void UIContainer::addUIElement(UIElement* element)
         {
             case ALIGNMENT_VERTICAL:
                 tmpDimensions.topLeft.y =  dimensions.topLeft.y;
-                dimensions.topLeft.y    += tmpDimensions.bottomRight.y + 1;
+                dimensions.topLeft.y    += tmpDimensions.bottomRight.y;
                 break;
             case ALIGNMENT_HORIZONTAL:
                 tmpDimensions.topLeft.x =  dimensions.topLeft.x;
-                dimensions.topLeft.x    += tmpDimensions.bottomRight.x + 1;
+                dimensions.topLeft.x    += tmpDimensions.bottomRight.x;
                 break;
         }
         _elements[i]->setDimensions(tmpDimensions);
     }
 
-    element->setDimensions(dimensions);
+    Serial.println("remaining before alignment adjustments");
+    sprintf(
+        buf,
+        "remains: %d:%d/%d:%d",
+        _remainingSpace.topLeft.x,
+        _remainingSpace.topLeft.y,
+        _remainingSpace.bottomRight.x,
+        _remainingSpace.bottomRight.y
+    );
+    Serial.println(buf);
+    sprintf(
+        buf,
+        "dimensions: %d:%d/%d:%d",
+        dimensions.topLeft.x,
+        dimensions.topLeft.y,
+        dimensions.bottomRight.x,
+        dimensions.bottomRight.y
+    );
+    Serial.println(buf);
+    sprintf(
+        buf,
+        "_dimensions: %d:%d/%d:%d",
+        _dimensions.topLeft.x,
+        _dimensions.topLeft.y,
+        _dimensions.bottomRight.x,
+        _dimensions.bottomRight.y
+    );
+    Serial.println(buf);
     
     switch(_alignment)
     {
         case ALIGNMENT_VERTICAL:
-            dimensions.topLeft.y += tmpDimensions.bottomRight.y;
+            //_remainingSpace.topLeft.y       = dimensions.topLeft.y + dimensions.bottomRight.y;
+            //_remainingSpace.bottomRight.y   = _dimensions.bottomRight.y - dimensions.bottomRight.y - size;
+            _remainingSpace.topLeft.y      += dimensions.bottomRight.y;
+            _remainingSpace.bottomRight.y  -= dimensions.bottomRight.y;
             break;
         case ALIGNMENT_HORIZONTAL:
-            dimensions.topLeft.x += tmpDimensions.bottomRight.x + 1;
+            _remainingSpace.topLeft.x       += dimensions.bottomRight.x;
+            _remainingSpace.bottomRight.x   -= dimensions.bottomRight.x;
             break;
-
     }
+
+    Serial.println("remaining after alignment adjustments:");
+    sprintf(
+        buf,
+        "remains: %d:%d/%d:%d",
+        _remainingSpace.topLeft.x,
+        _remainingSpace.topLeft.y,
+        _remainingSpace.bottomRight.x,
+        _remainingSpace.bottomRight.y
+    );
+    Serial.println(buf);
+
+    element->setDimensions(dimensions);
     _elements.push_back(element);
 }
 
@@ -145,13 +158,11 @@ UIDimensions_t UIContainer::getElementDimensions(UIElement* element)
 
 void UIContainer::draw(bool task)
 {
-    //container have priority in processing
-    if(_elements.size()>0)
+    //_tft->fillRect(_dimensions.topLeft.x, _dimensions.topLeft.y, _dimensions.bottomRight.x, _dimensions.bottomRight.y, _bgColor);
+    
+    for(uint8_t element = 0; element < _elements.size(); element++)
     {
-        for(uint8_t element = 0; element < _elements.size(); element++)
-        {
-            _elements[element]->draw(task);
-        }
+        _elements[element]->draw(task);
     }
 }
 

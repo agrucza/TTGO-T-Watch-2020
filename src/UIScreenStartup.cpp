@@ -5,7 +5,8 @@
 
 UIScreenStartup::UIScreenStartup():UIScreen()
 {
-    _label  = "Startup";
+    _label      = "Startup";
+    _showHeader = false;
 }
 
 void UIScreenStartup::draw(bool init, bool task)

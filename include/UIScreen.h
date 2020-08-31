@@ -23,24 +23,27 @@ class UIScreen{
         GUI*            _gui;
         TFT_eSPI*       _tft;
         String          _label;
+        bool            _showHeader = true;
         uint16_t        _textColor;
         uint16_t        _backgroundColor;
         uint16_t        _iconColor;
         uint8_t         _iconSizeX;
         uint8_t         _iconSizeY;
         uint8_t         _padding;
-        UIContainer*    _container = nullptr;
+        UIContainer*    _screenContainer = nullptr;
+        UIContainer*    _contentContainer = nullptr;
 
         UIScreen();
         uint8_t getIconSizeX(){return _iconSizeX;};
         uint8_t getIconSizeY(){return _iconSizeY;};
         String  getLabel(){return _label;};
+        bool    getShowHeader(){return _showHeader;};
         
         virtual void    draw(bool init = false, bool task = false) = 0;
         virtual void    drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h) = 0;
         virtual void    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType) = 0;
         virtual void    elementEventHandler(ui_event_data_t* eventData) = 0;
-        virtual void    sleepTaskHandler() = 0;
+        virtual void    backgroundTaskHandler() = 0;
 };
 
 #endif /*__UISCREEN_H */

@@ -15,13 +15,15 @@
 extern UIDimensions_t defaultUIDimensions;
 
 class UIContainer : public UIElement{
+    UIESize_t                   _size;
     UIEAlignment_t              _alignment;
     std::vector<UIElement*>     _elements;
-    uint8_t                     _padding = 5;
+    uint8_t                     _padding = 0;
     void                        _setDimensions(){};
 
     public:
-        UIContainer(UIElement* parent = nullptr, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
+        UIContainer(UIElement* parent = nullptr, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
+        UIContainer(UIScreen* screen, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
         void            addUIElement(UIElement* element);
         UIDimensions_t  getElementDimensions(UIElement* element);
         bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);

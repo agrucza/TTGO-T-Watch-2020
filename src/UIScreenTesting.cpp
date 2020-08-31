@@ -13,27 +13,38 @@ UIScreenTesting::UIScreenTesting():UIScreen()
     _padding        = 5;
     
     Serial.println("Init container");
-    _container      = new UIContainer();
+    _screenContainer = new UIContainer(this);
+    _screenContainer->setBackgroundColor(FLAT_UI_V1_CARROT);
+    UIElementLabel* labelHead = new UIElementLabel(_label, &FreeSansBold9pt7b, _screenContainer,RIGHT_CENTER);
+    labelHead->setTextColor(FLAT_UI_V1_CLOUDS);
     
-    Serial.println("Init labels");
-    UIElementLabel* label1 = new UIElementLabel("Test1", &FreeSansBold9pt7b, _container,LEFT_CENTER);
-    UIElementLabel* label2 = new UIElementLabel("Test2", &FreeSansBold12pt7b, _container, CENTER_CENTER);
-    UIElementLabel* label3 = new UIElementLabel("Test3", &FreeSansBold18pt7b, _container, RIGHT_CENTER);
+    Serial.println("Add header to screenContainer");
+    _screenContainer->addUIElement(labelHead);
     
-    Serial.println("Set label color");
+    _contentContainer = new UIContainer(_screenContainer, SIZE_FULL);
+    
+    Serial.println("Add contentContainer to screenContainer");
+    _screenContainer->addUIElement(_contentContainer);
+    
+    UIElementLabel* label1 = new UIElementLabel("Test1", &FreeSansBold9pt7b, _contentContainer,LEFT_CENTER);
     label1->setTextColor(FLAT_UI_V1_CLOUDS);
-    label2->setTextColor(FLAT_UI_V1_CLOUDS);
-    label3->setTextColor(FLAT_UI_V1_CLOUDS);
-
-    Serial.println("Add labels to container");
-    _container->addUIElement(label1);
-    _container->addUIElement(label2);
-    _container->addUIElement(label3);
-
+    Serial.println("Add element to contentContainer");
+    _contentContainer->addUIElement(label1);
+    
+    UIElementLabel* label2 = new UIElementLabel("Test2", &FreeSansBold12pt7b, _contentContainer,CENTER_CENTER);
+    label1->setTextColor(FLAT_UI_V1_CLOUDS);
+    Serial.println("Add element to contentContainer");
+    _contentContainer->addUIElement(label2);
+    
+    UIElementLabel* label3 = new UIElementLabel("Test3", &FreeSansBold18pt7b, _contentContainer,RIGHT_CENTER);
+    label1->setTextColor(FLAT_UI_V1_CLOUDS);
+    Serial.println("Add element to contentContainer");
+    _contentContainer->addUIElement(label3);
+    
     Serial.println("Create switches");
     // test with new elements
-    UIElementSwitch* switch1 = new UIElementSwitch("TestSwitch1", &FreeSans9pt7b, _container);
-    UIElementSwitch* switch2 = new UIElementSwitch("TestSwitch2", &FreeSans12pt7b, _container);
+    UIElementSwitch* switch1 = new UIElementSwitch("TestSwitch1", &FreeSans9pt7b, _contentContainer);
+    UIElementSwitch* switch2 = new UIElementSwitch("TestSwitch2", &FreeSans12pt7b, _contentContainer);
 
     Serial.println("Switches text color");
     switch1->setTextColor(FLAT_UI_V1_CLOUDS);
@@ -55,19 +66,19 @@ UIScreenTesting::UIScreenTesting():UIScreen()
     switch1->setEventCallback(GUI::handleEventCallback);
 
     Serial.println("Add switches to container");
-    _container->addUIElement(switch1);
-    _container->addUIElement(switch2);
-
+    _contentContainer->addUIElement(switch1);
+    _contentContainer->addUIElement(switch2);
+    
     Serial.println("Init UIScreenTesting done");
 }
 
 void UIScreenTesting::draw(bool init, bool task)
 {
+    char buf[50];
     if(!task)
     {
         _tft->fillScreen(_backgroundColor);
     }
-    _container->draw(task);
 }
 
 void UIScreenTesting::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
@@ -102,7 +113,7 @@ void UIScreenTesting::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, 
     case TouchMetrics::SWIPE_TOP_EDGE:
         break;
     case TouchMetrics::TOUCH:
-        _container->touchAction(lastX, lastY, deltaX, deltaY, TouchMetrics::TOUCH);
+        _screenContainer->touchAction(lastX, lastY, deltaX, deltaY, TouchMetrics::TOUCH);
         break;
     default:
         break;

@@ -37,12 +37,8 @@ enum UIEOrientation_t : uint8_t {
 };
 
 enum UIESize_t : uint8_t {
-    ELEMENT,                // this is only the required space by the element
-    FULL,                   // this is the full size vertical/horizontal
-    FULL_GAP_LEFT_TOP,      // this will require an extra parameter dimension
-    FULL_GAP_BOTTOM_RIGHT,  // this will require an extra parameter dimension
-    FULL_GAP_BOTH,          // this will require an extra parameter dimension
-    FIXED_PIXEL,            // this will require an extra parameter dimension
+    SIZE_ELEMENT,           // this is only the required space by the element
+    SIZE_FULL,              // this is the full size vertical/horizontal
 };
 
 struct UIPoint_t{

@@ -7,6 +7,7 @@ UIScreenMain::UIScreenMain():UIScreen()
 {
     Serial.println("UIScreenMain constructor");
     _label          = "Main";
+    _showHeader     = false;
     _iconSizeX      = _iconSizeY = 2;
     _iconsMax       = 4;
     _padding        = 5;
