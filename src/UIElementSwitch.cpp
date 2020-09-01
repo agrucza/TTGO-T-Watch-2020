@@ -8,8 +8,6 @@ UIElementSwitch::UIElementSwitch(String label, const GFXfont* font, UIElement* p
 {
     _label              = label;
     _font               = font;
-    _paddingInner       = 10;
-    _switchEnabled      = false;
     _setDimensions();
 }
 
@@ -17,11 +15,11 @@ void UIElementSwitch::_setDimensions()
 {
     _tft->setFreeFont(_font);
 
-    _switchSize                 = _tft->fontHeight() * 2;
+    _size                       = _tft->fontHeight() * 2;
 
     _dimensions                 = _parent->getDimensionsInner();
     _dimensions.bottomRight.y   = _tft->fontHeight();
-    _paddingInner               = _dimensions.bottomRight.x - _tft->textWidth(_label) - _switchSize;
+    _paddingInner               = _dimensions.bottomRight.x - _tft->textWidth(_label) - _size;
 }
 
 void UIElementSwitch::draw(bool task)
@@ -50,20 +48,20 @@ void UIElementSwitch::draw(bool task)
         _tft->fillRoundRect(
             posSwitchE.x,
             posSwitchE.y,
-            _switchSize,
+            _size,
             textHeight,
             textHeight/2,
-            (_switchEnabled ? _swColorActiveBg : _swColorInactiveBg)
+            (_enabled ? _colorActiveBg : _colorInactiveBg)
         );
         
         // switch element
         _tft->fillRoundRect(
-            posSwitchE.x + (_switchEnabled? _switchSize - (textHeight -8) - 4 : 4),
+            posSwitchE.x + (_enabled? _size - (textHeight -8) - 4 : 4),
             posSwitchE.y + 4,
             textHeight - 8,
             textHeight - 8,
             (textHeight-8)/2,
-            (_switchEnabled ? _swColorActive : _swColorInactive)
+            (_enabled ? _colorActive : _colorInactive)
         );
     }
 }
@@ -78,7 +76,7 @@ bool UIElementSwitch::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, 
     switch (touchType)
     {
     case TouchMetrics::TOUCH:
-        _switchEnabled ^= true;
+        _enabled ^= true;
         draw();
         Serial.println("Switch changed");
         if(_eventCallback)

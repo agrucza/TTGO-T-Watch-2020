@@ -4,10 +4,7 @@
 #include "LilyGoWatch.h"
 #include "fonts/IconsFontsSup24pt7b.h"
 
-UIScreenSettings::UIScreenSettings():UIScreen("Settings")
-{
-    _padding    = 10;
-}
+UIScreenSettings::UIScreenSettings():UIScreen("Settings"){}
 
 void UIScreenSettings::draw(bool init, bool task)
 {

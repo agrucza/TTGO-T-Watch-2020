@@ -18,8 +18,6 @@ class TFT_esPI;
 
 class UIElementLabel : public UIElement{
     String              _label;
-    const GFXfont*      _font;
-    uint16_t            _fgColor;
     bool                _showLine = false;
     UIEOrientation_t    _lineOrientation;
     uint8_t             _lineHeight = 2;
@@ -28,7 +26,7 @@ class UIElementLabel : public UIElement{
     public:
         UIElementLabel(String label, const GFXfont* font, UIElement* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_CENTER);
         void    setFont(const GFXfont* font){_font = font;};
-        void    setTextColor(uint16_t color){_fgColor = color;};
+        void    setTextColor(uint16_t color){_textColor = color;};
         void    showLine(bool show, UIEOrientation_t orientation = ORIENTATION_CENTER){_showLine = show; _lineOrientation = orientation; _setDimensions();};
         bool    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
         void    draw(bool task = false);

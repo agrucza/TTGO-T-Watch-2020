@@ -10,6 +10,7 @@
 
 #include <Arduino.h>
 #include "TouchMetrics.h"
+#include "UIColors.h"
 #include "UITypes.h"
 
 class GUI;
@@ -23,15 +24,15 @@ class UIScreen{
         GUI*            _gui;
         TFT_eSPI*       _tft;
         String          _label;
-        bool            _showHeader = true;
-        uint16_t        _textColor;
-        uint16_t        _backgroundColor;
-        uint16_t        _iconColor;
-        uint8_t         _iconSizeX;
-        uint8_t         _iconSizeY;
-        uint8_t         _padding;
-        UIContainer*    _screenContainer = nullptr;
-        UIContainer*    _contentContainer = nullptr;
+        bool            _showHeader         = true;
+        uint16_t        _textColor          = FLAT_UI_V1_CLOUDS;
+        uint16_t        _backgroundColor    = FLAT_UI_V1_MIDNIGHT_BLUE;
+        uint16_t        _iconColor          = FLAT_UI_V1_PETER_RIVER;
+        uint8_t         _iconSizeX          = 1;
+        uint8_t         _iconSizeY          = 1;
+        uint8_t         _padding            = 5;
+        UIContainer*    _screenContainer    = nullptr;
+        UIContainer*    _contentContainer   = nullptr;
 
         UIScreen(String label, bool showHeader = true);
         uint8_t getIconSizeX(){return _iconSizeX;};

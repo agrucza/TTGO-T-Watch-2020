@@ -8,7 +8,6 @@ UIScreenMain::UIScreenMain():UIScreen("Main", false)
     Serial.println("UIScreenMain constructor");
     _iconSizeX      = _iconSizeY = 2;
     _iconsMax       = 4;
-    _padding        = 5;
     
     _iconAreaWidth  = TFT_WIDTH - (2*_padding);
     _iconAreaHeight = TFT_HEIGHT - (2*_padding);

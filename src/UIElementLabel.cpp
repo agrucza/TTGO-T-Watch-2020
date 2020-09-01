@@ -17,7 +17,7 @@ void UIElementLabel::_setDimensions()
     _tft->setFreeFont(_font);
 
     _dimensions                 = _parent->getDimensionsInner();
-    _dimensions.bottomRight.y   = _tft->fontHeight() + (_showLine?_lineHeight:0) +4;
+    _dimensions.bottomRight.y   = _tft->fontHeight() + (_showLine?_lineHeight:0);
     _dimensions.bottomRight.x   = _tft->textWidth(_label);
     
     switch(_orientation)
@@ -36,12 +36,12 @@ void UIElementLabel::draw(bool task)
     if(!task)
     {
         _tft->setFreeFont(_font);
-        _tft->setTextColor(_fgColor);
+        _tft->setTextColor(_textColor);
         
         _tft->drawString(
             _label,
             _dimensions.topLeft.x + _dimensions.bottomRight.x/2,
-            _dimensions.topLeft.y + _dimensions.bottomRight.y/2
+            _dimensions.topLeft.y + _tft->fontHeight()/2
         );
 
         if(_showLine)
@@ -51,7 +51,7 @@ void UIElementLabel::draw(bool task)
                 _dimensions.topLeft.y + _dimensions.bottomRight.y - _lineHeight,
                 _parent->_dimensionsInner.bottomRight.x + (_lineOrientation == ORIENTATION_CENTER?((UIContainer*)_parent)->getPadding():0),
                 _lineHeight,
-                _fgColor
+                _textColor
             );
         }
     }

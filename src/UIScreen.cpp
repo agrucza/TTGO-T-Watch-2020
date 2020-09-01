@@ -15,11 +15,6 @@ UIScreen::UIScreen(String label, bool showHeader)
     _tft                = _gui->getTTGO()->tft;
     _label              = label;
     _showHeader         = showHeader;
-    _textColor          = FLAT_UI_V1_CLOUDS;
-    _backgroundColor    = FLAT_UI_V1_MIDNIGHT_BLUE;
-    _iconColor          = FLAT_UI_V1_PETER_RIVER;
-    _iconSizeX          = 1;
-    _iconSizeY          = 1;
 
     Serial.println("Creating screenContainer");
     _screenContainer = new UIContainer(this);
