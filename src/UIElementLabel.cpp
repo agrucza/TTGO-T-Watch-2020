@@ -21,14 +21,10 @@ void UIElementLabel::_setDimensions()
     
     switch(_orientation)
     {
-        case CENTER_TOP:
-        case CENTER_CENTER:
-        case CENTER_BOTTOM:
+        case ORIENTATION_CENTER:
             _dimensions.topLeft.x += (_parent->getDimensionsInner().bottomRight.x-_dimensions.bottomRight.x)/2;
             break;
-        case RIGHT_TOP:
-        case RIGHT_CENTER:
-        case RIGHT_BOTTOM:
+        case ORIENTATION_RIGHT:
             _dimensions.topLeft.x += _parent->getDimensionsInner().bottomRight.x - _dimensions.bottomRight.x;
             break;
     }

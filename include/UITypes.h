@@ -25,15 +25,9 @@ enum UIEAlignment_t : uint8_t {
 };
 
 enum UIEOrientation_t : uint8_t {
-    LEFT_TOP,
-    LEFT_CENTER,
-    LEFT_BOTTOM,
-    CENTER_TOP,
-    CENTER_CENTER,
-    CENTER_BOTTOM,
-    RIGHT_TOP,
-    RIGHT_CENTER,
-    RIGHT_BOTTOM
+    ORIENTATION_LEFT,
+    ORIENTATION_CENTER,
+    ORIENTATION_RIGHT
 };
 
 enum UIESize_t : uint8_t {

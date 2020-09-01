@@ -34,7 +34,7 @@ class UIElement{
         ui_event_cb_t       _eventCallback = nullptr;
         ui_event_data_t     _eventData;
 
-        UIElement(UIElement* parent = nullptr, UIEOrientation_t orientation = CENTER_CENTER);
+        UIElement(UIElement* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_CENTER);
         void                setBackgroundColor(int16_t color){_bgColor = color;};
         UIDimensions_t      getDimensions(){return _dimensions;};
         void                setDimensions(UIDimensions_t dimensions){_dimensions = dimensions;};

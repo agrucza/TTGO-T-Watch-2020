@@ -29,7 +29,7 @@ class UIElementSwitch : public UIElement{
     void            _setDimensions();
 
     public:
-        UIElementSwitch(String label, const GFXfont* font, UIElement* parent = nullptr, UIEOrientation_t orientation = CENTER_CENTER);
+        UIElementSwitch(String label, const GFXfont* font, UIElement* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_CENTER);
         void    setTextColor(uint16_t color){_textColor = color;};
         void    setBackgroundColor(uint16_t color){_bgColor = color;};
         void    setEnabled(bool enable){_switchEnabled = enable;};
