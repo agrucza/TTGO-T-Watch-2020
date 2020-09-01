@@ -35,7 +35,7 @@ class UIElement{
         uint16_t            _colorInactiveBg    = FLAT_UI_V1_ASBESTOS;
         uint8_t             _size;
         bool                _enabled;
-        bool                _active;
+        bool                _active             = false;
 
         UIEOrientation_t    _orientation;
         UIDimensions_t      _dimensions;

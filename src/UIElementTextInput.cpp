@@ -34,7 +34,7 @@ void UIElementTextInput::draw(bool task)
             _dimensions.bottomRight.x,
             _dimensions.bottomRight.y,
             4,
-            (_enabled ? _colorActive : _colorInactive)
+            (_active ? _colorActive : _colorInactive)
         );
 
         _tft->drawString(
@@ -55,13 +55,14 @@ bool UIElementTextInput::touchAction(int16_t lastX, int16_t lastY, int16_t delta
     switch (touchType)
     {
     case TouchMetrics::TOUCH:
-        _enabled ^= true;
+        _active ^= true;
         draw();
-        Serial.println("Switch changed");
+        /*
         if(_eventCallback)
         {
             _eventCallback(&_eventData);
         }
+        */
         break;
     default:
         break;
