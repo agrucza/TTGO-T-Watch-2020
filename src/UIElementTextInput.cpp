@@ -1,7 +1,9 @@
-#include "UIElementTextInput.h"
-#include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
+
+#include "UIElementTextInput.h"
+
+#include "GUI.h"
 
 UIElementTextInput::UIElementTextInput(String placeholder, const GFXfont* font, UIElement* parent, UIEOrientation_t orientation)
 :UIElement(parent,orientation)

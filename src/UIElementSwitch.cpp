@@ -1,7 +1,9 @@
-#include "UIElementSwitch.h"
-#include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
+
+#include "UIElementSwitch.h"
+
+#include "GUI.h"
 
 UIElementSwitch::UIElementSwitch(String label, const GFXfont* font, UIElement* parent, UIEOrientation_t orientation)
 :UIElement(parent,orientation)

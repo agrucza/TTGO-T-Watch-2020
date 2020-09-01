@@ -1,7 +1,10 @@
-#include "UIScreenMain.h"
-#include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
+
+#include "UIScreenMain.h"
+
+#include "GUI.h"
+
 
 UIScreenMain::UIScreenMain():UIScreen("Main", false)
 {

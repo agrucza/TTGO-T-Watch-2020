@@ -1,8 +1,10 @@
-#include "UIScreenCalendar.h"
-#include "UIColors.h"
-#include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
+
+#include "UIScreenCalendar.h"
+
+#include "GUI.h"
+#include "UIColors.h"
 
 UIScreenCalendar::UIScreenCalendar():UIScreen("Calendar", false)
 {

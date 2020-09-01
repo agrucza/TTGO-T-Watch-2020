@@ -1,7 +1,9 @@
-#include "UIScreenTesting.h"
-#include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
+
+#include "UIScreenTesting.h"
+
+#include "GUI.h"
 #include "UIContainer.h"
 #include "UIElementLabel.h"
 #include "UIElementSwitch.h"

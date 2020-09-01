@@ -1,7 +1,9 @@
-#include "UIScreenStandby.h"
-#include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
+
+#include "UIScreenStandby.h"
+
+#include "GUI.h"
 
 #define DEG2RAD 0.0174532925
 

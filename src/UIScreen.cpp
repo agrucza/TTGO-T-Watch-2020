@@ -1,10 +1,12 @@
+#include "config.h"
+#include "LilyGoWatch.h"
+
 #include "UIScreen.h"
+
 #include "GUI.h"
 #include "UIContainer.h"
 #include "UIElementLabel.h"
 #include "UIColors.h"
-#include "config.h"
-#include "LilyGoWatch.h"
 
 extern GUI* gui;
 

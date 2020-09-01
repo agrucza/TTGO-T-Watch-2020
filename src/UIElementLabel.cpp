@@ -1,8 +1,10 @@
-#include "UIElementLabel.h"
-#include "UIContainer.h"
-#include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
+
+#include "UIElementLabel.h"
+
+#include "GUI.h"
+#include "UIContainer.h"
 
 UIElementLabel::UIElementLabel(String label, const GFXfont* font, UIElement* parent, UIEOrientation_t orientation)
 :UIElement(parent,orientation)

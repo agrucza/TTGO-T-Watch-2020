@@ -1,7 +1,9 @@
-#include "UIScreenStartup.h"
-#include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
+
+#include "UIScreenStartup.h"
+
+#include "GUI.h"
 
 UIScreenStartup::UIScreenStartup():UIScreen("StartUp", false){}
 

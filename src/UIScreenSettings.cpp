@@ -1,7 +1,9 @@
-#include "UIScreenSettings.h"
-#include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
+
+#include "UIScreenSettings.h"
+
+#include "GUI.h"
 #include "fonts/IconsFontsSup24pt7b.h"
 
 UIScreenSettings::UIScreenSettings():UIScreen("Settings"){}
