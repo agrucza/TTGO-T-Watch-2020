@@ -20,14 +20,16 @@ class TFT_eSprite;
 class UIElement{
     public:
         TFT_eSPI*           _tft;
-        UIScreen*           _screen = nullptr;
-        UIElement*          _parent = nullptr;
-        uint16_t            _bgColor;
+        UIScreen*           _screen     = nullptr;
+        UIElement*          _parent     = nullptr;
+        uint16_t            _bgColor    = 0;
         UIEOrientation_t    _orientation;
         UIDimensions_t      _dimensions;
         UIDimensions_t      _dimensionsInner;
         UIDimensions_t      _parentDimensions;
         UIDimensions_t      _remainingSpace;
+        bool                _largeContent;
+
         TFT_eSprite*        _sprite = nullptr;
         virtual void        _setDimensions() = 0;
 

@@ -71,44 +71,15 @@ void UIContainer::addUIElement(UIElement* element)
         {
             case ALIGNMENT_VERTICAL:
                 tmpDimensions.topLeft.y =  dimensions.topLeft.y;
-                dimensions.topLeft.y    += tmpDimensions.bottomRight.y;
+                dimensions.topLeft.y    += tmpDimensions.bottomRight.y + _padding;
                 break;
             case ALIGNMENT_HORIZONTAL:
                 tmpDimensions.topLeft.x =  dimensions.topLeft.x;
-                dimensions.topLeft.x    += tmpDimensions.bottomRight.x;
+                dimensions.topLeft.x    += tmpDimensions.bottomRight.x + _padding;
                 break;
         }
         _elements[i]->setDimensions(tmpDimensions);
     }
-
-    Serial.println("remaining before alignment adjustments");
-    sprintf(
-        buf,
-        "remains: %d:%d/%d:%d",
-        _remainingSpace.topLeft.x,
-        _remainingSpace.topLeft.y,
-        _remainingSpace.bottomRight.x,
-        _remainingSpace.bottomRight.y
-    );
-    Serial.println(buf);
-    sprintf(
-        buf,
-        "dimensions: %d:%d/%d:%d",
-        dimensions.topLeft.x,
-        dimensions.topLeft.y,
-        dimensions.bottomRight.x,
-        dimensions.bottomRight.y
-    );
-    Serial.println(buf);
-    sprintf(
-        buf,
-        "_dimensions: %d:%d/%d:%d",
-        _dimensions.topLeft.x,
-        _dimensions.topLeft.y,
-        _dimensions.bottomRight.x,
-        _dimensions.bottomRight.y
-    );
-    Serial.println(buf);
     
     switch(_alignment)
     {
@@ -117,23 +88,14 @@ void UIContainer::addUIElement(UIElement* element)
             //_remainingSpace.bottomRight.y   = _dimensions.bottomRight.y - dimensions.bottomRight.y - size;
             _remainingSpace.topLeft.y      += dimensions.bottomRight.y;
             _remainingSpace.bottomRight.y  -= dimensions.bottomRight.y;
+            _largeContent = (_remainingSpace.bottomRight.y>=0?false:true);
             break;
         case ALIGNMENT_HORIZONTAL:
             _remainingSpace.topLeft.x       += dimensions.bottomRight.x;
             _remainingSpace.bottomRight.x   -= dimensions.bottomRight.x;
+            _largeContent = (_remainingSpace.bottomRight.x>=0?false:true);
             break;
     }
-
-    Serial.println("remaining after alignment adjustments:");
-    sprintf(
-        buf,
-        "remains: %d:%d/%d:%d",
-        _remainingSpace.topLeft.x,
-        _remainingSpace.topLeft.y,
-        _remainingSpace.bottomRight.x,
-        _remainingSpace.bottomRight.y
-    );
-    Serial.println(buf);
 
     element->setDimensions(dimensions);
     _elements.push_back(element);
@@ -158,11 +120,31 @@ UIDimensions_t UIContainer::getElementDimensions(UIElement* element)
 
 void UIContainer::draw(bool task)
 {
-    //_tft->fillRect(_dimensions.topLeft.x, _dimensions.topLeft.y, _dimensions.bottomRight.x, _dimensions.bottomRight.y, _bgColor);
-    
-    for(uint8_t element = 0; element < _elements.size(); element++)
+    if(!task)
     {
-        _elements[element]->draw(task);
+        if(_bgColor > 0)
+        {
+            _tft->fillRect(_dimensions.topLeft.x, _dimensions.topLeft.y, _dimensions.bottomRight.x, _dimensions.bottomRight.y, _bgColor);
+        }
+        
+        for(uint8_t element = 0; element < _elements.size(); element++)
+        {
+            _elements[element]->draw(task);
+        }
+
+        if(_largeContent)
+        {
+            if(_alignment == ALIGNMENT_VERTICAL)
+            {
+                _tft->drawLine(
+                    _dimensions.topLeft.x,
+                    _dimensions.topLeft.y + _dimensions.bottomRight.y -1,
+                    _dimensions.bottomRight.x,
+                    _dimensions.topLeft.y + _dimensions.bottomRight.y -1,
+                    TFT_RED
+                );
+            }
+        }
     }
 }
 
