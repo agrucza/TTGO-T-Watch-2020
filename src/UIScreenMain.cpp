@@ -125,7 +125,7 @@ void UIScreenMain::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int
         sprintf(buf,"x: %d y: %d s: %d",x,y, _displayIcons[y][x]);
         _tft->drawString(buf,_padding, _padding);
         */
-        if(_displayIcons[y][x] != SCREEN_NONE)
+        if(_displayIcons.size()-1 >= y && _displayIcons[y][x] != SCREEN_NONE)
         {
             _gui->setScreen(_displayIcons[y][x], true);
         }
