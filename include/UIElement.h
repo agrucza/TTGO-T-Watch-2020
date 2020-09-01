@@ -9,11 +9,13 @@
 #define __UIELEMENT_H
 
 #include <Arduino.h>
+
+#include "gfxfont.h"
+
 #include "UITypes.h"
 #include "TouchMetrics.h"
 #include "UIColors.h"
 #include "UIScreen.h"
-#include "gfxfont.h"
 
 class TFT_eSPI;
 class TFT_eSprite;

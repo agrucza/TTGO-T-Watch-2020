@@ -1,8 +1,10 @@
-#include "UITypes.h"
-#include "UIElement.h"
-#include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
+
+#include "UIElement.h"
+
+#include "UITypes.h"
+#include "GUI.h"
 
 extern GUI* gui;
 

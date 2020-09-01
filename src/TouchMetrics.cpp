@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "LilyGoWatch.h"
+
 #include "GUI.h"
 
 extern TTGOClass *ttgo;

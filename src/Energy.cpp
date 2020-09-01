@@ -1,7 +1,9 @@
 #include <Arduino.h>
 #include <WiFi.h>
+
 #include "config.h"
 #include "LilyGoWatch.h"
+
 #include "GUI.h"
 #include "Energy.h"
 #include "Event.h"

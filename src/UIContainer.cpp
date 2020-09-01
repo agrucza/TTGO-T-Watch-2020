@@ -1,9 +1,11 @@
 #include "config.h"
 #include "LilyGoWatch.h"
+
 #include "UIContainer.h"
+
+#include "GUI.h"
 #include "UIElement.h"
 #include "UIElementLabel.h"
-#include "GUI.h"
 
 UIContainer::UIContainer(UIElement* parent, UIESize_t size, UIEAlignment_t alignment)
 :UIElement(parent)

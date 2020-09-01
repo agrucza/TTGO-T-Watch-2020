@@ -5,11 +5,10 @@
     @version 0.1 7/17/2020
 */
  
-// Please select the model you want to use in config.h
 #include "config.h"
 #include "LilyGoWatch.h"
-#include "GUI.h"
 
+#include "GUI.h"
 #include "UIScreenStartup.h"
 #include "UIScreenStandby.h"
 #include "UIScreenMain.h"

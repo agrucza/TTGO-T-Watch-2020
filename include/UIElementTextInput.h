@@ -9,10 +9,12 @@
 #define __UIELEMENTTEXTINPUT_H
 
 #include <Arduino.h>
+
+#include "gfxfont.h"
+
 #include "UITypes.h"
 #include "UIColors.h"
 #include "UIElement.h"
-#include "gfxfont.h"
 
 class GUI;
 class TFT_esPI;
