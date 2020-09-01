@@ -9,6 +9,7 @@
 #include "UIElementSwitch.h"
 #include "UIElementTextInput.h"
 #include "UIElementCheckbox.h"
+#include "UIElementButton.h"
 
 UIScreenTesting::UIScreenTesting():UIScreen("Testing")
 {
@@ -45,6 +46,10 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     Serial.println("Create checkbox");
     UIElementCheckbox* checkbox2 = new UIElementCheckbox("checkbox2", &FreeSansBold9pt7b, _contentContainer, ORIENTATION_RIGHT);
     _contentContainer->addUIElement(checkbox2);
+    
+    Serial.println("Create button");
+    UIElementButton* button1 = new UIElementButton("click me", &FreeSansBold9pt7b, _contentContainer);
+    _contentContainer->addUIElement(button1);
         
     Serial.println("Init UIScreenTesting done");
 }
