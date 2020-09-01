@@ -10,6 +10,7 @@
 
 #include <Arduino.h>
 #include "UITypes.h"
+#include "UIColors.h"
 #include "UIElement.h"
 #include "gfxfont.h"
 
@@ -21,8 +22,10 @@ class UIElementSwitch : public UIElement{
     const GFXfont*  _font;
     uint16_t        _textColor;
     uint16_t        _bgColor;
-    uint16_t        _swColorActive;
-    uint16_t        _swColorInactive;
+    uint16_t        _swColorActive      = FLAT_UI_V1_PETER_RIVER;
+    uint16_t        _swColorActiveBg    = FLAT_UI_V1_BELIZE_HOLE;
+    uint16_t        _swColorInactive    = FLAT_UI_V1_SILVER;
+    uint16_t        _swColorInactiveBg  = FLAT_UI_V1_ASBESTOS;
     uint8_t         _paddingInner;
     uint8_t         _switchSize;
     bool            _switchEnabled;

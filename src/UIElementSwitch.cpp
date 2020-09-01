@@ -10,8 +10,6 @@ UIElementSwitch::UIElementSwitch(String label, const GFXfont* font, UIElement* p
     _font               = font;
     _paddingInner       = 10;
     _switchEnabled      = false;
-    _swColorActive      = FLAT_UI_V1_PETER_RIVER;
-    _swColorInactive    = FLAT_UI_V1_ASBESTOS;
     _setDimensions();
 }
 
@@ -23,21 +21,7 @@ void UIElementSwitch::_setDimensions()
 
     _dimensions                 = _parent->getDimensionsInner();
     _dimensions.bottomRight.y   = _tft->fontHeight();
-    _dimensions.bottomRight.x   = _tft->textWidth(_label) + _paddingInner + _switchSize;
-    
-    switch(_orientation)
-    {
-        case CENTER_TOP:
-        case CENTER_CENTER:
-        case CENTER_BOTTOM:
-            _dimensions.topLeft.x += (_parent->getDimensionsInner().bottomRight.x-_dimensions.bottomRight.x)/2;
-            break;
-        case RIGHT_TOP:
-        case RIGHT_CENTER:
-        case RIGHT_BOTTOM:
-            _dimensions.topLeft.x += _parent->getDimensionsInner().bottomRight.x - _dimensions.bottomRight.x;
-            break;
-    }
+    _paddingInner               = _dimensions.bottomRight.x - _tft->textWidth(_label) - _switchSize;
 }
 
 void UIElementSwitch::draw(bool task)
@@ -69,19 +53,9 @@ void UIElementSwitch::draw(bool task)
             _switchSize,
             textHeight,
             textHeight/2,
-            _textColor
+            (_switchEnabled ? _swColorActiveBg : _swColorInactiveBg)
         );
-
-        // switch inner
-        _tft->fillRoundRect(
-            posSwitchE.x + 2,
-            posSwitchE.y + 2,
-            _switchSize - 4,
-            textHeight - 4,
-            (textHeight-4)/2,
-            FLAT_UI_V1_SILVER
-        );
-
+        
         // switch element
         _tft->fillRoundRect(
             posSwitchE.x + (_switchEnabled? _switchSize - (textHeight -8) - 4 : 4),
@@ -112,7 +86,6 @@ bool UIElementSwitch::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, 
             _eventCallback(&_eventData);
         }
         break;
-    
     default:
         break;
     }
