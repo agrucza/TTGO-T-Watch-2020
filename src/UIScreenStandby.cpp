@@ -5,10 +5,8 @@
 
 #define DEG2RAD 0.0174532925
 
-UIScreenStandby::UIScreenStandby():UIScreen()
+UIScreenStandby::UIScreenStandby():UIScreen("Standby", false)
 {
-    _label      = "Standby";
-    _showHeader = false;
     _lastMinute = 0;
     _lastMonth  = 0;
 }

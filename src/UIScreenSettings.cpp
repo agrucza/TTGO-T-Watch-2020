@@ -4,9 +4,8 @@
 #include "LilyGoWatch.h"
 #include "fonts/IconsFontsSup24pt7b.h"
 
-UIScreenSettings::UIScreenSettings():UIScreen()
+UIScreenSettings::UIScreenSettings():UIScreen("Settings")
 {
-    _label      = "Settings";
     _padding    = 10;
 }
 

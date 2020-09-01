@@ -18,7 +18,7 @@ class UIContainer : public UIElement{
     UIESize_t                   _size;
     UIEAlignment_t              _alignment;
     std::vector<UIElement*>     _elements;
-    uint8_t                     _padding = 0;
+    uint8_t                     _padding = 5;
     void                        _setDimensions(){};
 
     public:
@@ -26,6 +26,8 @@ class UIContainer : public UIElement{
         UIContainer(UIScreen* screen, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
         void            addUIElement(UIElement* element);
         UIDimensions_t  getElementDimensions(UIElement* element);
+        uint8_t         getPadding(){return _padding;};
+        void            setPadding(uint8_t padding){_padding = padding;};
         bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
         void            draw(bool task = false);
         void            reDraw();

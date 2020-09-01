@@ -6,10 +6,9 @@
 #include "UIElementLabel.h"
 #include "UIElementSwitch.h"
 
-UIScreenTesting::UIScreenTesting():UIScreen()
+UIScreenTesting::UIScreenTesting():UIScreen("Testing")
 {
     Serial.println("Init UIScreenTesting");
-    _label          = "Testing";
     _padding        = 5;
     
     Serial.println("Init container");

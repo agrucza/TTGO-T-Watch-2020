@@ -33,7 +33,7 @@ class UIScreen{
         UIContainer*    _screenContainer = nullptr;
         UIContainer*    _contentContainer = nullptr;
 
-        UIScreen();
+        UIScreen(String label, bool showHeader = true);
         uint8_t getIconSizeX(){return _iconSizeX;};
         uint8_t getIconSizeY(){return _iconSizeY;};
         String  getLabel(){return _label;};

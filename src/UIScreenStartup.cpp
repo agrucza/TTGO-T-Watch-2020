@@ -3,11 +3,7 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-UIScreenStartup::UIScreenStartup():UIScreen()
-{
-    _label      = "Startup";
-    _showHeader = false;
-}
+UIScreenStartup::UIScreenStartup():UIScreen("StartUp", false){}
 
 void UIScreenStartup::draw(bool init, bool task)
 {
