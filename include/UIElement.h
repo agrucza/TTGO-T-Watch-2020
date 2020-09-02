@@ -33,16 +33,13 @@ class UIElement{
         uint16_t            _colorActiveBg      = FLAT_UI_V1_BELIZE_HOLE;
         uint16_t            _colorInactive      = FLAT_UI_V1_SILVER;
         uint16_t            _colorInactiveBg    = FLAT_UI_V1_ASBESTOS;
-        UIESize_t            _size;
+        UIESize_t           _size;
         bool                _enabled;
         bool                _active             = false;
 
         UIEOrientation_t    _orientation;
         UIDimensions_t      _dimensions;
         UIDimensions_t      _parentDimensions;
-        bool                _largeContent       = false;
-
-        TFT_eSprite*        _sprite = nullptr;
         virtual void        _setDimensions() = 0;
 
         ui_event_cb_t       _eventCallback = nullptr;

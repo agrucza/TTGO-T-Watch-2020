@@ -144,6 +144,27 @@ UIDimensions_t UIContainer::calculateContentSize(bool passToParent)
         }
         else
         {
+            // test with sprites
+            if(dimensions.bottomRight.x > fullSize)
+            {
+                Serial.println("Big content creating sprite");
+                // create a sprite
+                if(_sprite.created())
+                {
+                    Serial.println("Sprite already created - deleting");
+                    _sprite.deleteSprite();
+                }
+
+                _spriteData = (uint16_t*)_sprite.createSprite(dimensions.bottomRight.x,dimensions.bottomRight.y);
+                if(_sprite.created())
+                {
+                    Serial.println("Sprite created");
+                }
+                else
+                {
+                    Serial.println("SPRITE NOT CREATED");
+                }                
+            }
             // restore fullsize?
             dimensions.bottomRight.x = fullSize;
         }
@@ -160,7 +181,6 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
 {
     UIDimensions_t  dim;
     UIPoint_t       absPos;
-    char buf[50];
 
     for(uint8_t i = 0; i < _elements.size(); i++)
     {
@@ -173,7 +193,10 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
             &&  lastY <= absPos.y + dim.bottomRight.y
         )
         {
-            return _elements[i]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+            if(_elements[i]->touchAction(lastX, lastY, deltaX, deltaY, touchType)){
+                draw();
+                break;
+            }
         }
     }
 
@@ -187,15 +210,20 @@ void UIContainer::draw(bool task)
 
     if(!task)
     {
-        if(_bgColor > 0)
+        if(_sprite.created())
         {
-            _tft->fillRect(
-                absPos.x,
-                absPos.y,
-                _dimensions.bottomRight.x,
-                _dimensions.bottomRight.y,
-                _bgColor
-            );
+            if(_bgColor>0)
+            {
+                _sprite.fillScreen(_bgColor);
+            }
+            else
+            {
+                _sprite.fillScreen(TFT_GREENYELLOW);
+            }
+        }
+        else if(_bgColor > 0)
+        {
+                _tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
         }
         
         for(uint8_t element = 0; element < _elements.size(); element++)
@@ -203,19 +231,36 @@ void UIContainer::draw(bool task)
             _elements[element]->draw(task);
         }
 
-        if(_largeContent)
+        // if a sprite has been created we need to draw this on screen
+        // unless our parent also has a sprite -> we need to draw this onto this sprite then
+        
+        // first: draw sprite to screen
+        if(_sprite.created())
         {
-            if(_alignment == ALIGNMENT_VERTICAL)
-            {
-                _tft->drawLine(
-                    absPos.x,
-                    absPos.y + _dimensions.bottomRight.y -1,
-                    absPos.x + _dimensions.bottomRight.x,
-                    absPos.y + _dimensions.bottomRight.y -1,
-                    TFT_RED
-                );
-            }
+            Serial.println("Sprite detected pushing sprite to tft");
+            _pushSpriteRect(0, 0, _dimensions.bottomRight.x, _dimensions.bottomRight.y, absPos.x, absPos.y);
+            Serial.println("Sprite should be on tft");
         }
+    }
+}
+
+void UIContainer::_pushSpriteRect(uint16_t spriteX, uint16_t spriteY, uint16_t spriteW, uint16_t spriteH, int16_t tftX, int16_t tftY)
+{
+    // Do nothing if any part of rectangle is outside sprite
+    if(
+        ((spriteX + spriteW) > _sprite.width())
+        || ((spriteY + spriteH) > _sprite.height())
+    )
+    {
+        return;
+    }
+
+    uint16_t dh = 0;
+
+    while(dh < spriteH) {
+        // Push to TFT 1 line at a time
+        _tft->pushImage(tftX, tftY + dh, spriteW, 1, _spriteData + spriteX + ((spriteY + dh) * _sprite.width()),TFT_GREENYELLOW);
+        dh++;
     }
 }
 
