@@ -39,20 +39,22 @@ void UIElementLabel::draw(bool task)
 {
     if(!task)
     {
+        UIPoint_t absPos = getTopPosition();
+
         _tft->setFreeFont(_font);
         _tft->setTextColor(_textColor);
         
         _tft->drawString(
             _label,
-            _dimensions.topLeft.x + _dimensions.bottomRight.x/2,
-            _dimensions.topLeft.y + _tft->fontHeight()/2
+            absPos.x + _dimensions.bottomRight.x/2,
+            absPos.y + _tft->fontHeight()/2
         );
 
         if(_showLine)
         {
             _tft->fillRect(
-                _parent->_dimensions.topLeft.x,
-                _dimensions.topLeft.y + _dimensions.bottomRight.y - _lineHeight,
+                _parent->getTopPosition().x,
+                absPos.y + _dimensions.bottomRight.y - _lineHeight,
                 _parent->_dimensions.bottomRight.x + (_lineOrientation == ORIENTATION_CENTER?(_parent)->getPadding():0),
                 _lineHeight,
                 _textColor

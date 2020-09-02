@@ -32,6 +32,7 @@ void UIElementSwitch::draw(bool task)
 {
     if(!task)
     {
+        UIPoint_t absPos = getTopPosition();
         UIPoint_t posSwitchE;
         uint16_t textWidth,textHeight;
 
@@ -43,12 +44,12 @@ void UIElementSwitch::draw(bool task)
 
         _tft->drawString(
             _label,
-            _dimensions.topLeft.x + (_orientation == ORIENTATION_LEFT?_dimensions.bottomRight.x - textWidth/2:textWidth/2),
-            _dimensions.topLeft.y + (_dimensions.bottomRight.y/2)
+            absPos.x + (_orientation == ORIENTATION_LEFT?_dimensions.bottomRight.x - textWidth/2:textWidth/2),
+            absPos.y + (_dimensions.bottomRight.y/2)
         );
 
-        posSwitchE.x = _dimensions.topLeft.x + (_orientation == ORIENTATION_RIGHT?textWidth + _paddingInner:0);
-        posSwitchE.y = _dimensions.topLeft.y;
+        posSwitchE.x = absPos.x + (_orientation == ORIENTATION_RIGHT?textWidth + _paddingInner:0);
+        posSwitchE.y = absPos.y;
 
         // switch outline
         _tft->fillRoundRect(

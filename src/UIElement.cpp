@@ -27,6 +27,21 @@ UIElement::UIElement(UIContainer* parent, UIEOrientation_t orientation)
     }
 }
 
+UIPoint_t UIElement::getTopPosition()
+{
+    if(!_parent)
+    {
+        return _dimensions.topLeft;
+    }
+
+    UIPoint_t pos       = _dimensions.topLeft;
+    UIPoint_t parentPos = _parent->getTopPosition();
+    pos.x               += parentPos.x;
+    pos.y               += parentPos.y;
+
+    return pos;
+}
+
 void UIElement::setEventData(ui_event_data_t* data)
 {
     _eventData.event    = data->event;

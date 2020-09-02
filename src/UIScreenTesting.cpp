@@ -52,7 +52,7 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     _contentContainer->addUIElement(buttonContainer);
     buttonContainer->setBackgroundColor(FLAT_UI_V1_ALIZARIN);
 
-    Serial.println("Create button");
+    Serial.println("Create buttons");
     UIElementButton* button1 = new UIElementButton("click me", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
     eventData.screen    = this;
     eventData.source    = button1;
@@ -62,12 +62,10 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     buttonContainer->addUIElement(button1);
     
     UIElementButton* button2 = new UIElementButton("click me 2", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
-    eventData.screen    = this;
-    eventData.source    = button2;
-    eventData.event     = EVENT_OPEN_MODAL;
-    button2->setEventData(&eventData);
-    button2->setEventCallback(GUI::handleEventCallback);
     buttonContainer->addUIElement(button2);
+    
+    //UIElementButton* button3 = new UIElementButton("click me 3", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
+    //buttonContainer->addUIElement(button3);
 
     Serial.println("Init UIScreenTesting done");
 }

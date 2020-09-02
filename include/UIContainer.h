@@ -32,6 +32,7 @@ class UIContainer : public UIElement{
         UIEAlignment_t  getAlignment(){return _alignment;};
         
         UIDimensions_t  calculateContentSize(bool passToParent = false);
+
         bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
         void            draw(bool task = false);
         void            reDraw();

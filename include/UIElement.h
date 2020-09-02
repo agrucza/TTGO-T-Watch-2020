@@ -58,6 +58,8 @@ class UIElement{
         void                    setTextColor(uint16_t color){_textColor = color;};
         void                    setEnabled(bool enable){_enabled = enable;};
         bool                    getEnabled(){return _enabled;};
+        
+        UIPoint_t               getTopPosition();
 
         virtual bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType) = 0;
         virtual void            draw(bool task = false) = 0;

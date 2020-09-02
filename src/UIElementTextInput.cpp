@@ -26,17 +26,18 @@ void UIElementTextInput::_setDimensions()
 
 void UIElementTextInput::draw(bool task)
 {
-    String textToDraw = (_text!=""?_text:_placeholder);
-
     if(!task)
     {
+        UIPoint_t absPos = getTopPosition();
+        String textToDraw = (_text!=""?_text:_placeholder);
+        
         _tft->setFreeFont(_font);
         _tft->setTextColor((_text!=""?_textColor:_colorInactive));
 
         // input outline
         _tft->drawRoundRect(
-            _dimensions.topLeft.x,
-            _dimensions.topLeft.y,
+            absPos.x,
+            absPos.y,
             _dimensions.bottomRight.x,
             _dimensions.bottomRight.y,
             4,
@@ -45,8 +46,8 @@ void UIElementTextInput::draw(bool task)
 
         _tft->drawString(
             textToDraw,
-            _dimensions.topLeft.x + (_dimensions.bottomRight.x/2),
-            _dimensions.topLeft.y + (_tft->fontHeight()/2)
+            absPos.x + (_dimensions.bottomRight.x/2),
+            absPos.y + (_tft->fontHeight()/2)
         );
     }
 }

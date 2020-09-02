@@ -28,13 +28,15 @@ void UIElementCheckbox::draw(bool task)
 {
     if(!task)
     {
+        UIPoint_t absPos = getTopPosition();
+
         _tft->setFreeFont(_font);
         _tft->setTextColor((_active?_colorActive:_colorInactive));
 
         // input outline
         _tft->fillRoundRect(
-            _dimensions.topLeft.x + (_orientation == ORIENTATION_RIGHT? _dimensions.bottomRight.x - _tft->fontHeight():0),
-            _dimensions.topLeft.y,
+            absPos.x + (_orientation == ORIENTATION_RIGHT? _dimensions.bottomRight.x - _tft->fontHeight():0),
+            absPos.y,
             _tft->fontHeight(),
             _tft->fontHeight(),
             4,
@@ -43,8 +45,8 @@ void UIElementCheckbox::draw(bool task)
 
         _tft->drawString(
             _label,
-            _dimensions.topLeft.x + (_orientation == ORIENTATION_LEFT?_dimensions.bottomRight.x - (_tft->textWidth(_label)/2):_tft->textWidth(_label)/2),
-            _dimensions.topLeft.y + (_tft->fontHeight()/2)
+            absPos.x + (_orientation == ORIENTATION_LEFT?_dimensions.bottomRight.x - (_tft->textWidth(_label)/2):_tft->textWidth(_label)/2),
+            absPos.y + (_tft->fontHeight()/2)
         );
 
         if(_active)
@@ -52,8 +54,8 @@ void UIElementCheckbox::draw(bool task)
             _tft->setTextColor(FLAT_UI_V1_CLOUDS);
             _tft->drawString(
                 "X",
-                _dimensions.topLeft.x + _tft->fontHeight()/2 + (_orientation == ORIENTATION_RIGHT? _dimensions.bottomRight.x - _tft->fontHeight():0),
-                _dimensions.topLeft.y + _tft->fontHeight()/2
+                absPos.x + _tft->fontHeight()/2 + (_orientation == ORIENTATION_RIGHT? _dimensions.bottomRight.x - _tft->fontHeight():0),
+                absPos.y + _tft->fontHeight()/2
             );
         }
     }

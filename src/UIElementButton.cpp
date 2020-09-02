@@ -37,13 +37,15 @@ void UIElementButton::draw(bool task)
 {
     if(!task)
     {
+        UIPoint_t absPos = getTopPosition();
+        
         _tft->setFreeFont(_font);
         _tft->setTextColor(_textColor);
 
         // input outline
         _tft->fillRoundRect(
-            _dimensions.topLeft.x,
-            _dimensions.topLeft.y,
+            absPos.x,
+            absPos.y,
             _dimensions.bottomRight.x,
             _dimensions.bottomRight.y,
             4,
@@ -52,8 +54,8 @@ void UIElementButton::draw(bool task)
 
         _tft->drawString(
             _label,
-            _dimensions.topLeft.x + (_dimensions.bottomRight.x/2),
-            _dimensions.topLeft.y + (_tft->fontHeight()/2)
+            absPos.x + (_dimensions.bottomRight.x/2),
+            absPos.y + (_tft->fontHeight()/2)
         );
     }
 }

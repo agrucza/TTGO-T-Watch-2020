@@ -42,12 +42,12 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
     else
     {
         Serial.println("Container has no parent");
-        _dimensions.topLeft.x       = _dimensions.topLeft.y = 0;
+        _dimensions                 = defaultUIDimensions;
         _dimensions.bottomRight.x   = TFT_WIDTH;
         _dimensions.bottomRight.y   = TFT_HEIGHT;
     }
 
-    //Serial.println("UIContainer constructor done");
+    Serial.println("UIContainer constructor done");
 }
 
 UIContainer::UIContainer(UIScreen* screen, UIESize_t size, UIEAlignment_t alignment)
@@ -67,12 +67,12 @@ void UIContainer::addUIElement(UIElement* element)
     switch(_alignment)
     {
         case ALIGNMENT_VERTICAL:
-            dimensions.topLeft.y        =  containerDimensions.topLeft.y + containerDimensions.bottomRight.y + _padding;
+            dimensions.topLeft.y        = containerDimensions.bottomRight.y + _padding;
             break;
         case ALIGNMENT_HORIZONTAL:
         case ALIGNMENT_HORIZONTAL_FILL:
-            dimensions.topLeft.x        = containerDimensions.topLeft.x + containerDimensions.bottomRight.x + _padding;
-            dimensions.topLeft.y        = containerDimensions.topLeft.y + _padding;
+            dimensions.topLeft.x        = containerDimensions.bottomRight.x + _padding;
+            dimensions.topLeft.y        = _padding;
             break;
     }
 
@@ -156,13 +156,46 @@ UIDimensions_t UIContainer::calculateContentSize(bool passToParent)
     return dimensions;
 }
 
+bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
+{
+    UIDimensions_t  dim;
+    UIPoint_t       absPos;
+    char buf[50];
+
+    for(uint8_t i = 0; i < _elements.size(); i++)
+    {
+        absPos  = _elements[i]->getTopPosition();
+        dim     = _elements[i]->getDimensions();
+        if(
+                lastX >= absPos.x
+            &&  lastX <= absPos.x + dim.bottomRight.x
+            &&  lastY >= absPos.y
+            &&  lastY <= absPos.y + dim.bottomRight.y
+        )
+        {
+            return _elements[i]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+        }
+    }
+
+    // if we are here we have a container touch
+    return true;
+}
+
 void UIContainer::draw(bool task)
 {
+    UIPoint_t absPos = getTopPosition();
+
     if(!task)
     {
         if(_bgColor > 0)
         {
-            _tft->fillRect(_dimensions.topLeft.x, _dimensions.topLeft.y, _dimensions.bottomRight.x, _dimensions.bottomRight.y, _bgColor);
+            _tft->fillRect(
+                absPos.x,
+                absPos.y,
+                _dimensions.bottomRight.x,
+                _dimensions.bottomRight.y,
+                _bgColor
+            );
         }
         
         for(uint8_t element = 0; element < _elements.size(); element++)
@@ -175,10 +208,10 @@ void UIContainer::draw(bool task)
             if(_alignment == ALIGNMENT_VERTICAL)
             {
                 _tft->drawLine(
-                    _dimensions.topLeft.x,
-                    _dimensions.topLeft.y + _dimensions.bottomRight.y -1,
-                    _dimensions.bottomRight.x,
-                    _dimensions.topLeft.y + _dimensions.bottomRight.y -1,
+                    absPos.x,
+                    absPos.y + _dimensions.bottomRight.y -1,
+                    absPos.x + _dimensions.bottomRight.x,
+                    absPos.y + _dimensions.bottomRight.y -1,
                     TFT_RED
                 );
             }
@@ -189,26 +222,4 @@ void UIContainer::draw(bool task)
 void UIContainer::reDraw()
 {
 
-}
-
-bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
-{
-    UIDimensions_t dim;
-
-    for(uint8_t i = 0; i < _elements.size(); i++)
-    {
-        dim = _elements[i]->getDimensions();
-        if(
-            lastX >= dim.topLeft.x
-            && lastX <= dim.topLeft.x + dim.bottomRight.x
-            && lastY >= dim.topLeft.y
-            && lastY <= dim.topLeft.y + dim.bottomRight.y
-        )
-        {
-            return _elements[i]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
-        }
-    }
-
-    // if we are here we have a container touch
-    return true;
 }
