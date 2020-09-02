@@ -5,10 +5,11 @@
 
 #include "UITypes.h"
 #include "GUI.h"
+#include "UIContainer.h"
 
 extern GUI* gui;
 
-UIElement::UIElement(UIElement* parent, UIEOrientation_t orientation)
+UIElement::UIElement(UIContainer* parent, UIEOrientation_t orientation)
 {
     _tft            = gui->getTTGO()->tft;
     _parent         = parent;

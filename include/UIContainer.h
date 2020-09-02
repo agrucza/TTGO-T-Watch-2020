@@ -23,12 +23,15 @@ class UIContainer : public UIElement{
     void                        _setDimensions(){};
 
     public:
-        UIContainer(UIElement* parent = nullptr, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
+        UIContainer(UIContainer* parent = nullptr, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
         UIContainer(UIScreen* screen, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
         void            addUIElement(UIElement* element);
         UIDimensions_t  getElementDimensions(UIElement* element);
         uint8_t         getPadding(){return _padding;};
         void            setPadding(uint8_t padding){_padding = padding;};
+        UIEAlignment_t  getAlignment(){return _alignment;};
+        
+        UIDimensions_t  calculateContentSize(bool passToParent = false);
         bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
         void            draw(bool task = false);
         void            reDraw();

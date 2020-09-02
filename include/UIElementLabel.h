@@ -26,13 +26,13 @@ class UIElementLabel : public UIElement{
     void                _setDimensions();
 
     public:
-        UIElementLabel(String label, const GFXfont* font, UIElement* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_CENTER);
-        void    setFont(const GFXfont* font){_font = font;};
-        void    setTextColor(uint16_t color){_textColor = color;};
-        void    showLine(bool show, UIEOrientation_t orientation = ORIENTATION_CENTER){_showLine = show; _lineOrientation = orientation; _setDimensions();};
-        bool    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
-        void    draw(bool task = false);
-        void    reDraw();
+        UIElementLabel(String label, const GFXfont* font, UIContainer* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_CENTER);
+        void            setFont(const GFXfont* font){_font = font;};
+        void            setTextColor(uint16_t color){_textColor = color;};
+        void            showLine(bool show, UIEOrientation_t orientation = ORIENTATION_CENTER){_showLine = show; _lineOrientation = orientation; _setDimensions();};
+        bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
+        void            draw(bool task = false);
+        void            reDraw();
 };
 
 #endif /*__UIELEMENTLABEL_H */

@@ -21,6 +21,7 @@ enum UIElement_t : uint8_t{
 
 enum UIEAlignment_t : uint8_t {
     ALIGNMENT_HORIZONTAL,
+    ALIGNMENT_HORIZONTAL_FILL,
     ALIGNMENT_VERTICAL
 };
 
@@ -51,12 +52,18 @@ struct UIColor_t{
     int16_t b;
 };
 
+enum ui_event_t : uint8_t {
+    EVENT_OPEN_MODAL,
+    EVENT_CLOSE_MODAL,
+};
+
 typedef void *ui_event_void_t;
 
 struct ui_event_data_t{
     UIElement*      source;
     UIScreen*       screen;
-    ui_event_void_t event;
+    ui_event_t      event;
+    ui_event_void_t target;
 };
 
 typedef void (*ui_event_cb_t)(ui_event_data_t* eventData);

@@ -121,12 +121,6 @@ void UIScreenMain::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int
         uint8_t x = (lastX-_padding)/(_iconW+2);
         uint8_t y = (lastY-_padding)/(_iconH+2);
         
-        /*
-        _tft->setFreeFont(&FreeSansBold9pt7b);
-        char buf[20];
-        sprintf(buf,"x: %d y: %d s: %d",x,y, _displayIcons[y][x]);
-        _tft->drawString(buf,_padding, _padding);
-        */
         if(_displayIcons.size()-1 >= y && _displayIcons[y][x] != SCREEN_NONE)
         {
             _gui->setScreen(_displayIcons[y][x], true);

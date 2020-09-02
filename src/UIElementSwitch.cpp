@@ -4,8 +4,9 @@
 #include "UIElementSwitch.h"
 
 #include "GUI.h"
+#include "UIContainer.h"
 
-UIElementSwitch::UIElementSwitch(String label, const GFXfont* font, UIElement* parent, UIEOrientation_t orientation)
+UIElementSwitch::UIElementSwitch(String label, const GFXfont* font, UIContainer* parent, UIEOrientation_t orientation)
 :UIElement(parent,orientation)
 {
     _label              = label;
@@ -17,11 +18,14 @@ void UIElementSwitch::_setDimensions()
 {
     _tft->setFreeFont(_font);
 
-    _size                       = _tft->fontHeight() * 2;
+    _switchSize                 = _tft->fontHeight() * 2;
 
-    _dimensions                 = _parent->getDimensionsInner();
+    _dimensions                 = _parent->getDimensions();
+    _dimensions.topLeft.x       += _parent->getPadding();
+    _dimensions.topLeft.y       += _parent->getPadding();
+    _dimensions.bottomRight.x   -= 2*_parent->getPadding();
     _dimensions.bottomRight.y   = _tft->fontHeight();
-    _paddingInner               = _dimensions.bottomRight.x - _tft->textWidth(_label) - _size;
+    _paddingInner               = _dimensions.bottomRight.x - _tft->textWidth(_label) - _switchSize;
 }
 
 void UIElementSwitch::draw(bool task)
@@ -50,7 +54,7 @@ void UIElementSwitch::draw(bool task)
         _tft->fillRoundRect(
             posSwitchE.x,
             posSwitchE.y,
-            _size,
+            _switchSize,
             textHeight,
             textHeight/2,
             (_enabled ? _colorActiveBg : _colorInactiveBg)
@@ -58,7 +62,7 @@ void UIElementSwitch::draw(bool task)
         
         // switch element
         _tft->fillRoundRect(
-            posSwitchE.x + (_enabled? _size - (textHeight -8) - 4 : 4),
+            posSwitchE.x + (_enabled? _switchSize - (textHeight -8) - 4 : 4),
             posSwitchE.y + 4,
             textHeight - 8,
             textHeight - 8,

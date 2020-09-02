@@ -7,7 +7,7 @@
 #include "UIElement.h"
 #include "UIElementLabel.h"
 
-UIContainer::UIContainer(UIElement* parent, UIESize_t size, UIEAlignment_t alignment)
+UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t alignment)
 :UIElement(parent)
 {
     Serial.println("UIContainer constructor");
@@ -18,7 +18,26 @@ UIContainer::UIContainer(UIElement* parent, UIESize_t size, UIEAlignment_t align
     if(_parent)
     {
         Serial.println("Container has parent");
-        _dimensions = _parent->getRemainingSpace();
+        // the parents dimensions plus padding will be the bounds of the new container
+        // depending on the parens alignment we will set the width and height
+        // vertical alignment will have full width but 0 height
+        // horizontal alignment will have 0 width and full height
+        _dimensions = _parent->getDimensions();
+        _dimensions.topLeft.x += _parent->getPadding();
+        _dimensions.topLeft.y += _parent->getPadding();
+        _dimensions.bottomRight.x -= 2*_parent->getPadding();
+        _dimensions.bottomRight.y -= 2*_parent->getPadding();
+
+        switch(_parent->getAlignment())
+        {
+            case ALIGNMENT_VERTICAL:
+                _dimensions.bottomRight.y = 2*_padding;
+                break;
+            case ALIGNMENT_HORIZONTAL:
+            case ALIGNMENT_HORIZONTAL_FILL:
+                _dimensions.bottomRight.x -= 2*_padding;
+                break;
+        }
     }
     else
     {
@@ -28,15 +47,6 @@ UIContainer::UIContainer(UIElement* parent, UIESize_t size, UIEAlignment_t align
         _dimensions.bottomRight.y   = TFT_HEIGHT;
     }
 
-    //Serial.println("Setting containers remaining space");
-    _remainingSpace = _dimensions;
-
-    //Serial.println("Setting containers inner dimensions");
-    _dimensionsInner = _dimensions;
-    _dimensionsInner.topLeft.x += _padding;
-    _dimensionsInner.topLeft.y += _padding;
-    _dimensionsInner.bottomRight.x -= 2*_padding;
-    _dimensionsInner.bottomRight.y -= 2*_padding;
     //Serial.println("UIContainer constructor done");
 }
 
@@ -51,56 +61,25 @@ UIContainer::UIContainer(UIScreen* screen, UIESize_t size, UIEAlignment_t alignm
 
 void UIContainer::addUIElement(UIElement* element)
 {
-    UIDimensions_t      dimensions = element->getDimensions();
-    UIDimensions_t      tmpDimensions;
-
-    char buf[50];
+    UIDimensions_t      dimensions          = element->getDimensions();
+    UIDimensions_t      containerDimensions = calculateContentSize();
 
     switch(_alignment)
     {
         case ALIGNMENT_VERTICAL:
-            dimensions.topLeft.y = _dimensions.topLeft.y + _padding;
+            dimensions.topLeft.y        =  containerDimensions.topLeft.y + containerDimensions.bottomRight.y + _padding;
             break;
         case ALIGNMENT_HORIZONTAL:
-            dimensions.topLeft.x = _dimensions.topLeft.x + _padding;
-            break;
-    }
-
-    for(uint8_t i = 0; i < _elements.size(); i++)
-    {
-        tmpDimensions = _elements[i]->getDimensions();
-        switch(_alignment)
-        {
-            case ALIGNMENT_VERTICAL:
-                tmpDimensions.topLeft.y =  dimensions.topLeft.y;
-                dimensions.topLeft.y    += tmpDimensions.bottomRight.y + _padding;
-                break;
-            case ALIGNMENT_HORIZONTAL:
-                tmpDimensions.topLeft.x =  dimensions.topLeft.x;
-                dimensions.topLeft.x    += tmpDimensions.bottomRight.x + _padding;
-                break;
-        }
-        _elements[i]->setDimensions(tmpDimensions);
-    }
-    
-    switch(_alignment)
-    {
-        case ALIGNMENT_VERTICAL:
-            //_remainingSpace.topLeft.y       = dimensions.topLeft.y + dimensions.bottomRight.y;
-            //_remainingSpace.bottomRight.y   = _dimensions.bottomRight.y - dimensions.bottomRight.y - size;
-            _remainingSpace.topLeft.y      += dimensions.bottomRight.y;
-            _remainingSpace.bottomRight.y  -= dimensions.bottomRight.y;
-            _largeContent = (_remainingSpace.bottomRight.y>=0?false:true);
-            break;
-        case ALIGNMENT_HORIZONTAL:
-            _remainingSpace.topLeft.x       += dimensions.bottomRight.x;
-            _remainingSpace.bottomRight.x   -= dimensions.bottomRight.x;
-            _largeContent = (_remainingSpace.bottomRight.x>=0?false:true);
+        case ALIGNMENT_HORIZONTAL_FILL:
+            dimensions.topLeft.x        = containerDimensions.topLeft.x + containerDimensions.bottomRight.x + _padding;
+            dimensions.topLeft.y        = containerDimensions.topLeft.y + _padding;
             break;
     }
 
     element->setDimensions(dimensions);
     _elements.push_back(element);
+
+    calculateContentSize(true);
 }
 
 UIDimensions_t UIContainer::getElementDimensions(UIElement* element)
@@ -118,6 +97,63 @@ UIDimensions_t UIContainer::getElementDimensions(UIElement* element)
     fallback.topLeft.x = fallback.topLeft.y = fallback.bottomRight.x = fallback.bottomRight.y -1;
 
     return fallback;
+}
+
+UIDimensions_t UIContainer::calculateContentSize(bool passToParent)
+{
+    UIDimensions_t tmpDimensions;
+    UIDimensions_t dimensions   = _dimensions;
+    uint8_t fullSize            = 0;
+
+    switch(_alignment)
+    {
+        case ALIGNMENT_VERTICAL:
+            dimensions.bottomRight.y = 0;
+            break;
+        case ALIGNMENT_HORIZONTAL:
+        case ALIGNMENT_HORIZONTAL_FILL:
+            Serial.println("horizontal alignment container");
+            fullSize = dimensions.bottomRight.x;
+            dimensions.bottomRight.x = 0;
+            break;
+    }
+
+    for(uint8_t i = 0; i < _elements.size(); i++)
+    {
+        tmpDimensions = _elements[i]->getDimensions();
+        switch(_alignment)
+        {
+            case ALIGNMENT_VERTICAL:
+                dimensions.bottomRight.y    += tmpDimensions.bottomRight.y + _padding;
+                break;
+            case ALIGNMENT_HORIZONTAL:
+            case ALIGNMENT_HORIZONTAL_FILL:
+                dimensions.bottomRight.x    += tmpDimensions.bottomRight.x + _padding;
+                if(dimensions.bottomRight.y < tmpDimensions.bottomRight.y + 2*_padding)
+                {
+                    dimensions.bottomRight.y = tmpDimensions.bottomRight.y + 2*_padding;
+                }
+                break;
+        }
+    }
+
+    if(_parent && passToParent)
+    {
+        if(_alignment==ALIGNMENT_VERTICAL){
+            dimensions.bottomRight.y += _padding;
+        }
+        else
+        {
+            // restore fullsize?
+            dimensions.bottomRight.x = fullSize;
+        }
+
+        _dimensions =  dimensions;
+
+        _parent->calculateContentSize(true);
+    }
+
+    return dimensions;
 }
 
 void UIContainer::draw(bool task)

@@ -24,7 +24,7 @@ class UIElement{
     public:
         TFT_eSPI*           _tft;
         UIScreen*           _screen     = nullptr;
-        UIElement*          _parent     = nullptr;
+        UIContainer*        _parent     = nullptr;
         
         const GFXfont*      _font;
         uint16_t            _textColor;
@@ -33,16 +33,14 @@ class UIElement{
         uint16_t            _colorActiveBg      = FLAT_UI_V1_BELIZE_HOLE;
         uint16_t            _colorInactive      = FLAT_UI_V1_SILVER;
         uint16_t            _colorInactiveBg    = FLAT_UI_V1_ASBESTOS;
-        uint8_t             _size;
+        UIESize_t            _size;
         bool                _enabled;
         bool                _active             = false;
 
         UIEOrientation_t    _orientation;
         UIDimensions_t      _dimensions;
-        UIDimensions_t      _dimensionsInner;
         UIDimensions_t      _parentDimensions;
-        UIDimensions_t      _remainingSpace;
-        bool                _largeContent;
+        bool                _largeContent       = false;
 
         TFT_eSprite*        _sprite = nullptr;
         virtual void        _setDimensions() = 0;
@@ -50,22 +48,20 @@ class UIElement{
         ui_event_cb_t       _eventCallback = nullptr;
         ui_event_data_t     _eventData;
 
-        UIElement(UIElement* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_CENTER);
-        UIDimensions_t      getDimensions(){return _dimensions;};
-        void                setDimensions(UIDimensions_t dimensions){_dimensions = dimensions;};
-        UIDimensions_t      getDimensionsInner(){return _dimensionsInner;};
-        UIDimensions_t      getRemainingSpace(){return _remainingSpace;};
-        void                setEventData(ui_event_data_t* data);
-        void                setEventCallback(ui_event_cb_t eventCallback){_eventCallback = eventCallback;};
+        UIElement(UIContainer* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_CENTER);
+        UIDimensions_t          getDimensions(){return _dimensions;};
+        void                    setDimensions(UIDimensions_t dimensions){_dimensions = dimensions;};
+        void                    setEventData(ui_event_data_t* data);
+        void                    setEventCallback(ui_event_cb_t eventCallback){_eventCallback = eventCallback;};
         
-        void                setBackgroundColor(int16_t color){_bgColor = color;};
-        void                setTextColor(uint16_t color){_textColor = color;};
-        void                setEnabled(bool enable){_enabled = enable;};
-        bool                getEnabled(){return _enabled;};
+        void                    setBackgroundColor(int16_t color){_bgColor = color;};
+        void                    setTextColor(uint16_t color){_textColor = color;};
+        void                    setEnabled(bool enable){_enabled = enable;};
+        bool                    getEnabled(){return _enabled;};
 
-        virtual bool        touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType) = 0;
-        virtual void        draw(bool task = false) = 0;
-        virtual void        reDraw() = 0;
+        virtual bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType) = 0;
+        virtual void            draw(bool task = false) = 0;
+        virtual void            reDraw() = 0;
 };
 
 #endif /*__UIELEMENT_H */

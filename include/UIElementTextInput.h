@@ -25,10 +25,10 @@ class UIElementTextInput : public UIElement{
     void            _setDimensions();
 
     public:
-        UIElementTextInput(String placeholder, const GFXfont* font, UIElement* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_CENTER);
-        bool    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
-        void    draw(bool task = false);
-        void    reDraw();
+        UIElementTextInput(String placeholder, const GFXfont* font, UIContainer* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_CENTER);
+        bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
+        void            draw(bool task = false);
+        void            reDraw();
 };
 
 #endif /*__UIELEMENTTEXTINPUT_H */

@@ -25,10 +25,10 @@ class UIElementCheckbox : public UIElement{
     void            _setDimensions();
 
     public:
-        UIElementCheckbox(String label, const GFXfont* font, UIElement* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_RIGHT);
-        bool    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
-        void    draw(bool task = false);
-        void    reDraw();
+        UIElementCheckbox(String label, const GFXfont* font, UIContainer* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_RIGHT);
+        bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
+        void            draw(bool task = false);
+        void            reDraw();
 };
 
 #endif /*__UIELEMENTCHECKBOX_H */

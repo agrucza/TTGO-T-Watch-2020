@@ -6,7 +6,7 @@
 #include "GUI.h"
 #include "UIContainer.h"
 
-UIElementLabel::UIElementLabel(String label, const GFXfont* font, UIElement* parent, UIEOrientation_t orientation)
+UIElementLabel::UIElementLabel(String label, const GFXfont* font, UIContainer* parent, UIEOrientation_t orientation)
 :UIElement(parent,orientation)
 {
     _label          = label;
@@ -18,17 +18,19 @@ void UIElementLabel::_setDimensions()
 {
     _tft->setFreeFont(_font);
 
-    _dimensions                 = _parent->getDimensionsInner();
+    _dimensions                 = _parent->getDimensions();
+    _dimensions.topLeft.x       += _parent->getPadding();
+    _dimensions.topLeft.y       += _parent->getPadding();
     _dimensions.bottomRight.y   = _tft->fontHeight() + (_showLine?_lineHeight:0);
     _dimensions.bottomRight.x   = _tft->textWidth(_label);
     
     switch(_orientation)
     {
         case ORIENTATION_CENTER:
-            _dimensions.topLeft.x += (_parent->getDimensionsInner().bottomRight.x-_dimensions.bottomRight.x)/2;
+            _dimensions.topLeft.x += (_parent->getDimensions().bottomRight.x + _parent->getPadding()-_dimensions.bottomRight.x)/2;
             break;
         case ORIENTATION_RIGHT:
-            _dimensions.topLeft.x += _parent->getDimensionsInner().bottomRight.x - _dimensions.bottomRight.x;
+            _dimensions.topLeft.x += _parent->getDimensions().bottomRight.x +_parent->getPadding() - _dimensions.bottomRight.x;
             break;
     }
 }
@@ -49,9 +51,9 @@ void UIElementLabel::draw(bool task)
         if(_showLine)
         {
             _tft->fillRect(
-                (_lineOrientation == ORIENTATION_LEFT? _parent->_dimensions.topLeft.x : _parent->_dimensionsInner.topLeft.x),
+                _parent->_dimensions.topLeft.x,
                 _dimensions.topLeft.y + _dimensions.bottomRight.y - _lineHeight,
-                _parent->_dimensionsInner.bottomRight.x + (_lineOrientation == ORIENTATION_CENTER?((UIContainer*)_parent)->getPadding():0),
+                _parent->_dimensions.bottomRight.x + (_lineOrientation == ORIENTATION_CENTER?(_parent)->getPadding():0),
                 _lineHeight,
                 _textColor
             );

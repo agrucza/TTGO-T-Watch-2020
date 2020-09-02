@@ -4,20 +4,33 @@
 #include "UIElementButton.h"
 
 #include "GUI.h"
+#include "UIContainer.h"
 
-UIElementButton::UIElementButton(String label, const GFXfont* font, UIElement* parent, UIEOrientation_t orientation)
-:UIElement(parent,orientation)
+UIElementButton::UIElementButton(String label, const GFXfont* font, UIContainer* parent, UIESize_t size)
+:UIElement(parent)
 {
-    _label  =label;
+    _label  = label;
     _font   = font;
+    _size   = size;
     _setDimensions();
 }
 
 void UIElementButton::_setDimensions()
 {
     _tft->setFreeFont(_font);
-    _dimensions                 = _parent->getDimensionsInner();
-    _dimensions.bottomRight.y   = _tft->fontHeight()+4;
+    _dimensions                 = _parent->getDimensions();
+    _dimensions.topLeft.x       += _parent->getPadding();
+    _dimensions.topLeft.y       += _parent->getPadding();
+    _dimensions.bottomRight.x   -= 2*_parent->getPadding();
+    _dimensions.bottomRight.y   =  _tft->fontHeight()+4;
+    switch(_size)
+    {
+        case SIZE_ELEMENT:
+            _dimensions.bottomRight.x = _tft->textWidth(_label) + _padding*2;
+        break;
+        case SIZE_FULL:
+        break;
+    }
 }
 
 void UIElementButton::draw(bool task)
@@ -34,7 +47,7 @@ void UIElementButton::draw(bool task)
             _dimensions.bottomRight.x,
             _dimensions.bottomRight.y,
             4,
-            _colorActive
+            (_active?_colorActive:_colorInactive)
         );
 
         _tft->drawString(
@@ -55,7 +68,8 @@ bool UIElementButton::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, 
     switch (touchType)
     {
     case TouchMetrics::TOUCH:
-        //draw();
+        _active ^= true;
+        draw();
         /*
         if(_eventCallback)
         {
