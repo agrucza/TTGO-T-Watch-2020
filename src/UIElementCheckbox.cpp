@@ -61,11 +61,6 @@ void UIElementCheckbox::draw(bool task)
     }
 }
 
-void UIElementCheckbox::reDraw()
-{
-    
-}
-
 bool UIElementCheckbox::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
     switch (touchType)

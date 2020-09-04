@@ -14,10 +14,9 @@
 UIScreenTesting::UIScreenTesting():UIScreen("Testing")
 {
     Serial.println("Init UIScreenTesting");
-    /*
     _screenContainer->setBackgroundColor(FLAT_UI_V1_POMEGRANATE);
     _contentContainer->setBackgroundColor(FLAT_UI_V1_PUMPKIN);
-    */
+    
     UIElementLabel* label1 = new UIElementLabel("Test1", &FreeSansBold9pt7b, _contentContainer,ORIENTATION_LEFT);
     label1->setTextColor(FLAT_UI_V1_CLOUDS);
     _contentContainer->addUIElement(label1);
@@ -48,22 +47,22 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     modal->setPadding(10);
     modal->setBackgroundColor(FLAT_UI_V1_CLOUDS);
     */
-
+    
     Serial.println("Creating buttonContainer");
     UIContainer* buttonContainer = new UIContainer(_contentContainer, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL_FILL);
     
     _contentContainer->addUIElement(buttonContainer);
     buttonContainer->setBackgroundColor(FLAT_UI_V1_MIDNIGHT_BLUE);
 
-    Serial.println("Create buttons");
+    Serial.println("Create horizontal buttons");
     UIElementButton* button1 = new UIElementButton("click me", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
-    /*
-    eventData.screen    = this;
-    eventData.source    = button1;
-    eventData.event     = EVENT_OPEN_MODAL;
-    button1->setEventData(&eventData);
-    button1->setEventCallback(GUI::handleEventCallback);
-    */
+    
+    //eventData.screen    = this;
+    //eventData.source    = button1;
+    //eventData.event     = EVENT_OPEN_MODAL;
+    //button1->setEventData(&eventData);
+    //button1->setEventCallback(GUI::handleEventCallback);
+    
     buttonContainer->addUIElement(button1);
     
     UIElementButton* button2 = new UIElementButton("click me 2", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
@@ -77,7 +76,6 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
 
 void UIScreenTesting::draw(bool init, bool task)
 {
-    //Serial.println("UIScreenTesting draw method");
     if(!task)
     {
         _tft->fillScreen(_backgroundColor);

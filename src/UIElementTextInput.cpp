@@ -52,11 +52,6 @@ void UIElementTextInput::draw(bool task)
     }
 }
 
-void UIElementTextInput::reDraw()
-{
-    
-}
-
 bool UIElementTextInput::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
     switch (touchType)

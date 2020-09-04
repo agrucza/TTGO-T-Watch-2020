@@ -74,12 +74,6 @@ void UIElementButton::draw(bool task)
             _tft->drawString(_label,absPos.x + (_dimensions.bottomRight.x/2),absPos.y + (_tft->fontHeight()/2));
         }
     }
-    //Serial.println("End of button draw method");
-}
-
-void UIElementButton::reDraw()
-{
-    
 }
 
 bool UIElementButton::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
