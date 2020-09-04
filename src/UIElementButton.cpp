@@ -37,42 +37,27 @@ void UIElementButton::draw(bool task)
 {
     if(!task)
     {
+        TFT_eSPI* target;
+        UIPoint_t absPos;
+
         if(_parent->getSprite()->created())
         {
-            //Serial.println("Button: parent sprite detected - draw on sprite");
-            TFT_eSprite* sprite = _parent->getSprite();
-            sprite->setTextDatum(MC_DATUM);
-            //Serial.println("setting font");
-            sprite->setFreeFont(_font);
-            //Serial.println("setting text color");
-            sprite->setTextColor(_textColor);
-            // input outline
-            //Serial.println("drawing outline");
-            sprite->fillRoundRect(
-                _dimensions.topLeft.x - _parent->getPadding(),
-                _dimensions.topLeft.y - _parent->getPadding(),
-                _dimensions.bottomRight.x,
-                _dimensions.bottomRight.y,
-                4,
-                (_active?_colorActive:_colorInactive)
-            );
-
-            //Serial.println("drawing string");
-            sprite->drawString(
-                _label,
-                _dimensions.topLeft.x + (_dimensions.bottomRight.x/2) - _parent->getPadding(),
-                _dimensions.topLeft.y + (sprite->fontHeight()/2) - _parent->getPadding()
-            );
+            target = _parent->getSprite();
+            absPos = _dimensions.topLeft;
+            absPos.x -= _parent->getPadding();
+            absPos.y -= _parent->getPadding();
         }
         else
         {
-            UIPoint_t absPos = getTopPosition();
-            _tft->setFreeFont(_font);
-            _tft->setTextColor(_textColor);
-            // input outline
-            _tft->fillRoundRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,4,(_active?_colorActive:_colorInactive));
-            _tft->drawString(_label,absPos.x + (_dimensions.bottomRight.x/2),absPos.y + (_tft->fontHeight()/2));
+            target = _tft;
+            absPos = getTopPosition();
         }
+        
+        target->setFreeFont(_font);
+        target->setTextColor(_textColor);
+        // input outline
+        target->fillRoundRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,4,(_active?_colorActive:_colorInactive));
+        target->drawString(_label,absPos.x + (_dimensions.bottomRight.x/2),absPos.y + (target->fontHeight()/2));
     }
 }
 

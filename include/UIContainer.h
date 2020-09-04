@@ -30,7 +30,7 @@ class UIContainer : public UIElement{
         bool y = true;
     } _spritePosMaxReached;
     void                        _setDimensions(){};
-    void                        _pushSpriteRect(int16_t tftX, int16_t tftY, uint16_t spriteX, uint16_t spriteY, uint16_t spriteW, uint16_t spriteH);
+    void                        _pushSpriteRect(uint16_t spriteX, uint16_t spriteY, uint16_t spriteW, uint16_t spriteH);
 
     public:
         UIContainer(UIContainer* parent = nullptr, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);

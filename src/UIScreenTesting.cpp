@@ -70,7 +70,30 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     
     UIElementButton* button3 = new UIElementButton("click me 3", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
     buttonContainer->addUIElement(button3);
+    
+    UIElementButton* button4 = new UIElementButton("click me 4", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
+    buttonContainer->addUIElement(button4);
 
+
+    Serial.println("Create vertical buttons");
+    UIElementButton* button5 = new UIElementButton("click me", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
+    _contentContainer->addUIElement(button5);
+    
+    UIElementButton* button6 = new UIElementButton("click me 2", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
+    _contentContainer->addUIElement(button6);
+    
+    UIElementButton* button7 = new UIElementButton("click me 3", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
+    _contentContainer->addUIElement(button7);
+    /*
+    UIElementButton* button8 = new UIElementButton("click me 4", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
+    _contentContainer->addUIElement(button8);
+    
+    UIElementButton* button9 = new UIElementButton("click me 5", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
+    _contentContainer->addUIElement(button9);
+    
+    UIElementButton* button10 = new UIElementButton("click me 6", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
+    _contentContainer->addUIElement(button10);
+    */
     Serial.println("Init UIScreenTesting done");
 }
 

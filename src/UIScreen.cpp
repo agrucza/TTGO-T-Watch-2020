@@ -30,4 +30,7 @@ UIScreen::UIScreen(String label, bool showHeader)
     
     _contentContainer = new UIContainer(_screenContainer);
     _screenContainer->addUIElement(_contentContainer);
+    
+    // setting contentcontainer to have the remaining space of the screencontainer
+    _contentContainer->_dimensions.bottomRight.y = _screenContainer->_dimensions.bottomRight.y - _contentContainer->_dimensions.topLeft.y;
 }

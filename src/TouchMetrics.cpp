@@ -30,6 +30,7 @@ void TouchMetrics::checkTouch()
     else if(getTouch())
     {
         setTouch(false);
+        touchBlockedBy = TOUCH_NONE;
         _sendTouchType();
     }
 }
@@ -42,74 +43,92 @@ void TouchMetrics::_sendTouchType()
     bool swipeX     = abs(deltaX) > abs(deltaY);
 
     // delta values can be added to scrolling
-    // -> negative is back
-    // -> posivive is next
+    // <- negative is back
+    // -> positive is next
+
+    /*
+     * HORIZONTAL SWIPING
+     */
     if(swipeX && (abs(deltaX) > (TFT_WIDTH/_swipeTolerance)))
     {
-        // check for left swite
-        if(deltaX>0)
+        // we need to block swiping directions otherwise we will confuse the GUI
+        if(touchBlockedBy == TOUCH_NONE || touchBlockedBy == SWIPING_HORIZONTAL)
         {
-            GUI::touchAction(
-                _lastX,
-                _lastY,
-                deltaX,
-                deltaY,
-                // check for right screen edge
-                (
-                    _lastX>(TFT_WIDTH - _swipeEdgeDetection)
-                    ?(_touch?touch_t::SWIPING_RIGHT_EDGE:touch_t::SWIPE_RIGHT_EDGE)
-                    :(_touch?touch_t::SWIPING_LEFT:touch_t::SWIPE_LEFT)
-                )
-            );
-        }
-        else
-        {
-            GUI::touchAction(
-                _lastX,
-                _lastY,
-                deltaX,
-                deltaY,
-                // check for left screen edge
-                (
-                    _lastX<_swipeEdgeDetection
-                    ?(_touch?touch_t::SWIPING_LEFT_EDGE:touch_t::SWIPE_LEFT_EDGE)
-                    :(_touch?touch_t::SWIPING_RIGHT:touch_t::SWIPE_RIGHT)
-                )
-            );
+            touchBlockedBy = SWIPING_HORIZONTAL;
+
+            // check for left swipe
+            if(deltaX>0)
+            {
+                GUI::touchAction(
+                    _lastX,
+                    _lastY,
+                    deltaX,
+                    0,
+                    // check for right screen edge
+                    (
+                        _lastX>(TFT_WIDTH - _swipeEdgeDetection)
+                        ?(_touch?touch_t::SWIPING_RIGHT_EDGE:touch_t::SWIPE_RIGHT_EDGE)
+                        :(_touch?touch_t::SWIPING_LEFT:touch_t::SWIPE_LEFT)
+                    )
+                );
+            }
+            else
+            {
+                GUI::touchAction(
+                    _lastX,
+                    _lastY,
+                    deltaX,
+                    0,
+                    // check for left screen edge
+                    (
+                        _lastX<_swipeEdgeDetection
+                        ?(_touch?touch_t::SWIPING_LEFT_EDGE:touch_t::SWIPE_LEFT_EDGE)
+                        :(_touch?touch_t::SWIPING_RIGHT:touch_t::SWIPE_RIGHT)
+                    )
+                );
+            }
         }
     }
+    /*
+     * VERTICAL SWIPING
+     */
     else if(!swipeX && (abs(deltaY) > (TFT_HEIGHT/_swipeTolerance)))
     {
-        // check for up swipe
-        if(deltaY>0)
+        // we need to block swiping directions otherwise we will confuse the GUI
+        if(touchBlockedBy == TOUCH_NONE || touchBlockedBy == SWIPING_VERTICAL)
         {
-            GUI::touchAction(
-                _lastX,
-                _lastY,
-                deltaX,
-                deltaY,
+            touchBlockedBy = SWIPING_VERTICAL;
+            // check for up swipe
+            if(deltaY>0)
+            {
+                GUI::touchAction(
+                    _lastX,
+                    _lastY,
+                    0,
+                    deltaY,
+                    // check for top screen edge
+                    (
+                        _lastY>(TFT_HEIGHT - _swipeEdgeDetection)
+                        ?(_touch?touch_t::SWIPING_BOTTOM_EDGE:touch_t::SWIPE_BOTTOM_EDGE)
+                        :(_touch?touch_t::SWIPING_TOP:touch_t::SWIPE_TOP)
+                    )
+                );
+            }
+            else
+            {
                 // check for top screen edge
-                (
-                    _lastY>(TFT_HEIGHT - _swipeEdgeDetection)
-                    ?(_touch?touch_t::SWIPING_BOTTOM_EDGE:touch_t::SWIPE_BOTTOM_EDGE)
-                    :(_touch?touch_t::SWIPING_TOP:touch_t::SWIPE_TOP)
-                )
-            );
-        }
-        else
-        {
-            // check for top screen edge
-            GUI::touchAction(
-                _lastX,
-                _lastY,
-                deltaX,
-                deltaY,
-                (
-                    _lastY<_swipeEdgeDetection
-                    ?(_touch?touch_t::SWIPING_TOP_EDGE:touch_t::SWIPE_TOP_EDGE)
-                    :(_touch?touch_t::SWIPING_BOTTOM:touch_t::SWIPE_BOTTOM)
-                )
-            );
+                GUI::touchAction(
+                    _lastX,
+                    _lastY,
+                    0,
+                    deltaY,
+                    (
+                        _lastY<_swipeEdgeDetection
+                        ?(_touch?touch_t::SWIPING_TOP_EDGE:touch_t::SWIPE_TOP_EDGE)
+                        :(_touch?touch_t::SWIPING_BOTTOM:touch_t::SWIPE_BOTTOM)
+                    )
+                );
+            }
         }
     }
     else

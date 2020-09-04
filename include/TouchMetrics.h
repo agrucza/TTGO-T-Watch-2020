@@ -21,7 +21,7 @@ class TouchMetrics {
     int16_t     _y                  = -1;
     int16_t     _lastX              = -1;
     int16_t     _lastY              = -1;
-    int16_t     _swipeTolerance     = 10;
+    int16_t     _swipeTolerance     = 240;
     int16_t     _swipeEdgeDetection = 30;
     void        _sendTouchType();
 
@@ -45,10 +45,16 @@ class TouchMetrics {
             SWIPE_LEFT,
             SWIPING_LEFT,
             SWIPE_LEFT_EDGE,
-            SWIPING_LEFT_EDGE
+            SWIPING_LEFT_EDGE,
+
+            // Additional types for blocking other touch guestures
+            TOUCH_NONE,
+            SWIPING_HORIZONTAL,
+            SWIPING_VERTICAL,
         } touch_t;
 
         TouchMetrics(){};
+        touch_t touchBlockedBy = TOUCH_NONE;
         void checkTouch();
         bool getTouch(){return _touch;}
         int16_t getSwipeEdgeDetection(){return _swipeEdgeDetection;}

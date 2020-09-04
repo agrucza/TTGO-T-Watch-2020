@@ -32,17 +32,31 @@ void UIElementSwitch::draw(bool task)
 {
     if(!task)
     {
-        UIPoint_t absPos = getTopPosition();
+        TFT_eSPI* target;
+        UIPoint_t absPos;
         UIPoint_t posSwitchE;
         uint16_t textWidth,textHeight;
 
-        _tft->setFreeFont(_font);
-        _tft->setTextColor(_textColor);
+        if(_parent->getSprite()->created())
+        {
+            target = _parent->getSprite();
+            absPos = _dimensions.topLeft;
+            absPos.x -= _parent->getPadding();
+            absPos.y -= _parent->getPadding();
+        }
+        else
+        {
+            target = _tft;
+            absPos = getTopPosition();
+        }
 
-        textWidth   = _tft->textWidth(_label);
-        textHeight  = _tft->fontHeight();
+        target->setFreeFont(_font);
+        target->setTextColor(_textColor);
 
-        _tft->drawString(
+        textWidth   = target->textWidth(_label);
+        textHeight  = target->fontHeight();
+
+        target->drawString(
             _label,
             absPos.x + (_orientation == ORIENTATION_LEFT?_dimensions.bottomRight.x - textWidth/2:textWidth/2),
             absPos.y + (_dimensions.bottomRight.y/2)
@@ -52,7 +66,7 @@ void UIElementSwitch::draw(bool task)
         posSwitchE.y = absPos.y;
 
         // switch outline
-        _tft->fillRoundRect(
+        target->fillRoundRect(
             posSwitchE.x,
             posSwitchE.y,
             _switchSize,
@@ -62,7 +76,7 @@ void UIElementSwitch::draw(bool task)
         );
         
         // switch element
-        _tft->fillRoundRect(
+        target->fillRoundRect(
             posSwitchE.x + (_enabled? _switchSize - (textHeight -8) - 4 : 4),
             posSwitchE.y + 4,
             textHeight - 8,

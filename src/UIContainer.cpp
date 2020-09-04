@@ -10,16 +10,13 @@
 UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t alignment)
 :UIElement(parent)
 {
-    Serial.println("UIContainer constructor");
     _size       = size;
     _alignment  = alignment;
     
-    //Serial.println("Setting container dimensions");
     if(_parent)
     {
-        Serial.println("Container has parent");
         // the parents dimensions plus padding will be the bounds of the new container
-        // depending on the parens alignment we will set the width and height
+        // depending on the parents alignment we will set the width and height
         // vertical alignment will have full width but 0 height
         // horizontal alignment will have 0 width and full height
         _dimensions = _parent->getDimensions();
@@ -41,19 +38,15 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
     }
     else
     {
-        Serial.println("Container has no parent");
         _dimensions                 = defaultUIDimensions;
         _dimensions.bottomRight.x   = TFT_WIDTH;
         _dimensions.bottomRight.y   = TFT_HEIGHT;
     }
-
-    Serial.println("UIContainer constructor done");
 }
 
 UIContainer::UIContainer(UIScreen* screen, UIESize_t size, UIEAlignment_t alignment)
 :UIContainer()
 {
-    Serial.println("UIContainer with screen constructor");
     _screen     = screen;
     _size       = size;
     _alignment  = alignment;
@@ -109,11 +102,11 @@ UIDimensions_t UIContainer::calculateContentSize(bool passToParent)
     switch(_alignment)
     {
         case ALIGNMENT_VERTICAL:
+            fullSize = dimensions.bottomRight.y;
             dimensions.bottomRight.y = _padding;
             break;
         case ALIGNMENT_HORIZONTAL:
         case ALIGNMENT_HORIZONTAL_FILL:
-            Serial.println("horizontal alignment container");
             fullSize = dimensions.bottomRight.x;
             dimensions.bottomRight.x = _padding;
             break;
@@ -142,7 +135,8 @@ UIDimensions_t UIContainer::calculateContentSize(bool passToParent)
     if(_parent && passToParent)
     {
         if(_alignment==ALIGNMENT_VERTICAL){
-            //dimensions.bottomRight.y += _padding;
+            _fullSize = dimensions.bottomRight;
+            dimensions.bottomRight.y = fullSize;
         }
         else
         {
@@ -161,7 +155,7 @@ UIDimensions_t UIContainer::calculateContentSize(bool passToParent)
 
 bool UIContainer::isWithinDimensions(int x, int y){
     if(
-        (x >= _dimensions.topLeft.x + _spritePos.x && x <= _dimensions.topLeft.x + _dimensions.bottomRight.x)
+        (x >= _dimensions.topLeft.x && x <= _dimensions.topLeft.x + _dimensions.bottomRight.x)
         && (y >= _dimensions.topLeft.y && y <= _dimensions.topLeft.y + _dimensions.bottomRight.y)
     ){
         return true;
@@ -171,8 +165,6 @@ bool UIContainer::isWithinDimensions(int x, int y){
 
 bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
-    char buf[50];
-
     // check if container is using a sprite
     // we cant say for sure if guesture is for this container or a child container
     if(_sprite.created())
@@ -184,16 +176,33 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
         // normal elements should not accept guestures
         for(uint8_t i = 0; i < _elements.size(); i++)
         {
-            UIElement* element = _elements[i];
+            UIContainer* container = nullptr;
+            if(UIContainer* tmp = dynamic_cast<UIContainer*>(_elements[i]))
+            {
+                container = tmp;
+            }
+            else
+            {
+                yield();
+                continue;
+            }
+
             if(
-                element->isWithinDimensions(lastX, lastY)
-                && element->isWithinDimensions(lastX + deltaX, lastY + deltaY)
-                && element->hasActiveSprite()
+                container->isWithinDimensions(lastX + _spritePos.x, lastY + _spritePos.y)
+                //&& container->isWithinDimensions(lastX + deltaX + _spritePos.x, lastY + deltaY + _spritePos.y)
+                && container->hasActiveSprite()
             )
             {
-                // found an element which dimensions will cover the complete gesture and has a created sprite
-                return element->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+                // found a container which dimensions will cover the complete gesture and has a created sprite
+                return container->touchAction(
+                    lastX + _spritePos.x - container->_dimensions.topLeft.x,
+                    lastY + _spritePos.y - container->_dimensions.topLeft.y,
+                    deltaX,
+                    deltaY,
+                    touchType
+                );
             }
+            yield();
         }
 
         bool gesture = false;
@@ -212,7 +221,8 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
             case TouchMetrics::SWIPING_LEFT_EDGE:
             */
             case TouchMetrics::TOUCH_START:
-                _spritePosOld = _spritePos;
+                _spritePosOld       = _spritePos;
+                gesture             = false;
                 break;
             case TouchMetrics::SWIPING_LEFT:
                 // swiping from left to right
@@ -239,18 +249,9 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
 
             _spritePos.x = (_spritePosOld.x + deltaX > 0?(_spritePosOld.x + deltaX < _spritePosMax.x?_spritePosOld.x + deltaX:_spritePosMax.x):0);
             _spritePos.y = (_spritePosOld.y + deltaY > 0?(_spritePosOld.y + deltaY < _spritePosMax.y?_spritePosOld.y + deltaY:_spritePosMax.y):0);
-            
+
             if(!(_spritePosMaxReached.x && _spritePosMaxReached.y)){
-                _pushSpriteRect(
-                    absPos.x + _padding,
-                    absPos.y + _padding,
-                    _spritePos.x,
-                    _spritePos.y,
-                    _dimensions.bottomRight.x - 2*_padding,
-                    _dimensions.bottomRight.y - 2*_padding
-                );
-                sprintf(buf,"swipe (%d) in %d:%d for %d:%d",deltaX, _dimensions.topLeft.x, _dimensions.topLeft.y, lastX, lastY);
-                Serial.println(buf);
+                reDraw();
             }
 
             // checking for max pos reached to prevent continuous drawing once 0 or max is reached
@@ -266,7 +267,10 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
         if(element->isWithinDimensions(lastX + _spritePos.x, lastY + _spritePos.y))
         {
             if(_elements[i]->touchAction(lastX - element->_dimensions.topLeft.x, lastY - element->_dimensions.topLeft.y, deltaX, deltaY, touchType)){
-                draw();
+                draw(true);
+                // for sprites
+                reDraw();
+                return true;
                 break;
             }
         }
@@ -281,35 +285,60 @@ void UIContainer::draw(bool task)
 {
     UIPoint_t absPos = getTopPosition();
 
-    //Serial.println("Container draw method");
-
     if(!task)
     {
+        Serial.print("Checking if fullSize requires a sprite - dim: ");
+        Serial.print(_dimensions.bottomRight.x);
+        Serial.print(":");
+        Serial.print(_dimensions.bottomRight.y);
+        Serial.print(" - fz: ");
+        Serial.print(_fullSize.x);
+        Serial.print(":");
+        Serial.println(_fullSize.y);
         // check if sprite is used
         if((_dimensions.bottomRight.x < _fullSize.x) || (_dimensions.bottomRight.y < _fullSize.y))
         {
+            Serial.println("Sprite required!");
             if(_sprite.created())
             {
+                Serial.println("Sprite already created...");
                 // check if container size has changed and is different from sprite size
                 if(_fullSize.x != (_sprite.width() + 2*_padding) || _fullSize.y != (_sprite.height() + 2*_padding))
                 {
+                    Serial.println("Size changed recreating sprite...");
                     // delete sprite and create new one
                     _sprite.deleteSprite();
                     _spriteData = nullptr;
                     _spriteData = (uint16_t*)_sprite.createSprite(_fullSize.x - 2*_padding,_fullSize.y - 2*_padding);
                     _sprite.fillRect(0, 0 ,_fullSize.x - 2*_padding, _fullSize.y - 2*_padding, (_bgColor>0?_bgColor:TFT_GREENYELLOW));
+                    _sprite.setTextDatum(MC_DATUM);
                 }
             }
             else
             {
+                Serial.println("No sprite has been created - creating now...");
                 // no sprite - creating
                 _spriteData = (uint16_t*)_sprite.createSprite(_fullSize.x - 2*_padding,_fullSize.y - 2*_padding);
                 _sprite.fillRect(0, 0 ,_fullSize.x - 2*_padding, _fullSize.y - 2*_padding, (_bgColor>0?_bgColor:TFT_GREENYELLOW));
+                _sprite.setTextDatum(MC_DATUM);
+                
+                Serial.print("sprite created: ");
+                Serial.print(_sprite.width());
+                Serial.print(":");
+                Serial.print(_sprite.height());
+                Serial.print(" for fullSize: ");
+                Serial.print(_fullSize.x);
+                Serial.print(":");
+                Serial.print(_fullSize.y);
+                Serial.print(" - params to create sprite: ");
+                Serial.print(_fullSize.x - 2*_padding);
+                Serial.print(":");
+                Serial.println(_fullSize.y - 2*_padding);
             }
         }
         else if(_bgColor > 0)
         {
-                _tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
+            _tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
         }
         
         for(uint8_t element = 0; element < _elements.size(); element++)
@@ -324,71 +353,74 @@ void UIContainer::draw(bool task)
         // first: draw sprite to screen
         if(_sprite.created())
         {
-            _pushSpriteRect(
-                absPos.x + _padding,
-                absPos.y + _padding,
-                _spritePos.x,
-                _spritePos.y,
-                _dimensions.bottomRight.x - 2*_padding,
-                _dimensions.bottomRight.y - 2*_padding
-            );
-            //Serial.println("Sprite should be on tft");
+            Serial.println("Drawing sprite to screen...");
+            reDraw();
+            Serial.println("Sprite should be on tft");
         }
-    }
-    else
-    {
-        //Serial.println("Container draw method - TASK");
-        /*
-        for(uint8_t element = 0; element < _elements.size(); element++)
-        {
-            _elements[element]->draw(task);
-            yield();
-        }
-
-        // testing something
-        if(_moveForeward){
-            _spritePos.x++;
-            if(_spritePos.x >= _fullSize.x - _dimensions.bottomRight.x)
-            {
-                _moveForeward = false;
-            }
-        } else {
-            _spritePos.x--;
-            if(_spritePos.x <= 0)
-            {
-                _moveForeward = true;
-            }
-        }
-        
-        if(_sprite.created())
-        {
-            //Serial.println("Sprite detected pushing sprite to tft");
-            _pushSpriteRect(absPos.x, absPos.y, _spritePos.x, _spritePos.y, _dimensions.bottomRight.x, _dimensions.bottomRight.y);
-            //Serial.println("Sprite should be on tft");
-        }
-        */
     }
 }
 
-void UIContainer::_pushSpriteRect(int16_t tftX, int16_t tftY, uint16_t spriteX, uint16_t spriteY, uint16_t spriteW, uint16_t spriteH)
+void UIContainer::_pushSpriteRect(uint16_t spriteX, uint16_t spriteY, uint16_t spriteW, uint16_t spriteH)
 {
+    Serial.println("Inside _pushSpriteRect ...");
     // Do nothing if any part of rectangle is outside sprite
     if(((spriteX + spriteW) > _sprite.width()) || ((spriteY + spriteH) > _sprite.height()))
     {
         return;
     }
 
-    uint16_t dh = 0;
+    UIPoint_t pos;
 
-    while(dh < spriteH) {
-        // Push to TFT 1 line at a time
-        _tft->pushImage(tftX, tftY + dh, spriteW, 1, _spriteData + spriteX + ((spriteY + dh) * _sprite.width()),TFT_GREENYELLOW);
-        dh++;
-        yield();
+    if(_parent->getSprite()->created())
+    {
+        TFT_eSprite* target;
+        Serial.println("Parent has sprite - getting parents sprite to use instead of tft");
+        target = _parent->getSprite();
+        pos = _dimensions.topLeft;
+        //pos.x -= _parent->getPadding();
+        //pos.y -= _parent->getPadding();
+
+        uint16_t dh = 0;
+
+        while(dh < spriteH) {
+            // Push to TFT 1 line at a time
+            target->pushImage(pos.x, pos.y + dh, spriteW, 1, _spriteData + spriteX + ((spriteY + dh) * _sprite.width()));
+            dh++;
+            yield();
+        }
     }
+    else
+    {
+        Serial.println("Parent has no sprite - using tft");
+        TFT_eSPI* target;
+        target = _tft;
+        pos = getTopPosition();
+        pos.x += _padding;
+        pos.y += _padding;
+
+        uint16_t dh = 0;
+        while(dh < spriteH) {
+            // Push to TFT 1 line at a time
+            target->pushImage(pos.x, pos.y + dh, spriteW, 1, _spriteData + spriteX + ((spriteY + dh) * _sprite.width()),TFT_GREENYELLOW);
+            dh++;
+            yield();
+        }
+    }
+    Serial.println("_pushSpriteRect: finished");
 }
 
 void UIContainer::reDraw()
 {
-
+    if(_sprite.created()){
+        _pushSpriteRect(
+            _spritePos.x,
+            _spritePos.y,
+            _dimensions.bottomRight.x - 2*_padding,
+            _dimensions.bottomRight.y - 2*_padding
+        );
+        if(_parent->hasActiveSprite())
+        {
+            _parent->reDraw();
+        }
+    }
 }

@@ -28,14 +28,28 @@ void UIElementTextInput::draw(bool task)
 {
     if(!task)
     {
-        UIPoint_t absPos = getTopPosition();
+        TFT_eSPI* target;
+        UIPoint_t absPos;
         String textToDraw = (_text!=""?_text:_placeholder);
-        
-        _tft->setFreeFont(_font);
-        _tft->setTextColor((_text!=""?_textColor:_colorInactive));
+
+        if(_parent->getSprite()->created())
+        {
+            target = _parent->getSprite();
+            absPos = _dimensions.topLeft;
+            absPos.x -= _parent->getPadding();
+            absPos.y -= _parent->getPadding();
+        }
+        else
+        {
+            target = _tft;
+            absPos = getTopPosition();
+        }
+
+        target->setFreeFont(_font);
+        target->setTextColor((_text!=""?_textColor:_colorInactive));
 
         // input outline
-        _tft->drawRoundRect(
+        target->drawRoundRect(
             absPos.x,
             absPos.y,
             _dimensions.bottomRight.x,
@@ -44,10 +58,10 @@ void UIElementTextInput::draw(bool task)
             (_active ? _colorActive : _colorInactive)
         );
 
-        _tft->drawString(
+        target->drawString(
             textToDraw,
             absPos.x + (_dimensions.bottomRight.x/2),
-            absPos.y + (_tft->fontHeight()/2)
+            absPos.y + (target->fontHeight()/2)
         );
     }
 }

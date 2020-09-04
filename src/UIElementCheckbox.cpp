@@ -28,34 +28,48 @@ void UIElementCheckbox::draw(bool task)
 {
     if(!task)
     {
-        UIPoint_t absPos = getTopPosition();
+        TFT_eSPI* target;
+        UIPoint_t absPos;
 
-        _tft->setFreeFont(_font);
-        _tft->setTextColor((_active?_colorActive:_colorInactive));
+        if(_parent->getSprite()->created())
+        {
+            target = _parent->getSprite();
+            absPos = _dimensions.topLeft;
+            absPos.x -= _parent->getPadding();
+            absPos.y -= _parent->getPadding();
+        }
+        else
+        {
+            target = _tft;
+            absPos = getTopPosition();
+        }
+
+        target->setFreeFont(_font);
+        target->setTextColor((_active?_colorActive:_colorInactive));
 
         // input outline
-        _tft->fillRoundRect(
-            absPos.x + (_orientation == ORIENTATION_RIGHT? _dimensions.bottomRight.x - _tft->fontHeight():0),
+        target->fillRoundRect(
+            absPos.x + (_orientation == ORIENTATION_RIGHT? _dimensions.bottomRight.x - target->fontHeight():0),
             absPos.y,
-            _tft->fontHeight(),
-            _tft->fontHeight(),
+            target->fontHeight(),
+            target->fontHeight(),
             4,
             (_active ? _colorActive : _colorInactive)
         );
 
-        _tft->drawString(
+        target->drawString(
             _label,
-            absPos.x + (_orientation == ORIENTATION_LEFT?_dimensions.bottomRight.x - (_tft->textWidth(_label)/2):_tft->textWidth(_label)/2),
-            absPos.y + (_tft->fontHeight()/2)
+            absPos.x + (_orientation == ORIENTATION_LEFT?_dimensions.bottomRight.x - (target->textWidth(_label)/2):target->textWidth(_label)/2),
+            absPos.y + (target->fontHeight()/2)
         );
 
         if(_active)
         {
-            _tft->setTextColor(FLAT_UI_V1_CLOUDS);
-            _tft->drawString(
+            target->setTextColor(FLAT_UI_V1_CLOUDS);
+            target->drawString(
                 "X",
-                absPos.x + _tft->fontHeight()/2 + (_orientation == ORIENTATION_RIGHT? _dimensions.bottomRight.x - _tft->fontHeight():0),
-                absPos.y + _tft->fontHeight()/2
+                absPos.x + target->fontHeight()/2 + (_orientation == ORIENTATION_RIGHT? _dimensions.bottomRight.x - target->fontHeight():0),
+                absPos.y + target->fontHeight()/2
             );
         }
     }
