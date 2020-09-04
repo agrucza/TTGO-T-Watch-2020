@@ -42,6 +42,16 @@ UIPoint_t UIElement::getTopPosition()
     return pos;
 }
 
+bool UIElement::isWithinDimensions(int x, int y){
+    if(
+        (x >= _dimensions.topLeft.x && x <= _dimensions.topLeft.x + _dimensions.bottomRight.x)
+        && (y >= _dimensions.topLeft.y && y <= _dimensions.topLeft.y + _dimensions.bottomRight.y)
+    ){
+        return true;
+    }
+    return false;
+};
+
 void UIElement::setEventData(ui_event_data_t* data)
 {
     _eventData.event    = data->event;

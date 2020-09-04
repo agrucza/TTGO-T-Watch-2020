@@ -39,15 +39,15 @@ void UIElementButton::draw(bool task)
     {
         if(_parent->getSprite()->created())
         {
-            Serial.println("Button: parent sprite detected - draw on sprite");
+            //Serial.println("Button: parent sprite detected - draw on sprite");
             TFT_eSprite* sprite = _parent->getSprite();
             sprite->setTextDatum(MC_DATUM);
-            Serial.println("setting font");
+            //Serial.println("setting font");
             sprite->setFreeFont(_font);
-            Serial.println("setting text color");
+            //Serial.println("setting text color");
             sprite->setTextColor(_textColor);
             // input outline
-            Serial.println("drawing outline");
+            //Serial.println("drawing outline");
             sprite->fillRoundRect(
                 _dimensions.topLeft.x,
                 _dimensions.topLeft.y,
@@ -57,7 +57,7 @@ void UIElementButton::draw(bool task)
                 (_active?_colorActive:_colorInactive)
             );
 
-            Serial.println("drawing string");
+            //Serial.println("drawing string");
             sprite->drawString(
                 _label,
                 _dimensions.topLeft.x + (_dimensions.bottomRight.x/2),
@@ -74,7 +74,7 @@ void UIElementButton::draw(bool task)
             _tft->drawString(_label,absPos.x + (_dimensions.bottomRight.x/2),absPos.y + (_tft->fontHeight()/2));
         }
     }
-    Serial.println("End of button draw method");
+    //Serial.println("End of button draw method");
 }
 
 void UIElementButton::reDraw()
@@ -86,7 +86,7 @@ bool UIElementButton::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, 
 {
     switch (touchType)
     {
-    case TouchMetrics::TOUCH:
+    case TouchMetrics::TOUCH_RELEASE:
         _active ^= true;
         draw();
         /*

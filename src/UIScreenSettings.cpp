@@ -4,6 +4,7 @@
 #include "UIScreenSettings.h"
 
 #include "GUI.h"
+#include "UIIcons.h"
 #include "fonts/IconsFontsSup24pt7b.h"
 
 UIScreenSettings::UIScreenSettings():UIScreen("Settings"){}
@@ -28,9 +29,9 @@ void UIScreenSettings::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
     // print cog weel
     _tft->setFreeFont(&IconsFontsSup24pt7b);
     _tft->drawString(
-        "C",
+        UIICON_SUP_GEAR,
         x + (w/2),
-        y + (h/2)
+        y + (h/2)-3
     );
 }
 
@@ -46,7 +47,7 @@ void UIScreenSettings::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX,
         case TouchMetrics::SWIPE_RIGHT_EDGE:
         case TouchMetrics::SWIPE_TOP:
         case TouchMetrics::SWIPE_TOP_EDGE:
-        case TouchMetrics::TOUCH:
+        case TouchMetrics::TOUCH_RELEASE:
             break;
     }
 }

@@ -93,4 +93,5 @@ void loop()
     Energy::getWakeup();
     
     delay(50);
+    yield();
 }

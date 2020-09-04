@@ -26,11 +26,13 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     UIElementSwitch* switch1 = new UIElementSwitch("TestSwitch1", &FreeSansBold9pt7b, _contentContainer, ORIENTATION_RIGHT);
     switch1->setTextColor(FLAT_UI_V1_CLOUDS);
     switch1->setEnabled(false);
+    /*
     ui_event_data_t eventData;
     eventData.screen = this;
     eventData.source = switch1;
     switch1->setEventData(&eventData);
     switch1->setEventCallback(GUI::handleEventCallback);
+    */
     _contentContainer->addUIElement(switch1);
     
     Serial.println("Create text input");
@@ -51,15 +53,17 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     UIContainer* buttonContainer = new UIContainer(_contentContainer, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL_FILL);
     
     _contentContainer->addUIElement(buttonContainer);
-    //buttonContainer->setBackgroundColor(FLAT_UI_V1_ALIZARIN);
+    buttonContainer->setBackgroundColor(FLAT_UI_V1_MIDNIGHT_BLUE);
 
     Serial.println("Create buttons");
     UIElementButton* button1 = new UIElementButton("click me", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
+    /*
     eventData.screen    = this;
     eventData.source    = button1;
     eventData.event     = EVENT_OPEN_MODAL;
     button1->setEventData(&eventData);
     button1->setEventCallback(GUI::handleEventCallback);
+    */
     buttonContainer->addUIElement(button1);
     
     UIElementButton* button2 = new UIElementButton("click me 2", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
@@ -73,6 +77,7 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
 
 void UIScreenTesting::draw(bool init, bool task)
 {
+    //Serial.println("UIScreenTesting draw method");
     if(!task)
     {
         _tft->fillScreen(_backgroundColor);
@@ -93,6 +98,8 @@ void UIScreenTesting::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 
 void UIScreenTesting::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
+    _screenContainer->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+    /*
     switch (touchType)
     {
     case TouchMetrics::SWIPE_BOTTOM:
@@ -111,12 +118,13 @@ void UIScreenTesting::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, 
         break;
     case TouchMetrics::SWIPE_TOP_EDGE:
         break;
-    case TouchMetrics::TOUCH:
-        _screenContainer->touchAction(lastX, lastY, deltaX, deltaY, TouchMetrics::TOUCH);
+    case TouchMetrics::TOUCH_RELEASE:
+        _screenContainer->touchAction(lastX, lastY, deltaX, deltaY, TouchMetrics::TOUCH_RELEASE);
         break;
     default:
         break;
     }
+    */
 }
 
 void UIScreenTesting::elementEventHandler(ui_event_data_t* eventData)

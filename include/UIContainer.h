@@ -18,13 +18,19 @@ extern UIDimensions_t defaultUIDimensions;
 class UIContainer : public UIElement{
     UIEAlignment_t              _alignment;
     std::vector<UIElement*>     _elements;
-    uint8_t                     _padding = 5;
-    TFT_eSprite                 _sprite = TFT_eSprite(_tft);
-    uint16_t*                   _spriteData;
-    
-    UIPoint_t                   _spritePos;
+    uint8_t                     _padding                = 5;
+    UIPoint_t                   _fullSize               = {0,0};
+    TFT_eSprite                 _sprite                 = TFT_eSprite(_tft);
+    uint16_t*                   _spriteData             = nullptr;
+    UIPoint_t                   _spritePosOld           = {0,0};
+    UIPoint_t                   _spritePos              = {0,0};
+    UIPoint_t                   _spritePosMax           = {0,0};
+    struct{
+        bool x = true;
+        bool y = true;
+    } _spritePosMaxReached;
     void                        _setDimensions(){};
-    void                        _pushSpriteRect(uint16_t spriteX, uint16_t spriteY, uint16_t spriteW, uint16_t spriteH, int16_t tftX, int16_t tftY);
+    void                        _pushSpriteRect(int16_t tftX, int16_t tftY, uint16_t spriteX, uint16_t spriteY, uint16_t spriteW, uint16_t spriteH);
 
     public:
         UIContainer(UIContainer* parent = nullptr, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
@@ -37,6 +43,8 @@ class UIContainer : public UIElement{
         
         UIDimensions_t  calculateContentSize(bool passToParent = false);
         TFT_eSprite*    getSprite(){return &_sprite;};
+        bool            hasActiveSprite(){return _sprite.created();};
+        bool            isWithinDimensions(int x, int y);
 
         bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
         void            draw(bool task = false);

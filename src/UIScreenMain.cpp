@@ -116,7 +116,7 @@ void UIScreenMain::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 
 void UIScreenMain::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
-    if(touchType == TouchMetrics::TOUCH)
+    if(touchType == TouchMetrics::TOUCH_RELEASE)
     {
         uint8_t x = (lastX-_padding)/(_iconW+2);
         uint8_t y = (lastY-_padding)/(_iconH+2);

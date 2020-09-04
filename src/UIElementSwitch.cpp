@@ -82,7 +82,7 @@ bool UIElementSwitch::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, 
 {
     switch (touchType)
     {
-    case TouchMetrics::TOUCH:
+    case TouchMetrics::TOUCH_RELEASE:
         _enabled ^= true;
         draw();
         Serial.println("Switch changed");

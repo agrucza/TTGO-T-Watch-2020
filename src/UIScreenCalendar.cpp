@@ -305,7 +305,7 @@ void UIScreenCalendar::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX,
         case TouchMetrics::SWIPE_TOP:
         case TouchMetrics::SWIPE_TOP_EDGE:
             break;
-        case TouchMetrics::TOUCH:
+        case TouchMetrics::TOUCH_RELEASE:
             // today label click
             if(
                 (_displayMonth != _month || _displayYear != _year)

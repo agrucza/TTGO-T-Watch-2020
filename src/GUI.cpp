@@ -108,7 +108,7 @@ void GUI::init()
         "GUI task handler", // Name of the task (for debugging)
         4096,               // Stack size (bytes)
         NULL,               // Parameter to pass
-        1,                  // Task priority
+        5,                  // Task priority
         &taskHandle         // Task handle
     );
 }
@@ -283,9 +283,11 @@ void GUI::taskHandler(void* parameters)
     // infinite loop
     for(;;)
     {
-        // Pause the task for 1000ms
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        //Serial.println("GUI::taskHandler method");
         _screens[_activeScreen]->draw(false, true);
+        yield();
+        // Pause the task for 100ms
+        vTaskDelay(100 / portTICK_PERIOD_MS);
     }
 }
 
@@ -296,6 +298,7 @@ void GUI::backgroundTaskHandler()
     for(uint8_t i = SCREEN_NONE+1; i < SCREEN_COUNT; i++)
     {
         _screens[static_cast<screens_t>(i)]->backgroundTaskHandler();
+        yield();
     }
 }
 
