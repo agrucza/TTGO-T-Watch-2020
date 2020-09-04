@@ -177,8 +177,8 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
     // we cant say for sure if guesture is for this container or a child container
     if(_sprite.created())
     {
-        _spritePosMax.x = _sprite.width() - _dimensions.bottomRight.x;
-        _spritePosMax.y = _sprite.height() - _dimensions.bottomRight.y;
+        _spritePosMax.x = _sprite.width() - (_dimensions.bottomRight.x - 2*_padding);
+        _spritePosMax.y = _sprite.height() - (_dimensions.bottomRight.y - 2*_padding);
         // check for swipe gestures - those will only be for containers by now
         // (and maybe special elements in the future)
         // normal elements should not accept guestures
@@ -242,12 +242,12 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
             
             if(!(_spritePosMaxReached.x && _spritePosMaxReached.y)){
                 _pushSpriteRect(
-                    absPos.x,
-                    absPos.y,
+                    absPos.x + _padding,
+                    absPos.y + _padding,
                     _spritePos.x,
                     _spritePos.y,
-                    _dimensions.bottomRight.x,
-                    _dimensions.bottomRight.y
+                    _dimensions.bottomRight.x - 2*_padding,
+                    _dimensions.bottomRight.y - 2*_padding
                 );
                 sprintf(buf,"swipe (%d) in %d:%d for %d:%d",deltaX, _dimensions.topLeft.x, _dimensions.topLeft.y, lastX, lastY);
                 Serial.println(buf);
@@ -291,20 +291,20 @@ void UIContainer::draw(bool task)
             if(_sprite.created())
             {
                 // check if container size has changed and is different from sprite size
-                if(_fullSize.x != _sprite.width() || _fullSize.y != _sprite.height())
+                if(_fullSize.x != (_sprite.width() + 2*_padding) || _fullSize.y != (_sprite.height() + 2*_padding))
                 {
                     // delete sprite and create new one
                     _sprite.deleteSprite();
                     _spriteData = nullptr;
-                    _spriteData = (uint16_t*)_sprite.createSprite(_fullSize.x,_fullSize.y);
-                    _sprite.fillRect(0, 0 ,_fullSize.x, _fullSize.y, (_bgColor>0?_bgColor:TFT_GREENYELLOW));
+                    _spriteData = (uint16_t*)_sprite.createSprite(_fullSize.x - 2*_padding,_fullSize.y - 2*_padding);
+                    _sprite.fillRect(0, 0 ,_fullSize.x - 2*_padding, _fullSize.y - 2*_padding, (_bgColor>0?_bgColor:TFT_GREENYELLOW));
                 }
             }
             else
             {
                 // no sprite - creating
-                _spriteData = (uint16_t*)_sprite.createSprite(_fullSize.x,_fullSize.y);
-                _sprite.fillRect(0, 0 ,_fullSize.x, _fullSize.y, (_bgColor>0?_bgColor:TFT_GREENYELLOW));
+                _spriteData = (uint16_t*)_sprite.createSprite(_fullSize.x - 2*_padding,_fullSize.y - 2*_padding);
+                _sprite.fillRect(0, 0 ,_fullSize.x - 2*_padding, _fullSize.y - 2*_padding, (_bgColor>0?_bgColor:TFT_GREENYELLOW));
             }
         }
         else if(_bgColor > 0)
@@ -325,12 +325,12 @@ void UIContainer::draw(bool task)
         if(_sprite.created())
         {
             _pushSpriteRect(
-                absPos.x,
-                absPos.y,
+                absPos.x + _padding,
+                absPos.y + _padding,
                 _spritePos.x,
                 _spritePos.y,
-                _dimensions.bottomRight.x,
-                _dimensions.bottomRight.y
+                _dimensions.bottomRight.x - 2*_padding,
+                _dimensions.bottomRight.y - 2*_padding
             );
             //Serial.println("Sprite should be on tft");
         }

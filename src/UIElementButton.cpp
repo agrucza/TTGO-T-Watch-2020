@@ -49,8 +49,8 @@ void UIElementButton::draw(bool task)
             // input outline
             //Serial.println("drawing outline");
             sprite->fillRoundRect(
-                _dimensions.topLeft.x,
-                _dimensions.topLeft.y,
+                _dimensions.topLeft.x - _parent->getPadding(),
+                _dimensions.topLeft.y - _parent->getPadding(),
                 _dimensions.bottomRight.x,
                 _dimensions.bottomRight.y,
                 4,
@@ -60,8 +60,8 @@ void UIElementButton::draw(bool task)
             //Serial.println("drawing string");
             sprite->drawString(
                 _label,
-                _dimensions.topLeft.x + (_dimensions.bottomRight.x/2),
-                _dimensions.topLeft.y + (sprite->fontHeight()/2)
+                _dimensions.topLeft.x + (_dimensions.bottomRight.x/2) - _parent->getPadding(),
+                _dimensions.topLeft.y + (sprite->fontHeight()/2) - _parent->getPadding()
             );
         }
         else
