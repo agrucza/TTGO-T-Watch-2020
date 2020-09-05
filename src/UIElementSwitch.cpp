@@ -41,8 +41,8 @@ void UIElementSwitch::draw(bool task)
         {
             target = _parent->getSprite();
             absPos = _dimensions.topLeft;
-            absPos.x -= _parent->getPadding();
-            absPos.y -= _parent->getPadding();
+            absPos.x -= _parent->getPadding() + _parent->getSpritePos().x;
+            absPos.y -= _parent->getPadding() + _parent->getSpritePos().y;
         }
         else
         {

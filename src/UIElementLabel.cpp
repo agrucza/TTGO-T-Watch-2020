@@ -46,8 +46,8 @@ void UIElementLabel::draw(bool task)
         {
             target = _parent->getSprite();
             absPos = _dimensions.topLeft;
-            absPos.x -= _parent->getPadding();
-            absPos.y -= _parent->getPadding();
+            absPos.x -= _parent->getPadding() + _parent->getSpritePos().x;
+            absPos.y -= _parent->getPadding() + _parent->getSpritePos().y;
         }
         else
         {
@@ -55,25 +55,28 @@ void UIElementLabel::draw(bool task)
             absPos = getTopPosition();
         }
         
-        
-        target->setFreeFont(_font);
-        target->setTextColor(_textColor);
-        
-        target->drawString(
-            _label,
-            absPos.x + _dimensions.bottomRight.x/2,
-            absPos.y + target->fontHeight()/2
-        );
-
-        if(_showLine)
+        // check if the elements needs to be drawn at all
+        if(isDrawable())
         {
-            target->fillRect(
-                absPos.x,
-                absPos.y + _dimensions.bottomRight.y - _lineHeight,
-                _parent->_dimensions.bottomRight.x + (_lineOrientation == ORIENTATION_CENTER?(_parent)->getPadding():0),
-                _lineHeight,
-                _textColor
+            target->setFreeFont(_font);
+            target->setTextColor(_textColor);
+            
+            target->drawString(
+                _label,
+                absPos.x + _dimensions.bottomRight.x/2,
+                absPos.y + _dimensions.bottomRight.y/2
             );
+
+            if(_showLine)
+            {
+                target->fillRect(
+                    absPos.x,
+                    absPos.y + _dimensions.bottomRight.y - _lineHeight,
+                    _parent->_dimensions.bottomRight.x + (_lineOrientation == ORIENTATION_CENTER?(_parent)->getPadding():0),
+                    _lineHeight,
+                    _textColor
+                );
+            }
         }
     }
 }

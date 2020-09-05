@@ -59,10 +59,11 @@ class UIElement{
         UIPoint_t               getTopPosition();
         bool                    isWithinDimensions(int x, int y);
         bool                    hasActiveSprite(){return false;};
+        bool                    isDrawable();
 
         virtual bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType) = 0;
         virtual void            draw(bool task = false) = 0;
-        virtual void            reDraw() = 0;
+        virtual void            reDraw(bool recursive = false) = 0;
 };
 
 #endif /*__UIELEMENT_H */

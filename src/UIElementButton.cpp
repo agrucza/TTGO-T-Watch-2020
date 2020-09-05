@@ -22,7 +22,7 @@ void UIElementButton::_setDimensions()
     _dimensions.topLeft.x       += _parent->getPadding();
     _dimensions.topLeft.y       += _parent->getPadding();
     _dimensions.bottomRight.x   -= 2*_parent->getPadding();
-    _dimensions.bottomRight.y   =  _tft->fontHeight()+4;
+    _dimensions.bottomRight.y   =  _tft->fontHeight() + 6;
     switch(_size)
     {
         case SIZE_ELEMENT:
@@ -37,27 +37,54 @@ void UIElementButton::draw(bool task)
 {
     if(!task)
     {
-        TFT_eSPI* target;
-        UIPoint_t absPos;
+        // check if the elements needs to be drawn at all
+        if(isDrawable())
+        {
+            UIPoint_t absPos;
 
-        if(_parent->getSprite()->created())
-        {
-            target = _parent->getSprite();
-            absPos = _dimensions.topLeft;
-            absPos.x -= _parent->getPadding();
-            absPos.y -= _parent->getPadding();
+            if(_parent->getSprite()->created())
+            {
+                TFT_eSprite* sprite = _parent->getSprite();
+                absPos = _dimensions.topLeft;
+                absPos.x -= _parent->getPadding() + _parent->getSpritePos().x;
+                absPos.y -= _parent->getPadding() + _parent->getSpritePos().y;
+                Serial.print("Button - dim: ");
+                Serial.print(_dimensions.topLeft.x);
+                Serial.print(":");
+                Serial.print(_dimensions.topLeft.y);
+                Serial.print(" pos: ");
+                Serial.print(absPos.x);
+                Serial.print(":");
+                Serial.print(absPos.y);
+                Serial.print(" spritePos: ");
+                Serial.print(_parent->getSpritePos().x);
+                Serial.print(":");
+                Serial.print(_parent->getSpritePos().y);
+                Serial.print(" Parent: ");
+                Serial.print(_parent->_dimensions.topLeft.x);
+                Serial.print(":");
+                Serial.print(_parent->_dimensions.topLeft.y);
+                Serial.print(":");
+                Serial.print(_parent->_dimensions.bottomRight.x);
+                Serial.print(":");
+                Serial.println(_parent->_dimensions.bottomRight.y);
+                
+                sprite->setFreeFont(_font);
+                sprite->setTextColor(_textColor);
+                // input outline
+                sprite->fillRoundRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,4,(_active?_colorActive:_colorInactive));
+                sprite->drawString(_label,absPos.x + (_dimensions.bottomRight.x/2), absPos.y + (_dimensions.bottomRight.y/2));
+            }
+            else
+            {
+                absPos = getTopPosition();
+                _tft->setFreeFont(_font);
+                _tft->setTextColor(_textColor);
+                // input outline
+                _tft->fillRoundRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,4,(_active?_colorActive:_colorInactive));
+                _tft->drawString(_label,absPos.x + (_dimensions.bottomRight.x/2), absPos.y + (_dimensions.bottomRight.y/2));
+            }
         }
-        else
-        {
-            target = _tft;
-            absPos = getTopPosition();
-        }
-        
-        target->setFreeFont(_font);
-        target->setTextColor(_textColor);
-        // input outline
-        target->fillRoundRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,4,(_active?_colorActive:_colorInactive));
-        target->drawString(_label,absPos.x + (_dimensions.bottomRight.x/2),absPos.y + (target->fontHeight()/2));
     }
 }
 

@@ -52,6 +52,30 @@ bool UIElement::isWithinDimensions(int x, int y){
     return false;
 };
 
+bool UIElement::isDrawable()
+{
+    if(_parent->getSprite()->created())
+    {
+        UIPoint_t absPos = _dimensions.topLeft;
+        absPos.x -= _parent->getPadding() + _parent->getSpritePos().x;
+        absPos.y -= _parent->getPadding() + _parent->getSpritePos().y;
+        if(
+            // check for top
+            (absPos.y + _dimensions.bottomRight.y < 0)
+            // check for left
+            || (absPos.x + _dimensions.bottomRight.x < 0)
+            // check for bottom
+            || (absPos.y > _parent->_dimensions.bottomRight.y - 2*_parent->getPadding())
+            // check for right
+            || (absPos.x > _parent->_dimensions.bottomRight.x - 2*_parent->getPadding())
+        )
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 void UIElement::setEventData(ui_event_data_t* data)
 {
     _eventData.event    = data->event;
