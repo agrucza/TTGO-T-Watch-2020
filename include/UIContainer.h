@@ -25,6 +25,7 @@ class UIContainer : public UIElement{
     UIPoint_t                   _spritePosOld           = {0,0};
     UIPoint_t                   _spritePos              = {0,0};
     UIPoint_t                   _spritePosMax           = {0,0};
+    uint8_t                     _spriteBottomSafety     = 32;
     struct{
         bool x = true;
         bool y = true;

@@ -322,11 +322,11 @@ void UIContainer::draw(bool task)
             {
                 Serial.println("No sprite has been created - creating now...");
                 // no sprite - creating
+                // we will add a safety buffer 
                 _spriteData = (uint16_t*)_sprite.createSprite(
                     _dimensions.bottomRight.x - 2*_padding,
-                    _dimensions.bottomRight.y - 2*_padding
+                    _dimensions.bottomRight.y - 2*_padding + _spriteBottomSafety
                 );
-                _sprite.setTextWrap(false,false);
                 _sprite.setTextDatum(MC_DATUM);
                 
                 Serial.print("sprite created: ");
@@ -384,7 +384,7 @@ void UIContainer::_pushSprite()
         //target->fillScreen(TFT_BLACK);
         uint16_t dh = 0;
 
-        while(dh < _sprite.height()) {
+        while(dh < _sprite.height()-_spriteBottomSafety) {
             // Push to TFT 1 line at a time
             sprite->pushImage(pos.x, pos.y + dh, _sprite.width(), 1, _spriteData + (dh * _sprite.width()));
             dh++;

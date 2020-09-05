@@ -44,33 +44,37 @@ void UIElementCheckbox::draw(bool task)
             absPos = getTopPosition();
         }
 
-        target->setFreeFont(_font);
-        target->setTextColor((_active?_colorActive:_colorInactive));
-
-        // input outline
-        target->fillRoundRect(
-            absPos.x + (_orientation == ORIENTATION_RIGHT? _dimensions.bottomRight.x - target->fontHeight():0),
-            absPos.y,
-            target->fontHeight(),
-            target->fontHeight(),
-            4,
-            (_active ? _colorActive : _colorInactive)
-        );
-
-        target->drawString(
-            _label,
-            absPos.x + (_orientation == ORIENTATION_LEFT?_dimensions.bottomRight.x - (target->textWidth(_label)/2):target->textWidth(_label)/2),
-            absPos.y + (target->fontHeight()/2)
-        );
-
-        if(_active)
+        // check if the elements needs to be drawn at all
+        if(isDrawable())
         {
-            target->setTextColor(FLAT_UI_V1_CLOUDS);
-            target->drawString(
-                "X",
-                absPos.x + target->fontHeight()/2 + (_orientation == ORIENTATION_RIGHT? _dimensions.bottomRight.x - target->fontHeight():0),
-                absPos.y + target->fontHeight()/2
+            target->setFreeFont(_font);
+            target->setTextColor((_active?_colorActive:_colorInactive));
+
+            // input outline
+            target->fillRoundRect(
+                absPos.x + (_orientation == ORIENTATION_RIGHT? _dimensions.bottomRight.x - target->fontHeight():0),
+                absPos.y,
+                target->fontHeight(),
+                target->fontHeight(),
+                4,
+                (_active ? _colorActive : _colorInactive)
             );
+
+            target->drawString(
+                _label,
+                absPos.x + (_orientation == ORIENTATION_LEFT?_dimensions.bottomRight.x - (target->textWidth(_label)/2):target->textWidth(_label)/2),
+                absPos.y + (target->fontHeight()/2)
+            );
+
+            if(_active)
+            {
+                target->setTextColor(FLAT_UI_V1_CLOUDS);
+                target->drawString(
+                    "X",
+                    absPos.x + target->fontHeight()/2 + (_orientation == ORIENTATION_RIGHT? _dimensions.bottomRight.x - target->fontHeight():0),
+                    absPos.y + target->fontHeight()/2
+                );
+            }
         }
     }
 }

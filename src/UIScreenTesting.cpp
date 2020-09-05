@@ -47,7 +47,7 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     modal->setPadding(10);
     modal->setBackgroundColor(FLAT_UI_V1_CLOUDS);
     */
-    /*
+    
     Serial.println("Creating buttonContainer");
     UIContainer* buttonContainer = new UIContainer(_contentContainer, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL_FILL);
     
@@ -73,7 +73,6 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     
     UIElementButton* button4 = new UIElementButton("click me 4", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
     buttonContainer->addUIElement(button4);
-    */
 
     Serial.println("Create vertical buttons");
     UIElementButton* button5 = new UIElementButton("click me", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);

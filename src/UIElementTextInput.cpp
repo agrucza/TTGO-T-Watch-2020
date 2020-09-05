@@ -44,25 +44,29 @@ void UIElementTextInput::draw(bool task)
             target = _tft;
             absPos = getTopPosition();
         }
+        
+        // check if the elements needs to be drawn at all
+        if(isDrawable())
+        {
+            target->setFreeFont(_font);
+            target->setTextColor((_text!=""?_textColor:_colorInactive));
 
-        target->setFreeFont(_font);
-        target->setTextColor((_text!=""?_textColor:_colorInactive));
+            // input outline
+            target->drawRoundRect(
+                absPos.x,
+                absPos.y,
+                _dimensions.bottomRight.x,
+                _dimensions.bottomRight.y,
+                4,
+                (_active ? _colorActive : _colorInactive)
+            );
 
-        // input outline
-        target->drawRoundRect(
-            absPos.x,
-            absPos.y,
-            _dimensions.bottomRight.x,
-            _dimensions.bottomRight.y,
-            4,
-            (_active ? _colorActive : _colorInactive)
-        );
-
-        target->drawString(
-            textToDraw,
-            absPos.x + (_dimensions.bottomRight.x/2),
-            absPos.y + (target->fontHeight()/2)
-        );
+            target->drawString(
+                textToDraw,
+                absPos.x + (_dimensions.bottomRight.x/2),
+                absPos.y + (target->fontHeight()/2)
+            );
+        }
     }
 }
 

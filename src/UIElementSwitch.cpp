@@ -49,41 +49,45 @@ void UIElementSwitch::draw(bool task)
             target = _tft;
             absPos = getTopPosition();
         }
-
-        target->setFreeFont(_font);
-        target->setTextColor(_textColor);
-
-        textWidth   = target->textWidth(_label);
-        textHeight  = target->fontHeight();
-
-        target->drawString(
-            _label,
-            absPos.x + (_orientation == ORIENTATION_LEFT?_dimensions.bottomRight.x - textWidth/2:textWidth/2),
-            absPos.y + (_dimensions.bottomRight.y/2)
-        );
-
-        posSwitchE.x = absPos.x + (_orientation == ORIENTATION_RIGHT?textWidth + _paddingInner:0);
-        posSwitchE.y = absPos.y;
-
-        // switch outline
-        target->fillRoundRect(
-            posSwitchE.x,
-            posSwitchE.y,
-            _switchSize,
-            textHeight,
-            textHeight/2,
-            (_enabled ? _colorActiveBg : _colorInactiveBg)
-        );
         
-        // switch element
-        target->fillRoundRect(
-            posSwitchE.x + (_enabled? _switchSize - (textHeight -8) - 4 : 4),
-            posSwitchE.y + 4,
-            textHeight - 8,
-            textHeight - 8,
-            (textHeight-8)/2,
-            (_enabled ? _colorActive : _colorInactive)
-        );
+        // check if the elements needs to be drawn at all
+        if(isDrawable())
+        {
+            target->setFreeFont(_font);
+            target->setTextColor(_textColor);
+
+            textWidth   = target->textWidth(_label);
+            textHeight  = target->fontHeight();
+
+            target->drawString(
+                _label,
+                absPos.x + (_orientation == ORIENTATION_LEFT?_dimensions.bottomRight.x - textWidth/2:textWidth/2),
+                absPos.y + (_dimensions.bottomRight.y/2)
+            );
+
+            posSwitchE.x = absPos.x + (_orientation == ORIENTATION_RIGHT?textWidth + _paddingInner:0);
+            posSwitchE.y = absPos.y;
+
+            // switch outline
+            target->fillRoundRect(
+                posSwitchE.x,
+                posSwitchE.y,
+                _switchSize,
+                textHeight,
+                textHeight/2,
+                (_enabled ? _colorActiveBg : _colorInactiveBg)
+            );
+            
+            // switch element
+            target->fillRoundRect(
+                posSwitchE.x + (_enabled? _switchSize - (textHeight -8) - 4 : 4),
+                posSwitchE.y + 4,
+                textHeight - 8,
+                textHeight - 8,
+                (textHeight-8)/2,
+                (_enabled ? _colorActive : _colorInactive)
+            );
+        }
     }
 }
 
