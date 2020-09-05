@@ -13,7 +13,7 @@ void UIScreenSettings::draw(bool init, bool task)
 {
     if(!task)
     {
-        _tft->fillScreen(_backgroundColor);
+        _tft->fillScreen(_bgColor);
     }
 
     // main UI

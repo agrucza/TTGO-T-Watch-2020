@@ -14,8 +14,6 @@
 UIScreenTesting::UIScreenTesting():UIScreen("Testing")
 {
     Serial.println("Init UIScreenTesting");
-    _screenContainer->setBackgroundColor(FLAT_UI_V1_POMEGRANATE);
-    _contentContainer->setBackgroundColor(FLAT_UI_V1_PUMPKIN);
     
     UIElementLabel* label1 = new UIElementLabel("Test1", &FreeSansBold9pt7b, _contentContainer,ORIENTATION_LEFT);
     label1->setTextColor(FLAT_UI_V1_CLOUDS);
@@ -100,7 +98,7 @@ void UIScreenTesting::draw(bool init, bool task)
 {
     if(!task)
     {
-        _tft->fillScreen(_backgroundColor);
+        _tft->fillScreen(_bgColor);
     }
     _screenContainer->draw(task);
 }

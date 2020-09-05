@@ -124,7 +124,7 @@ void UIScreenCalendar::draw(bool init, bool task)
 
     if(!task)
     {
-        _tft->fillScreen(_backgroundColor);
+        _tft->fillScreen(_bgColor);
 
         // main UI
         _tft->setFreeFont(&FreeSansBold9pt7b);
@@ -225,7 +225,7 @@ void UIScreenCalendar::_drawCalendar(uint16_t x, uint16_t y, uint16_t w, uint16_
             {
                 if(displayMonth && day<5 && !showToday)
                 {
-                    _tft->setTextColor(_backgroundColor);
+                    _tft->setTextColor(_bgColor);
                 }
                 else
                 {

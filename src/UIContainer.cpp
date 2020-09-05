@@ -35,6 +35,9 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
                 _dimensions.bottomRight.x = _padding;
                 break;
         }
+
+        // setting background color
+        _bgColor = _parent->_bgColor;
     }
     else
     {
@@ -50,6 +53,9 @@ UIContainer::UIContainer(UIScreen* screen, UIESize_t size, UIEAlignment_t alignm
     _screen     = screen;
     _size       = size;
     _alignment  = alignment;
+
+    // setting background color
+    _bgColor = _screen->_bgColor;
 }
 
 void UIContainer::addUIElement(UIElement* element)
@@ -172,18 +178,6 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
         _spritePosMax.x = _fullSize.x - _dimensions.bottomRight.x;
         _spritePosMax.y = _fullSize.y - _dimensions.bottomRight.y;
 
-        Serial.print("spritePosMax: ");
-        Serial.print(_spritePosMax.x);
-        Serial.print(":");
-        Serial.print(_spritePosMax.y);
-        Serial.print(" with dim: ");
-        Serial.print(_dimensions.bottomRight.x);
-        Serial.print(":");
-        Serial.print(_dimensions.bottomRight.y);
-        Serial.print(" with fullSize: ");
-        Serial.print(_fullSize.x);
-        Serial.print(":");
-        Serial.println(_fullSize.y);
         // check for swipe gestures - those will only be for containers by now
         // (and maybe special elements in the future)
         // normal elements should not accept guestures
@@ -261,16 +255,7 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
             _spritePos.x = (_spritePosOld.x + deltaX > 0?(_spritePosOld.x + deltaX < _spritePosMax.x?_spritePosOld.x + deltaX:_spritePosMax.x):0);
             _spritePos.y = (_spritePosOld.y + deltaY > 0?(_spritePosOld.y + deltaY < _spritePosMax.y?_spritePosOld.y + deltaY:_spritePosMax.y):0);
 
-            Serial.print("spritePos: ");
-            Serial.print(_spritePos.x);
-            Serial.print(":");
-            Serial.print(_spritePos.y);
-            Serial.print(" with fullSize: ");
-            Serial.print(_fullSize.x);
-            Serial.print(":");
-            Serial.println(_fullSize.y);
             if(!(_spritePosMaxReached.x && _spritePosMaxReached.y)){
-                Serial.println("Yeah... scrolling!!!!!!");
                 reDraw(true);
             }
 
@@ -306,21 +291,11 @@ void UIContainer::draw(bool task)
 
     if(!task)
     {
-        Serial.print("Checking if fullSize requires a sprite - dim: ");
-        Serial.print(_dimensions.bottomRight.x);
-        Serial.print(":");
-        Serial.print(_dimensions.bottomRight.y);
-        Serial.print(" - fz: ");
-        Serial.print(_fullSize.x);
-        Serial.print(":");
-        Serial.println(_fullSize.y);
         // check if sprite is used
         if((_dimensions.bottomRight.x < _fullSize.x) || (_dimensions.bottomRight.y < _fullSize.y))
         {
-            Serial.println("Sprite required!");
             if(!_sprite.created())
             {
-                Serial.println("No sprite has been created - creating now...");
                 // no sprite - creating
                 // we will add a safety buffer 
                 _spriteData = (uint16_t*)_sprite.createSprite(
@@ -328,20 +303,17 @@ void UIContainer::draw(bool task)
                     _dimensions.bottomRight.y - 2*_padding + _spriteBottomSafety
                 );
                 _sprite.setTextDatum(MC_DATUM);
-                
-                Serial.print("sprite created: ");
-                Serial.print(_sprite.width());
-                Serial.print(":");
-                Serial.print(_sprite.height());
-                Serial.print(" for fullSize: ");
-                Serial.print(_fullSize.x);
-                Serial.print(":");
-                Serial.print(_fullSize.y);
-                Serial.print(" BG: ");
-                Serial.print(_bgColor);
-                Serial.print(" / ");
-                Serial.println(FLAT_UI_V1_MIDNIGHT_BLUE);
             }
+            Serial.print("Sprite created with bgColor: ");
+            Serial.print(_bgColor);
+            if(_parent)
+            {
+                Serial.print(" parent got: ");
+            } else {
+                Serial.print(" screen got: ");
+            }
+            Serial.println((_parent?_parent->_bgColor:_screen->_bgColor));
+
             _sprite.fillScreen((_bgColor>0?_bgColor:TFT_GREENYELLOW));
         }
         else if(_bgColor > 0)

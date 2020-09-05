@@ -25,17 +25,17 @@ void UIScreenStandby::draw(bool init, bool task)
 
     if(!task)
     {
-        _tft->fillScreen(_backgroundColor);
+        _tft->fillScreen(_bgColor);
     }
     
     // time label
     _tft->setFreeFont(&FreeSansBold24pt7b);
-    _tft->setTextColor(_textColor,_backgroundColor);
+    _tft->setTextColor(_textColor,_bgColor);
     strftime(label, sizeof(label), "%H : %M", &_timeInfo);
     textWidth = _tft->textWidth(label);
     if(init || (_lastMinute != _timeInfo.tm_min))
     {
-        _tft->fillRect(0,labelTop,TFT_WIDTH, _tft->fontHeight(), _backgroundColor);
+        _tft->fillRect(0,labelTop,TFT_WIDTH, _tft->fontHeight(), _bgColor);
         _lastMinute = _timeInfo.tm_min;
         _tft->drawString(label, TFT_WIDTH/2, labelTop + _tft->fontHeight()/2);
     }
@@ -48,7 +48,7 @@ void UIScreenStandby::draw(bool init, bool task)
     textWidth = _tft->textWidth(label);
     if(init || (_lastMonth != _timeInfo.tm_mon))
     {
-        _tft->fillRect(0,labelTop,TFT_WIDTH, _tft->fontHeight(), _backgroundColor);
+        _tft->fillRect(0,labelTop,TFT_WIDTH, _tft->fontHeight(), _bgColor);
         _lastMonth = _timeInfo.tm_mon;
         _tft->drawString(label, TFT_WIDTH/2, labelTop + (_tft->fontHeight()/2));
     }
@@ -63,7 +63,7 @@ void UIScreenStandby::draw(bool init, bool task)
     uint16_t barWidth   = _tft->textWidth(label) + 6;
     labelTop += 10;
     _tft->fillRoundRect((TFT_WIDTH - barWidth)/2, labelTop, barWidth, barHeight, 4, _tft->color565(189, 195, 199)); //#bdc3c7
-    _tft->setTextColor(_backgroundColor);
+    _tft->setTextColor(_bgColor);
     _tft->drawString(label, TFT_WIDTH/2, labelTop + (_tft->fontHeight()/2) + 2);
 
     // swipe up text

@@ -60,7 +60,7 @@ void UIScreenMain::draw(bool init, bool task)
         uint8_t     iconSizeScreenW = 0;
         uint8_t     iconSizeScreenH = 0;
 
-        _tft->fillScreen(_backgroundColor);
+        _tft->fillScreen(_bgColor);
     
         _tft->setFreeFont(&FreeSansBold9pt7b);
     
