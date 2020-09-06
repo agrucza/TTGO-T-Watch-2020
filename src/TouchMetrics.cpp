@@ -21,6 +21,7 @@ void TouchMetrics::checkTouch()
             setLastX(touchX);
             setLastY(touchY);
             setTouch(true);
+            touchBlockedBy = TOUCH_NONE;
             GUI::touchAction(_lastX, _lastY, 0, 0, touch_t::TOUCH_START);
         } else {
             // vector of touch?
@@ -40,22 +41,33 @@ void TouchMetrics::_sendTouchType()
     // check for swipes?
     int16_t deltaX  = _lastX - _x;
     int16_t deltaY  = _lastY - _y;
+    bool touch      = deltaX == 0 && deltaY == 0;
     bool swipeX     = abs(deltaX) > abs(deltaY);
 
     // delta values can be added to scrolling
     // <- negative is back
     // -> positive is next
-
+    /*
+     * Touch
+     */
+    
+    if(touch)
+    {
+        GUI::touchAction(_lastX, _lastY, deltaX, deltaY, (_touch?touch_t::TOUCHING:touch_t::TOUCH_RELEASE));
+    }
     /*
      * HORIZONTAL SWIPING
      */
-    if(swipeX && (abs(deltaX) > (TFT_WIDTH/_swipeTolerance)))
+    else if(swipeX)
     {
-        // we need to block swiping directions otherwise we will confuse the GUI
-        if(touchBlockedBy == TOUCH_NONE || touchBlockedBy == SWIPING_HORIZONTAL)
+        if(touchBlockedBy == TOUCH_NONE)
         {
+            GUI::touchAction(_lastX,_lastY,deltaX,0,touch_t::SWIPE_HORIZONTAL_STARTED);
             touchBlockedBy = SWIPING_HORIZONTAL;
-
+        }
+        // we need to block swiping directions otherwise we will confuse the GUI
+        if(touchBlockedBy == SWIPING_HORIZONTAL)
+        {
             // check for left swipe
             if(deltaX>0)
             {
@@ -92,10 +104,15 @@ void TouchMetrics::_sendTouchType()
     /*
      * VERTICAL SWIPING
      */
-    else if(!swipeX && (abs(deltaY) > (TFT_HEIGHT/_swipeTolerance)))
+    else if(!swipeX)
     {
+        if(touchBlockedBy == TOUCH_NONE)
+        {
+            GUI::touchAction(_lastX,_lastY,deltaX,0,touch_t::SWIPE_VERTICAL_STARTED);
+            touchBlockedBy = SWIPING_VERTICAL;
+        }
         // we need to block swiping directions otherwise we will confuse the GUI
-        if(touchBlockedBy == TOUCH_NONE || touchBlockedBy == SWIPING_VERTICAL)
+        if(touchBlockedBy == SWIPING_VERTICAL)
         {
             touchBlockedBy = SWIPING_VERTICAL;
             // check for up swipe
@@ -130,9 +147,5 @@ void TouchMetrics::_sendTouchType()
                 );
             }
         }
-    }
-    else
-    {
-        GUI::touchAction(_lastX, _lastY, deltaX, deltaY, (_touch?touch_t::TOUCHING:touch_t::TOUCH_RELEASE));
     }
 }

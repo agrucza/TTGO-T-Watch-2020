@@ -21,7 +21,6 @@ class TouchMetrics {
     int16_t     _y                  = -1;
     int16_t     _lastX              = -1;
     int16_t     _lastY              = -1;
-    int16_t     _swipeTolerance     = 240;
     int16_t     _swipeEdgeDetection = 30;
     void        _sendTouchType();
 
@@ -30,18 +29,22 @@ class TouchMetrics {
             TOUCH_START,
             TOUCHING,
             TOUCH_RELEASE,
+            
+            SWIPE_VERTICAL_STARTED,
             SWIPE_TOP,
             SWIPING_TOP,
             SWIPE_TOP_EDGE,
             SWIPING_TOP_EDGE,
-            SWIPE_RIGHT,
-            SWIPING_RIGHT,
-            SWIPE_RIGHT_EDGE,
-            SWIPING_RIGHT_EDGE,
             SWIPE_BOTTOM,
             SWIPING_BOTTOM,
             SWIPE_BOTTOM_EDGE,
             SWIPING_BOTTOM_EDGE,
+
+            SWIPE_HORIZONTAL_STARTED,
+            SWIPE_RIGHT,
+            SWIPING_RIGHT,
+            SWIPE_RIGHT_EDGE,
+            SWIPING_RIGHT_EDGE,
             SWIPE_LEFT,
             SWIPING_LEFT,
             SWIPE_LEFT_EDGE,

@@ -47,6 +47,7 @@ class UIContainer : public UIElement{
         UIPoint_t       getSpritePos(){return _spritePos;};
         bool            hasActiveSprite(){return _sprite.created();};
         bool            isWithinDimensions(int x, int y);
+        bool            acceptsTouchType(TouchMetrics::touch_t touchType);
 
         bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
         void            draw(bool task = false);
