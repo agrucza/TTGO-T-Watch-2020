@@ -248,6 +248,7 @@ void GUI::setScreen(screens_t screen, bool init, bool task)
 {
     _lastScreen = _activeScreen;
     _activeScreen = screen;
+    _screens[_lastScreen]->clean();
     _screens[screen]->draw(init, task);
 }
 

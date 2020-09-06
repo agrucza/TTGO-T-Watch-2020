@@ -199,6 +199,21 @@ bool UIContainer::acceptsTouchType(TouchMetrics::touch_t touchType)
     return false;
 };
 
+void UIContainer::clean()
+{
+    for(uint8_t i=0; i<_elements.size(); i++)
+    {
+        if(UIContainer* container = dynamic_cast<UIContainer*>(_elements[i]))
+        {
+            container->clean();
+        }
+    }
+    if(_sprite.created())
+    {
+        _sprite.deleteSprite();
+    }
+}
+
 bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
     // check if container is using a sprite
@@ -273,6 +288,7 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
             _spritePos.x = (_spritePosOld.x + deltaX > 0?(_spritePosOld.x + deltaX < _spritePosMax.x?_spritePosOld.x + deltaX:_spritePosMax.x):0);
             _spritePos.y = (_spritePosOld.y + deltaY > 0?(_spritePosOld.y + deltaY < _spritePosMax.y?_spritePosOld.y + deltaY:_spritePosMax.y):0);
 
+            // checking for max pos reached to prevent continuous drawing once 0 or max is reached
             _spritePosMaxReached.x = (
                 _spritePos.x == 0 || _spritePos.x == _spritePosMax.x
                 ?true
@@ -289,7 +305,6 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
                 reDraw(true);
             }
 
-            // checking for max pos reached to prevent continuous drawing once 0 or max is reached
             return true;
         }
     } else {

@@ -34,3 +34,8 @@ UIScreen::UIScreen(String label, bool showHeader)
     // setting contentcontainer to have the remaining space of the screencontainer
     _contentContainer->_dimensions.bottomRight.y = _screenContainer->_dimensions.bottomRight.y - _contentContainer->_dimensions.topLeft.y;
 }
+
+void UIScreen::clean()
+{
+    _screenContainer->clean();
+};

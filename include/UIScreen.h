@@ -36,10 +36,11 @@ class UIScreen{
         UIContainer*    _contentContainer   = nullptr;
 
         UIScreen(String label, bool showHeader = true);
-        uint8_t getIconSizeX(){return _iconSizeX;};
-        uint8_t getIconSizeY(){return _iconSizeY;};
-        String  getLabel(){return _label;};
-        bool    getShowHeader(){return _showHeader;};
+        uint8_t         getIconSizeX(){return _iconSizeX;};
+        uint8_t         getIconSizeY(){return _iconSizeY;};
+        String          getLabel(){return _label;};
+        bool            getShowHeader(){return _showHeader;};
+        void            clean();
         
         virtual void    draw(bool init = false, bool task = false) = 0;
         virtual void    drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h) = 0;

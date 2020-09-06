@@ -82,10 +82,7 @@ class GUI {
             }
             return millis() - _lastActionTime;
         }
-        static void             setLastActionTime(unsigned long millis)
-        {
-            _lastActionTime = millis;
-        }
+        static void             setLastActionTime(unsigned long millis){_lastActionTime = millis;}
         static void             wifiConnectStatus(bool set);
         static void             updateStepCounter();
         static uint32_t         getStepCounter();
