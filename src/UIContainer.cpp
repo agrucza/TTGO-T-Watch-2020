@@ -19,6 +19,16 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
         // depending on the parents alignment we will set the width and height
         // vertical alignment will have full width but 0 height
         // horizontal alignment will have 0 width and full height
+        UIDimensions_t parentContainerDimensions = _parent->calculateContentSize();
+        Serial.print("Parent calculateContentSize: ");
+        Serial.print(parentContainerDimensions.topLeft.x);
+        Serial.print(":");
+        Serial.print(parentContainerDimensions.topLeft.y);
+        Serial.print(":");
+        Serial.print(parentContainerDimensions.bottomRight.x);
+        Serial.print(":");
+        Serial.println(parentContainerDimensions.bottomRight.y);
+
         _dimensions = _parent->getDimensions();
         _dimensions.topLeft.x += _parent->getPadding();
         _dimensions.topLeft.y += _parent->getPadding();
@@ -28,19 +38,31 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
         switch(_parent->getAlignment())
         {
             case ALIGNMENT_VERTICAL:
+                Serial.println("Parent has vertical alignment");
                 _dimensions.bottomRight.y = 2*_padding;
                 break;
             case ALIGNMENT_HORIZONTAL:
             case ALIGNMENT_HORIZONTAL_FILL:
+                Serial.println("Parent has horizontal alignment");
                 _dimensions.bottomRight.x = _padding;
                 break;
         }
+
+        Serial.print("dimensions will be: ");
+        Serial.print(_dimensions.topLeft.x);
+        Serial.print(":");
+        Serial.print(_dimensions.topLeft.y);
+        Serial.print(":");
+        Serial.print(_dimensions.bottomRight.x);
+        Serial.print(":");
+        Serial.println(_dimensions.bottomRight.y);
 
         // setting background color
         _bgColor = _parent->_bgColor;
     }
     else
     {
+
         _dimensions                 = defaultUIDimensions;
         _dimensions.bottomRight.x   = TFT_WIDTH;
         _dimensions.bottomRight.y   = TFT_HEIGHT;
@@ -63,6 +85,17 @@ void UIContainer::addUIElement(UIElement* element)
     UIDimensions_t      dimensions          = element->getDimensions();
     UIDimensions_t      containerDimensions = calculateContentSize();
 
+    Serial.print("Container calculateContentSize: ");
+    Serial.print(containerDimensions.topLeft.x);
+    Serial.print(":");
+    Serial.print(containerDimensions.topLeft.y);
+    Serial.print(":");
+    Serial.print(containerDimensions.bottomRight.x);
+    Serial.print(":");
+    Serial.println(containerDimensions.bottomRight.y);
+
+    dimensions.topLeft = containerDimensions.bottomRight;
+
     switch(_alignment)
     {
         case ALIGNMENT_VERTICAL:
@@ -74,6 +107,15 @@ void UIContainer::addUIElement(UIElement* element)
             dimensions.topLeft.y        = _padding;
             break;
     }
+
+    Serial.print("Elements dimensions will be: ");
+    Serial.print(dimensions.topLeft.x);
+    Serial.print(":");
+    Serial.print(dimensions.topLeft.y);
+    Serial.print(":");
+    Serial.print(dimensions.bottomRight.x);
+    Serial.print(":");
+    Serial.println(dimensions.bottomRight.y);
 
     element->setDimensions(dimensions);
     _elements.push_back(element);
@@ -105,6 +147,15 @@ UIDimensions_t UIContainer::calculateContentSize(bool passToParent)
     UIDimensions_t dimensions   = _dimensions;
     uint8_t fullSize            = 0;
 
+    Serial.print("### calculateContentSize: container _dimensions are: ");
+    Serial.print(dimensions.topLeft.x);
+    Serial.print(":");
+    Serial.print(dimensions.topLeft.y);
+    Serial.print(":");
+    Serial.print(dimensions.bottomRight.x);
+    Serial.print(":");
+    Serial.println(dimensions.bottomRight.y);
+
     switch(_alignment)
     {
         case ALIGNMENT_VERTICAL:
@@ -125,6 +176,10 @@ UIDimensions_t UIContainer::calculateContentSize(bool passToParent)
         {
             case ALIGNMENT_VERTICAL:
                 dimensions.bottomRight.y        += tmpDimensions.bottomRight.y + _padding;
+                if(dimensions.bottomRight.x < tmpDimensions.bottomRight.x + 2*_padding)
+                {
+                    dimensions.bottomRight.x    = tmpDimensions.bottomRight.x + 2*_padding;
+                }
                 break;
             case ALIGNMENT_HORIZONTAL:
             case ALIGNMENT_HORIZONTAL_FILL:
@@ -138,22 +193,54 @@ UIDimensions_t UIContainer::calculateContentSize(bool passToParent)
         yield();
     }
 
+    Serial.print("### calculateContentSize: before adjustment - dimensions are: ");
+    Serial.print(dimensions.topLeft.x);
+    Serial.print(":");
+    Serial.print(dimensions.topLeft.y);
+    Serial.print(":");
+    Serial.print(dimensions.bottomRight.x);
+    Serial.print(":");
+    Serial.println(dimensions.bottomRight.y);
+
+    if(_alignment==ALIGNMENT_VERTICAL){
+        _fullSize = dimensions.bottomRight;
+        if(_parent && dimensions.bottomRight.y > _parent->_dimensions.bottomRight.y)
+        {
+            dimensions.bottomRight.y = _parent->_dimensions.bottomRight.y;
+        }
+    }
+    else
+    {
+        // restore fullsize?
+        _fullSize = dimensions.bottomRight;
+        if(_parent && dimensions.bottomRight.x > _parent->_dimensions.bottomRight.x)
+        {
+            dimensions.bottomRight.x = _parent->_dimensions.bottomRight.y;
+        }
+    }
+
+    Serial.print("### calculateContentSize: after adjustment - dimensions are: ");
+    Serial.print(dimensions.topLeft.x);
+    Serial.print(":");
+    Serial.print(dimensions.topLeft.y);
+    Serial.print(":");
+    Serial.print(dimensions.bottomRight.x);
+    Serial.print(":");
+    Serial.println(dimensions.bottomRight.y);
+
+    _dimensions =  dimensions;
+
     if(_parent && passToParent)
     {
-        if(_alignment==ALIGNMENT_VERTICAL){
-            _fullSize                   = dimensions.bottomRight;
-            dimensions.bottomRight.y    = fullSize;
-        }
-        else
-        {
-            // restore fullsize?
-            _fullSize                   = dimensions.bottomRight;
-            dimensions.bottomRight.x    = fullSize;
-        }
-
-        _dimensions =  dimensions;
-
         _parent->calculateContentSize(true);
+    }
+
+    if(_alignment==ALIGNMENT_VERTICAL){
+        dimensions.bottomRight.x = _padding;
+    }
+    else
+    {
+        dimensions.bottomRight.y = _padding;
     }
 
     return dimensions;
@@ -349,7 +436,7 @@ void UIContainer::draw(bool task)
         }
         else if(_bgColor > 0)
         {
-            //_tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
+            _tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
         }
         
         for(uint8_t element = 0; element < _elements.size(); element++)

@@ -13,7 +13,9 @@
 
 UIScreenTesting::UIScreenTesting():UIScreen("Testing")
 {
-    Serial.println("Init UIScreenTesting");
+    Serial.println("########################");
+    Serial.println("# Init UIScreenTesting #");
+    Serial.println("########################");
     
     UIElementLabel* label1 = new UIElementLabel("Test1", &FreeSansBold9pt7b, _contentContainer,ORIENTATION_LEFT);
     label1->setTextColor(FLAT_UI_V1_CLOUDS);
@@ -23,13 +25,13 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     UIElementSwitch* switch1 = new UIElementSwitch("TestSwitch1", &FreeSansBold9pt7b, _contentContainer, ORIENTATION_RIGHT);
     switch1->setTextColor(FLAT_UI_V1_CLOUDS);
     switch1->setEnabled(false);
-    /*
-    ui_event_data_t eventData;
-    eventData.screen = this;
-    eventData.source = switch1;
-    switch1->setEventData(&eventData);
-    switch1->setEventCallback(GUI::handleEventCallback);
-    */
+    
+    //ui_event_data_t eventData;
+    //eventData.screen = this;
+    //eventData.source = switch1;
+    //switch1->setEventData(&eventData);
+    //switch1->setEventCallback(GUI::handleEventCallback);
+    
     _contentContainer->addUIElement(switch1);
     
     Serial.println("Create text input");
@@ -40,11 +42,9 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     UIElementCheckbox* checkbox1 = new UIElementCheckbox("checkbox1", &FreeSansBold9pt7b, _contentContainer, ORIENTATION_RIGHT);
     _contentContainer->addUIElement(checkbox1);
 
-    /*
-    UIContainer* modal = new UIContainer(this);
-    modal->setPadding(10);
-    modal->setBackgroundColor(FLAT_UI_V1_CLOUDS);
-    */
+    //UIContainer* modal = new UIContainer(this);
+    //modal->setPadding(10);
+    //modal->setBackgroundColor(FLAT_UI_V1_CLOUDS);
     
     Serial.println("Creating buttonContainer");
     UIContainer* buttonContainer = new UIContainer(_contentContainer, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL_FILL);

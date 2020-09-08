@@ -33,6 +33,7 @@ class UIScreen{
         uint8_t         _iconSizeY          = 1;
         uint8_t         _padding            = 5;
         UIContainer*    _screenContainer    = nullptr;
+        UIContainer*    _menuContainer      = nullptr;
         UIContainer*    _contentContainer   = nullptr;
 
         UIScreen(String label, bool showHeader = true);
