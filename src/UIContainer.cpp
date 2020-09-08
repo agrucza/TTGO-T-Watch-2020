@@ -19,40 +19,30 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
         // depending on the parents alignment we will set the width and height
         // vertical alignment will have full width but 0 height
         // horizontal alignment will have 0 width and full height
-        UIDimensions_t parentContainerDimensions = _parent->calculateContentSize();
-        Serial.print("Parent calculateContentSize: ");
-        Serial.print(parentContainerDimensions.topLeft.x);
-        Serial.print(":");
-        Serial.print(parentContainerDimensions.topLeft.y);
-        Serial.print(":");
-        Serial.print(parentContainerDimensions.bottomRight.x);
-        Serial.print(":");
-        Serial.println(parentContainerDimensions.bottomRight.y);
-
-        _dimensions.topLeft     = parentContainerDimensions.bottomRight;
+        _dimensions.topLeft     = _parent->getNextElementPosition();
         _dimensions.bottomRight = {0,0};
 
-        switch(_parent->getAlignment())
+        Serial.print("next element position will be: ");
+        Serial.print(_dimensions.topLeft.x);
+        Serial.print(":");
+        Serial.println(_dimensions.topLeft.y);
+
+        switch(_size)
         {
-            case ALIGNMENT_VERTICAL:
-                Serial.println("Parent has vertical alignment");
-                _dimensions.bottomRight.y = _padding;
-                break;
-            case ALIGNMENT_HORIZONTAL:
-            case ALIGNMENT_HORIZONTAL_FILL:
-                Serial.println("Parent has horizontal alignment");
-                switch(_size)
+            case SIZE_FULL:
+                Serial.println("New container has full size");
+                Serial.print("Parent width: ");
+                Serial.println(_parent->_dimensions.bottomRight.x);
+                _dimensions.bottomRight.x = _parent->_dimensions.bottomRight.x - _dimensions.topLeft.x;
+            break;
+            default:
+                Serial.println("New container has element size");
+                _dimensions.bottomRight.x = _padding;
+                if(_elements.size()>0)
                 {
-                    case SIZE_FULL:
-                        Serial.println("New container has full size");
-                        _dimensions.bottomRight.x = _parent->_dimensions.bottomRight.x - _dimensions.topLeft.x;
-                    break;
-                    default:
-                        Serial.println("New container has element size");
-                        _dimensions.bottomRight.x = _padding;
-                    break;
+                    calculateSize();
                 }
-                break;
+            break;
         }
         // setting background color
         _bgColor = _parent->_bgColor;
@@ -87,31 +77,13 @@ UIContainer::UIContainer(UIScreen* screen, UIESize_t size, UIEAlignment_t alignm
 
 void UIContainer::addUIElement(UIElement* element)
 {
-    UIDimensions_t      dimensions          = element->getDimensions();
-    UIDimensions_t      containerDimensions = calculateContentSize();
+    UIDimensions_t dimensions       = element->getDimensions();
+    dimensions.topLeft              = getNextElementPosition();
 
-    Serial.print("Container calculateContentSize: ");
-    Serial.print(containerDimensions.topLeft.x);
+    Serial.print("Next element position: ");
+    Serial.print(dimensions.topLeft.x);
     Serial.print(":");
-    Serial.print(containerDimensions.topLeft.y);
-    Serial.print(":");
-    Serial.print(containerDimensions.bottomRight.x);
-    Serial.print(":");
-    Serial.println(containerDimensions.bottomRight.y);
-
-    dimensions.topLeft = containerDimensions.bottomRight;
-
-    switch(_alignment)
-    {
-        case ALIGNMENT_VERTICAL:
-            dimensions.topLeft.y        = containerDimensions.bottomRight.y;
-            break;
-        case ALIGNMENT_HORIZONTAL:
-        case ALIGNMENT_HORIZONTAL_FILL:
-            dimensions.topLeft.x        = containerDimensions.bottomRight.x;
-            dimensions.topLeft.y        = _padding;
-            break;
-    }
+    Serial.print(dimensions.topLeft.y);
 
     Serial.print("Elements dimensions will be: ");
     Serial.print(dimensions.topLeft.x);
@@ -124,131 +96,7 @@ void UIContainer::addUIElement(UIElement* element)
 
     element->setDimensions(dimensions);
     _elements.push_back(element);
-
-    calculateContentSize(true);
-}
-
-UIDimensions_t UIContainer::getElementDimensions(UIElement* element)
-{
-    UIDimensions_t fallback;
-
-    for(uint8_t i = 0; i < _elements.size(); i++)
-    {
-        if(_elements[i] == element)
-        {
-            return _elements[i]->getDimensions();
-        }
-        yield();
-    }
-
-    fallback.topLeft.x = fallback.topLeft.y = fallback.bottomRight.x = fallback.bottomRight.y -1;
-
-    return fallback;
-}
-
-UIDimensions_t UIContainer::calculateContentSize(bool passToParent)
-{
-    UIDimensions_t tmpDimensions;
-    UIDimensions_t dimensions   = _dimensions;
-    uint8_t fullSize            = 0;
-
-    Serial.print("### calculateContentSize: container _dimensions are: ");
-    Serial.print(dimensions.topLeft.x);
-    Serial.print(":");
-    Serial.print(dimensions.topLeft.y);
-    Serial.print(":");
-    Serial.print(dimensions.bottomRight.x);
-    Serial.print(":");
-    Serial.println(dimensions.bottomRight.y);
-
-    switch(_alignment)
-    {
-        case ALIGNMENT_VERTICAL:
-            fullSize                    = dimensions.bottomRight.y;
-            dimensions.bottomRight.y    = _padding;
-            break;
-        case ALIGNMENT_HORIZONTAL:
-        case ALIGNMENT_HORIZONTAL_FILL:
-            fullSize                    = dimensions.bottomRight.x;
-            dimensions.bottomRight.x    = _padding;
-            break;
-    }
-
-    for(uint8_t i = 0; i < _elements.size(); i++)
-    {
-        tmpDimensions = _elements[i]->getDimensions();
-        switch(_alignment)
-        {
-            case ALIGNMENT_VERTICAL:
-                dimensions.bottomRight.y        += tmpDimensions.bottomRight.y + _padding;
-                if(dimensions.bottomRight.x < tmpDimensions.bottomRight.x + 2*_padding)
-                {
-                    dimensions.bottomRight.x    = tmpDimensions.bottomRight.x + 2*_padding;
-                }
-                break;
-            case ALIGNMENT_HORIZONTAL:
-            case ALIGNMENT_HORIZONTAL_FILL:
-                dimensions.bottomRight.x        += tmpDimensions.bottomRight.x + _padding;
-                if(dimensions.bottomRight.y     < tmpDimensions.bottomRight.y + 2*_padding)
-                {
-                    dimensions.bottomRight.y    = tmpDimensions.bottomRight.y + 2*_padding;
-                }
-                break;
-        }
-        yield();
-    }
-
-    Serial.print("### calculateContentSize: before adjustment - dimensions are: ");
-    Serial.print(dimensions.topLeft.x);
-    Serial.print(":");
-    Serial.print(dimensions.topLeft.y);
-    Serial.print(":");
-    Serial.print(dimensions.bottomRight.x);
-    Serial.print(":");
-    Serial.println(dimensions.bottomRight.y);
-
-    if(_alignment==ALIGNMENT_VERTICAL){
-        _fullSize = dimensions.bottomRight;
-        if(_parent && dimensions.bottomRight.y > _parent->_dimensions.bottomRight.y)
-        {
-            dimensions.bottomRight.y = _parent->_dimensions.bottomRight.y;
-        }
-    }
-    else
-    {
-        // restore fullsize?
-        _fullSize = dimensions.bottomRight;
-        if(_parent && dimensions.bottomRight.x > _parent->_dimensions.bottomRight.x)
-        {
-            dimensions.bottomRight.x = _parent->_dimensions.bottomRight.y;
-        }
-    }
-
-    Serial.print("### calculateContentSize: after adjustment - dimensions are: ");
-    Serial.print(dimensions.topLeft.x);
-    Serial.print(":");
-    Serial.print(dimensions.topLeft.y);
-    Serial.print(":");
-    Serial.print(dimensions.bottomRight.x);
-    Serial.print(":");
-    Serial.println(dimensions.bottomRight.y);
-
-    _dimensions =  dimensions;
-
-    if(_parent && passToParent)
-    {
-        _parent->calculateContentSize(true);
-    }
-
-    if(_alignment==ALIGNMENT_VERTICAL){
-        dimensions.bottomRight.x = _padding;
-    }
-    else
-    {
-        dimensions.bottomRight.y = _padding;
-    }
-
-    return dimensions;
+    calculateSize();
 }
 
 bool UIContainer::isWithinDimensions(int x, int y)
@@ -274,7 +122,7 @@ bool UIContainer::acceptsTouchType(TouchMetrics::touch_t touchType)
         case TouchMetrics::SWIPE_VERTICAL_STARTED:
         case TouchMetrics::SWIPING_TOP:
         case TouchMetrics::SWIPING_BOTTOM:
-            if(_fullSize.y > _dimensions.bottomRight.y)
+            if(_elementSize.y > _dimensions.bottomRight.y)
             {
                 return true;
             }
@@ -282,7 +130,7 @@ bool UIContainer::acceptsTouchType(TouchMetrics::touch_t touchType)
         case TouchMetrics::SWIPE_HORIZONTAL_STARTED:
         case TouchMetrics::SWIPING_RIGHT:
         case TouchMetrics::SWIPING_LEFT:
-            if(_fullSize.x > _dimensions.bottomRight.x)
+            if(_elementSize.x > _dimensions.bottomRight.x)
             {
                 return true;
             }
@@ -306,6 +154,50 @@ void UIContainer::clean()
     }
 }
 
+UIPoint_t UIContainer::getNextElementPosition()
+{
+    UIPoint_t pos = {0,0};
+
+    for(uint8_t i = 0; i<_elements.size(); i++)
+    {
+        switch (_alignment)
+        {
+        case ALIGNMENT_VERTICAL:
+            pos.y += _padding + _elements[i]->getDimensions().bottomRight.y;
+            pos.x =  _padding;
+            break;
+        case ALIGNMENT_HORIZONTAL:
+        case ALIGNMENT_HORIZONTAL_FILL:
+            pos.x += _padding + _elements[i]->getDimensions().bottomRight.x;
+            pos.y =  _padding;
+            break;
+        }
+    }
+
+    return pos;
+}
+
+
+void UIContainer::calculateSize()
+{
+    UIDimensions_t dimensions = _dimensions;
+    for(uint8_t i = 0; i < _elements.size(); i++)
+    {
+        switch(_alignment)
+        {
+            case ALIGNMENT_VERTICAL:
+                dimensions.bottomRight.y += _padding + _elements[i]->getDimensions().bottomRight.y;
+                dimensions.bottomRight.x =  _parent->_dimensions.bottomRight.x - _dimensions.topLeft.x;
+                break;
+            case ALIGNMENT_HORIZONTAL:
+            case ALIGNMENT_HORIZONTAL_FILL:
+                dimensions.bottomRight.x += _padding + _elements[i]->getDimensions().bottomRight.x;
+                dimensions.bottomRight.y += _padding + _elements[i]->getDimensions().bottomRight.y;
+                break;
+        }
+    }
+}
+
 bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
     // check if container is using a sprite
@@ -313,8 +205,8 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
     if(_sprite.created())
     {
         // setting up max sprite scrolling
-        _spritePosMax.x = _fullSize.x - _dimensions.bottomRight.x;
-        _spritePosMax.y = _fullSize.y - _dimensions.bottomRight.y;
+        _spritePosMax.x = _elementSize.x - _dimensions.bottomRight.x;
+        _spritePosMax.y = _elementSize.y - _dimensions.bottomRight.y;
 
         // check for swipe gestures - those will only be for containers by now
         // (and maybe special elements in the future)
@@ -425,7 +317,7 @@ void UIContainer::draw(bool task)
     if(!task)
     {
         // check if sprite is used
-        if((_dimensions.bottomRight.x < _fullSize.x) || (_dimensions.bottomRight.y < _fullSize.y))
+        if((_dimensions.bottomRight.x < _elementSize.x) || (_dimensions.bottomRight.y < _elementSize.y))
         {
             if(!_sprite.created())
             {
