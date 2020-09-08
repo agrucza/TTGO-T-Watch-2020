@@ -29,44 +29,49 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
         Serial.print(":");
         Serial.println(parentContainerDimensions.bottomRight.y);
 
-        _dimensions = _parent->getDimensions();
-        _dimensions.topLeft.x += _parent->getPadding();
-        _dimensions.topLeft.y += _parent->getPadding();
-        _dimensions.bottomRight.x -= 2*_parent->getPadding();
-        _dimensions.bottomRight.y -= 2*_parent->getPadding();
+        _dimensions.topLeft     = parentContainerDimensions.bottomRight;
+        _dimensions.bottomRight = {0,0};
 
         switch(_parent->getAlignment())
         {
             case ALIGNMENT_VERTICAL:
                 Serial.println("Parent has vertical alignment");
-                _dimensions.bottomRight.y = 2*_padding;
+                _dimensions.bottomRight.y = _padding;
                 break;
             case ALIGNMENT_HORIZONTAL:
             case ALIGNMENT_HORIZONTAL_FILL:
                 Serial.println("Parent has horizontal alignment");
-                _dimensions.bottomRight.x = _padding;
+                switch(_size)
+                {
+                    case SIZE_FULL:
+                        Serial.println("New container has full size");
+                        _dimensions.bottomRight.x = _parent->_dimensions.bottomRight.x - _dimensions.topLeft.x;
+                    break;
+                    default:
+                        Serial.println("New container has element size");
+                        _dimensions.bottomRight.x = _padding;
+                    break;
+                }
                 break;
         }
-
-        Serial.print("dimensions will be: ");
-        Serial.print(_dimensions.topLeft.x);
-        Serial.print(":");
-        Serial.print(_dimensions.topLeft.y);
-        Serial.print(":");
-        Serial.print(_dimensions.bottomRight.x);
-        Serial.print(":");
-        Serial.println(_dimensions.bottomRight.y);
-
         // setting background color
         _bgColor = _parent->_bgColor;
     }
     else
     {
-
         _dimensions                 = defaultUIDimensions;
         _dimensions.bottomRight.x   = TFT_WIDTH;
         _dimensions.bottomRight.y   = TFT_HEIGHT;
     }
+
+    Serial.print("dimensions will be: ");
+    Serial.print(_dimensions.topLeft.x);
+    Serial.print(":");
+    Serial.print(_dimensions.topLeft.y);
+    Serial.print(":");
+    Serial.print(_dimensions.bottomRight.x);
+    Serial.print(":");
+    Serial.println(_dimensions.bottomRight.y);
 }
 
 UIContainer::UIContainer(UIScreen* screen, UIESize_t size, UIEAlignment_t alignment)

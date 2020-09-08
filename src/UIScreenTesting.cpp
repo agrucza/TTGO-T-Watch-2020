@@ -17,6 +17,7 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     Serial.println("# Init UIScreenTesting #");
     Serial.println("########################");
     
+    Serial.println("Create label");
     UIElementLabel* label1 = new UIElementLabel("Test1", &FreeSansBold9pt7b, _contentContainer,ORIENTATION_LEFT);
     label1->setTextColor(FLAT_UI_V1_CLOUDS);
     _contentContainer->addUIElement(label1);
