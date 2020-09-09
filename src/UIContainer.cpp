@@ -20,7 +20,7 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
         // vertical alignment will have full width but 0 height
         // horizontal alignment will have 0 width and full height
         _dimensions.topLeft     = _parent->getNextElementPosition();
-        _dimensions.bottomRight = {0,0};
+        _dimensions.bottomRight = {_padding,_padding};
 
         Serial.print("next element position will be: ");
         Serial.print(_dimensions.topLeft.x);
@@ -206,7 +206,7 @@ void UIContainer::clean()
 
 UIPoint_t UIContainer::getNextElementPosition()
 {
-    UIPoint_t pos = {0,0};
+    UIPoint_t pos = {_padding,_padding};
 
     for(uint8_t i = 0; i<_elements.size(); i++)
     {
@@ -231,8 +231,16 @@ UIPoint_t UIContainer::getNextElementPosition()
 void UIContainer::calculateSize()
 {
     Serial.println("calculateSize()");
-    UIDimensions_t dimensions   = _dimensions;
-    _elementSize                = {0,0};
+    _elementSize = {_padding, _padding};
+    
+    Serial.print("original container dimensions are: ");
+    Serial.print(_dimensions.topLeft.x);
+    Serial.print(":");
+    Serial.println(_dimensions.topLeft.y);
+    Serial.print(":");
+    Serial.print(_dimensions.bottomRight.x);
+    Serial.print(":");
+    Serial.println(_dimensions.bottomRight.y);
 
     for(uint8_t i = 0; i < _elements.size(); i++)
     {
@@ -267,11 +275,31 @@ void UIContainer::calculateSize()
                 break;
         }
     }
+
+    switch(_alignment)
+    {
+        case ALIGNMENT_VERTICAL:
+            _elementSize.y += _padding;
+            break;
+        case ALIGNMENT_HORIZONTAL:
+        case ALIGNMENT_HORIZONTAL_FILL:
+            _elementSize.x += _padding;
+            break;
+    }
     
-    Serial.print("new container dimensions are: ");
+    Serial.print("new elementSize is: ");
     Serial.print(_elementSize.x);
     Serial.print(":");
     Serial.println(_elementSize.y);
+    
+    Serial.print("new container dimensions are: ");
+    Serial.print(_dimensions.topLeft.x);
+    Serial.print(":");
+    Serial.print(_dimensions.topLeft.y);
+    Serial.print(":");
+    Serial.print(_dimensions.bottomRight.x);
+    Serial.print(":");
+    Serial.println(_dimensions.bottomRight.y);
 }
 
 bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
@@ -409,7 +437,7 @@ void UIContainer::draw(bool task)
         }
         else if(_bgColor > 0)
         {
-            //_tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
+            _tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
         }
         
         for(uint8_t element = 0; element < _elements.size(); element++)
@@ -438,10 +466,12 @@ void UIContainer::_pushSprite()
         
         TFT_eSprite* sprite =  _parent->getSprite();
         pos     =  _dimensions.topLeft;
+        UIPoint_t posAbs = getTopPosition();
         pos.x   -= _parent->getSpritePos().x;
         pos.y   -= _parent->getSpritePos().y;
-        //target->fillScreen(TFT_BLACK);
         uint16_t dh = 0;
+
+        _tft->fillRect(posAbs.x, posAbs.y, _dimensions.bottomRight.x, _dimensions.bottomRight.y, _bgColor);
 
         while(dh < _sprite.height()-_spriteBottomSafety) {
             // Push to TFT 1 line at a time

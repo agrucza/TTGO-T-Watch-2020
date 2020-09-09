@@ -16,7 +16,10 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     Serial.println("########################");
     Serial.println("# Init UIScreenTesting #");
     Serial.println("########################");
-    
+    _bgColor = FLAT_UI_V1_WET_ASPHALT;
+    _menuContainer->setBackgroundColor(FLAT_UI_V1_MIDNIGHT_BLUE);
+    _contentContainer->setBackgroundColor(FLAT_UI_V1_POMEGRANATE);
+
     Serial.println("Create label");
     UIElementLabel* label1 = new UIElementLabel("Test1", &FreeSansBold9pt7b, _contentContainer,ORIENTATION_LEFT);
     label1->setTextColor(FLAT_UI_V1_CLOUDS);
@@ -49,9 +52,8 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     
     Serial.println("Creating buttonContainer");
     UIContainer* buttonContainer = new UIContainer(_contentContainer, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL_FILL);
-    
+    buttonContainer->setBackgroundColor(FLAT_UI_V1_ORANGE);
     _contentContainer->addUIElement(buttonContainer);
-    buttonContainer->setBackgroundColor(FLAT_UI_V1_MIDNIGHT_BLUE);
 
     Serial.println("Create horizontal buttons");
     UIElementButton* button1 = new UIElementButton("click me", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
@@ -74,7 +76,7 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     buttonContainer->addUIElement(button4);
 
     Serial.println("Create vertical buttons");
-    UIElementButton* button5 = new UIElementButton("click me", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
+    UIElementButton* button5 = new UIElementButton("click me", &FreeSansBold9pt7b, _contentContainer, SIZE_FULL);
     _contentContainer->addUIElement(button5);
     
     UIElementButton* button6 = new UIElementButton("click me 2", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);

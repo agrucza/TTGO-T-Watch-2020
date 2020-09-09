@@ -26,9 +26,10 @@ void UIElementButton::_setDimensions()
     switch(_size)
     {
         case SIZE_ELEMENT:
-            _dimensions.bottomRight.x = _tft->textWidth(_label) + _padding*2;
+            _dimensions.bottomRight.x = _tft->textWidth(_label) + 2*_padding;
         break;
-        case SIZE_FULL:
+        default:
+            _dimensions.bottomRight.x = _parent->_dimensions.bottomRight.x - 2*_parent->getPadding();
         break;
     }
 }
