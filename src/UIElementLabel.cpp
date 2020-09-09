@@ -18,12 +18,11 @@ void UIElementLabel::_setDimensions()
 {
     _tft->setFreeFont(_font);
 
-    _dimensions                 = _parent->getDimensions();
-    _dimensions.topLeft.x       += _parent->getPadding();
-    _dimensions.topLeft.y       += _parent->getPadding();
+    _dimensions                 = defaultUIDimensions;
+    _dimensions.topLeft         = _parent->getNextElementPosition();
     _dimensions.bottomRight.y   = _tft->fontHeight() + (_showLine?_lineHeight:0);
     _dimensions.bottomRight.x   = _tft->textWidth(_label);
-    
+
     switch(_orientation)
     {
         case ORIENTATION_CENTER:

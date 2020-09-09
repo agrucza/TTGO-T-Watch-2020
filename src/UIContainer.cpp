@@ -27,23 +27,64 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
         Serial.print(":");
         Serial.println(_dimensions.topLeft.y);
 
-        switch(_size)
+        Serial.println("Parent has horizontal alignment");
+        Serial.print("Parent w/h: ");
+        Serial.print(_parent->_dimensions.bottomRight.x);
+        Serial.print(":");
+        Serial.println(_parent->_dimensions.bottomRight.y);
+
+        switch(_parent->_alignment)
         {
-            case SIZE_FULL:
-                Serial.println("New container has full size");
-                Serial.print("Parent width: ");
-                Serial.println(_parent->_dimensions.bottomRight.x);
-                _dimensions.bottomRight.x = _parent->_dimensions.bottomRight.x - _dimensions.topLeft.x;
-            break;
-            default:
-                Serial.println("New container has element size");
-                _dimensions.bottomRight.x = _padding;
-                if(_elements.size()>0)
+            case ALIGNMENT_HORIZONTAL:
+                switch(_size)
                 {
-                    calculateSize();
+                    case SIZE_ELEMENT:
+                        Serial.println("New container has element size");
+                        _dimensions.bottomRight.x = _padding;
+                        if(_elements.size()>0)
+                        {
+                            calculateSize();
+                        }
+                        break;
+                    case SIZE_FULL:
+                    case SIZE_MAX:
+                        Serial.println("New container has full size");
+                        _dimensions.bottomRight.x =  _parent->_dimensions.bottomRight.x;
+                        _dimensions.bottomRight.x -= 2*_parent->getPadding();
+                        _dimensions.bottomRight.x -= _dimensions.topLeft.x;
+                        break;
+                    
                 }
-            break;
+                _dimensions.bottomRight.y =  _parent->_dimensions.bottomRight.y;
+                _dimensions.bottomRight.y -= 2*_parent->getPadding();
+                _dimensions.bottomRight.y -= _dimensions.topLeft.y;
+                break;
+            case ALIGNMENT_VERTICAL:
+                switch(_size)
+                {
+                    case SIZE_ELEMENT:
+                        Serial.println("New container has element size");
+                        _dimensions.bottomRight.y = _padding;
+                        if(_elements.size()>0)
+                        {
+                            calculateSize();
+                        }
+                        break;
+                    case SIZE_FULL:
+                    case SIZE_MAX:
+                        Serial.println("New container has full size");
+                        _dimensions.bottomRight.y =  _parent->_dimensions.bottomRight.y;
+                        _dimensions.bottomRight.y -= 2*_parent->getPadding();
+                        _dimensions.bottomRight.y -= _dimensions.topLeft.y;
+                        break;
+                    
+                }
+                _dimensions.bottomRight.x =  _parent->_dimensions.bottomRight.x;
+                _dimensions.bottomRight.x -= 2*_parent->getPadding();
+                _dimensions.bottomRight.x -= _dimensions.topLeft.x;
+                break;
         }
+
         // setting background color
         _bgColor = _parent->_bgColor;
     }
@@ -79,11 +120,20 @@ void UIContainer::addUIElement(UIElement* element)
 {
     UIDimensions_t dimensions       = element->getDimensions();
     dimensions.topLeft              = getNextElementPosition();
+    
+    Serial.print("container dimensions are: ");
+    Serial.print(_dimensions.topLeft.x);
+    Serial.print(":");
+    Serial.print(_dimensions.topLeft.y);
+    Serial.print(":");
+    Serial.print(_dimensions.bottomRight.x);
+    Serial.print(":");
+    Serial.println(_dimensions.bottomRight.y);
 
     Serial.print("Next element position: ");
     Serial.print(dimensions.topLeft.x);
     Serial.print(":");
-    Serial.print(dimensions.topLeft.y);
+    Serial.println(dimensions.topLeft.y);
 
     Serial.print("Elements dimensions will be: ");
     Serial.print(dimensions.topLeft.x);
@@ -180,22 +230,48 @@ UIPoint_t UIContainer::getNextElementPosition()
 
 void UIContainer::calculateSize()
 {
-    UIDimensions_t dimensions = _dimensions;
+    Serial.println("calculateSize()");
+    UIDimensions_t dimensions   = _dimensions;
+    _elementSize                = {0,0};
+
     for(uint8_t i = 0; i < _elements.size(); i++)
     {
         switch(_alignment)
         {
             case ALIGNMENT_VERTICAL:
-                dimensions.bottomRight.y += _padding + _elements[i]->getDimensions().bottomRight.y;
-                dimensions.bottomRight.x =  _parent->_dimensions.bottomRight.x - _dimensions.topLeft.x;
+                Serial.println("container has vertical align");
+                if(_elementSize.x < _elements[i]->getDimensions().bottomRight.x + 2*_padding)
+                {
+                    _elementSize.x              =  _elements[i]->getDimensions().bottomRight.x;
+                    _elementSize.x              += 2*_padding;
+                }
+                if(_dimensions.bottomRight.x < _elementSize.x)
+                {
+                    _dimensions.bottomRight.x   =  _elementSize.x;
+                }
+                _elementSize.y += _padding + _elements[i]->getDimensions().bottomRight.y;
                 break;
             case ALIGNMENT_HORIZONTAL:
             case ALIGNMENT_HORIZONTAL_FILL:
-                dimensions.bottomRight.x += _padding + _elements[i]->getDimensions().bottomRight.x;
-                dimensions.bottomRight.y += _padding + _elements[i]->getDimensions().bottomRight.y;
+                Serial.println("container has horizontal align");
+                if(_elementSize.y < _elements[i]->getDimensions().bottomRight.y + 2*_padding)
+                {
+                    _elementSize.y              =  _elements[i]->getDimensions().bottomRight.y;
+                    _elementSize.y              += 2*_padding;
+                }
+                if(_dimensions.bottomRight.y < _elementSize.y)
+                {
+                    _dimensions.bottomRight.y   =  _elementSize.y;
+                }
+                _elementSize.x += _padding + _elements[i]->getDimensions().bottomRight.x;
                 break;
         }
     }
+    
+    Serial.print("new container dimensions are: ");
+    Serial.print(_elementSize.x);
+    Serial.print(":");
+    Serial.println(_elementSize.y);
 }
 
 bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
@@ -333,7 +409,7 @@ void UIContainer::draw(bool task)
         }
         else if(_bgColor > 0)
         {
-            _tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
+            //_tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
         }
         
         for(uint8_t element = 0; element < _elements.size(); element++)

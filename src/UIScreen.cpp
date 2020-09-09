@@ -31,6 +31,15 @@ UIScreen::UIScreen(String label, bool showHeader)
     _screenContainer->addUIElement(_menuContainer);
     _menuContainer->setPadding(0);
 
+    Serial.print("MenuContainer dim: ");
+    Serial.print(_menuContainer->_dimensions.topLeft.x);
+    Serial.print(":");
+    Serial.print(_menuContainer->_dimensions.topLeft.y);
+    Serial.print(":");
+    Serial.print(_menuContainer->_dimensions.bottomRight.x);
+    Serial.print(":");
+    Serial.println(_menuContainer->_dimensions.bottomRight.y);
+
     Serial.println("Adding label to menuContainer");
     UIElementLabel* labelMenu1 = new UIElementLabel(UIICON_SUP_WRENCH, &IconsFontsSup18pt7b, _menuContainer);
     _menuContainer->addUIElement(labelMenu1);
@@ -46,6 +55,15 @@ UIScreen::UIScreen(String label, bool showHeader)
         _screenContainer->addUIElement(labelHead);
     }
     */
+
+    Serial.print("MenuContainer dim: ");
+    Serial.print(_menuContainer->_dimensions.topLeft.x);
+    Serial.print(":");
+    Serial.print(_menuContainer->_dimensions.topLeft.y);
+    Serial.print(":");
+    Serial.print(_menuContainer->_dimensions.bottomRight.x);
+    Serial.print(":");
+    Serial.println(_menuContainer->_dimensions.bottomRight.y);
     
     Serial.println("Creating contentContainer");
     _contentContainer = new UIContainer(_screenContainer, SIZE_FULL);
