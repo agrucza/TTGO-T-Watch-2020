@@ -15,10 +15,6 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
     
     if(_parent)
     {
-        // the parents dimensions plus padding will be the bounds of the new container
-        // depending on the parents alignment we will set the width and height
-        // vertical alignment will have full width but 0 height
-        // horizontal alignment will have 0 width and full height
         _dimensions.topLeft     = _parent->getNextElementPosition();
         _dimensions.bottomRight = {_padding,_padding};
 
@@ -27,7 +23,6 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
         Serial.print(":");
         Serial.println(_dimensions.topLeft.y);
 
-        Serial.println("Parent has horizontal alignment");
         Serial.print("Parent w/h: ");
         Serial.print(_parent->_dimensions.bottomRight.x);
         Serial.print(":");
@@ -47,7 +42,6 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
                         }
                         break;
                     case SIZE_FULL:
-                    case SIZE_MAX:
                         Serial.println("New container has full size");
                         _dimensions.bottomRight.x =  _parent->_dimensions.bottomRight.x;
                         _dimensions.bottomRight.x -= 2*_parent->getPadding();
@@ -57,7 +51,6 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
                 }
                 _dimensions.bottomRight.y =  _parent->_dimensions.bottomRight.y;
                 _dimensions.bottomRight.y -= 2*_parent->getPadding();
-                _dimensions.bottomRight.y -= _dimensions.topLeft.y;
                 break;
             case ALIGNMENT_VERTICAL:
                 switch(_size)
@@ -71,7 +64,6 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
                         }
                         break;
                     case SIZE_FULL:
-                    case SIZE_MAX:
                         Serial.println("New container has full size");
                         _dimensions.bottomRight.y =  _parent->_dimensions.bottomRight.y;
                         _dimensions.bottomRight.y -= 2*_parent->getPadding();
@@ -81,7 +73,6 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
                 }
                 _dimensions.bottomRight.x =  _parent->_dimensions.bottomRight.x;
                 _dimensions.bottomRight.x -= 2*_parent->getPadding();
-                _dimensions.bottomRight.x -= _dimensions.topLeft.x;
                 break;
         }
 
@@ -275,7 +266,7 @@ void UIContainer::calculateSize()
                 break;
         }
     }
-
+    
     switch(_alignment)
     {
         case ALIGNMENT_VERTICAL:
@@ -426,7 +417,7 @@ void UIContainer::draw(bool task)
             if(!_sprite.created())
             {
                 // no sprite - creating
-                // we will add a safety buffer 
+                // we will add a safety buffer
                 _spriteData = (uint16_t*)_sprite.createSprite(
                     _dimensions.bottomRight.x - 2*_padding,
                     _dimensions.bottomRight.y - 2*_padding + _spriteBottomSafety
@@ -463,16 +454,14 @@ void UIContainer::_pushSprite()
 
     if(_parent->getSprite()->created())
     {
-        
         TFT_eSprite* sprite =  _parent->getSprite();
+
         pos     =  _dimensions.topLeft;
-        UIPoint_t posAbs = getTopPosition();
         pos.x   -= _parent->getSpritePos().x;
         pos.y   -= _parent->getSpritePos().y;
+
         uint16_t dh = 0;
-
-        _tft->fillRect(posAbs.x, posAbs.y, _dimensions.bottomRight.x, _dimensions.bottomRight.y, _bgColor);
-
+        
         while(dh < _sprite.height()-_spriteBottomSafety) {
             // Push to TFT 1 line at a time
             sprite->pushImage(pos.x, pos.y + dh, _sprite.width(), 1, _spriteData + (dh * _sprite.width()));
@@ -482,11 +471,18 @@ void UIContainer::_pushSprite()
     }
     else
     {
-        TFT_eSprite* sprite = getSprite();
         pos = getTopPosition();
         pos.x += _padding;
         pos.y += _padding;
-        sprite->pushSprite(pos.x, pos.y,TFT_GREENYELLOW);
+
+        uint16_t dh = 0;
+        
+        while(dh < _sprite.height()-_spriteBottomSafety) {
+            // Push to TFT 1 line at a time
+            _tft->pushImage(pos.x, pos.y + dh, _sprite.width(), 1, _spriteData + (dh * _sprite.width()));
+            dh++;
+            yield();
+        }
     }
 }
 
