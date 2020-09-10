@@ -409,6 +409,7 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
 
 void UIContainer::draw(bool task)
 {
+    UIPoint_t absPos = getTopPosition();
     if(!task)
     {
         // check if sprite is used
@@ -426,9 +427,19 @@ void UIContainer::draw(bool task)
             }
             _sprite.fillScreen((_bgColor>0?_bgColor:TFT_GREENYELLOW));
         }
-        else if(_bgColor > 0)
+        else if(
+            _bgColor > 0
+            && (
+                (_parent && (_bgColor != _parent->_bgColor))
+                || (_screen && (_bgColor != _screen->_bgColor))
+            )
+        )
         {
-            //_tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
+            Serial.print("Background: ");
+            Serial.print(_bgColor);
+            Serial.print(":");
+            Serial.println((_parent?_parent->_bgColor:_screen->_bgColor));
+            _tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
         }
         
         for(uint8_t element = 0; element < _elements.size(); element++)

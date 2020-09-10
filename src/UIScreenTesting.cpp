@@ -18,7 +18,6 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     Serial.println("########################");
     _bgColor = FLAT_UI_V1_WET_ASPHALT;
     _menuContainer->setBackgroundColor(FLAT_UI_V1_MIDNIGHT_BLUE);
-    _contentContainer->setBackgroundColor(FLAT_UI_V1_POMEGRANATE);
 
     Serial.println("Create label");
     UIElementLabel* label1 = new UIElementLabel("Test1", &FreeSansBold9pt7b, _contentContainer,ORIENTATION_LEFT);
@@ -52,7 +51,6 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     
     Serial.println("Creating buttonContainer");
     UIContainer* buttonContainer = new UIContainer(_contentContainer, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL_FILL);
-    buttonContainer->setBackgroundColor(FLAT_UI_V1_ORANGE);
     _contentContainer->addUIElement(buttonContainer);
 
     Serial.println("Create horizontal buttons");

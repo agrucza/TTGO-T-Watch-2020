@@ -27,7 +27,7 @@ class UIScreen{
         String          _label;
         bool            _showHeader         = true;
         uint16_t        _textColor          = FLAT_UI_V1_CLOUDS;
-        uint16_t        _bgColor            = FLAT_UI_V1_MIDNIGHT_BLUE;
+        uint16_t        _bgColor            = FLAT_UI_V1_WET_ASPHALT;
         uint16_t        _iconColor          = FLAT_UI_V1_PETER_RIVER;
         uint8_t         _iconSizeX          = 1;
         uint8_t         _iconSizeY          = 1;

@@ -23,6 +23,8 @@ UIScreen::UIScreen(String label, bool showHeader)
     Serial.println("Creating screenContainer");
     _screenContainer = new UIContainer(this, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL);
     _screenContainer->setPadding(0);
+    //create a screen sprite
+    TFT_eSprite* sprite = _screenContainer->getSprite();
 
     Serial.println("Creating menuContainer");
     _menuContainer = new UIContainer(_screenContainer);
