@@ -222,7 +222,7 @@ UIPoint_t UIContainer::getNextElementPosition()
 void UIContainer::calculateSize()
 {
     Serial.println("calculateSize()");
-    _elementSize = {_padding, _padding};
+    _elementSize = {0,0};
     
     Serial.print("original container dimensions are: ");
     Serial.print(_dimensions.topLeft.x);
@@ -241,28 +241,30 @@ void UIContainer::calculateSize()
                 Serial.println("container has vertical align");
                 if(_elementSize.x < _elements[i]->getDimensions().bottomRight.x + 2*_padding)
                 {
-                    _elementSize.x              =  _elements[i]->getDimensions().bottomRight.x;
-                    _elementSize.x              += 2*_padding;
+                    _elementSize.x              =  2*_padding;
+                    _elementSize.x              += _elements[i]->getDimensions().bottomRight.x;
                 }
                 if(_dimensions.bottomRight.x < _elementSize.x)
                 {
                     _dimensions.bottomRight.x   =  _elementSize.x;
                 }
-                _elementSize.y += _padding + _elements[i]->getDimensions().bottomRight.y;
+                _elementSize.y += _padding;
+                _elementSize.y += _elements[i]->getDimensions().bottomRight.y;
                 break;
             case ALIGNMENT_HORIZONTAL:
             case ALIGNMENT_HORIZONTAL_FILL:
                 Serial.println("container has horizontal align");
                 if(_elementSize.y < _elements[i]->getDimensions().bottomRight.y + 2*_padding)
                 {
-                    _elementSize.y              =  _elements[i]->getDimensions().bottomRight.y;
-                    _elementSize.y              += 2*_padding;
+                    _elementSize.y              =  2*_padding;
+                    _elementSize.y              += _elements[i]->getDimensions().bottomRight.y;
                 }
                 if(_dimensions.bottomRight.y < _elementSize.y)
                 {
                     _dimensions.bottomRight.y   =  _elementSize.y;
                 }
-                _elementSize.x += _padding + _elements[i]->getDimensions().bottomRight.x;
+                _elementSize.x +=  _padding;
+                _elementSize.x += _elements[i]->getDimensions().bottomRight.x;
                 break;
         }
     }
@@ -300,8 +302,8 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
     if(_sprite.created())
     {
         // setting up max sprite scrolling
-        _spritePosMax.x = _elementSize.x - _dimensions.bottomRight.x;
-        _spritePosMax.y = _elementSize.y - _dimensions.bottomRight.y;
+        _spritePosMax.x = (_elementSize.x - 2*_padding) - _sprite.width();
+        _spritePosMax.y = (_elementSize.y - 2*_padding) - _sprite.height() + _spriteBottomSafety;
 
         // check for swipe gestures - those will only be for containers by now
         // (and maybe special elements in the future)
@@ -407,8 +409,6 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
 
 void UIContainer::draw(bool task)
 {
-    UIPoint_t absPos = getTopPosition();
-
     if(!task)
     {
         // check if sprite is used
@@ -428,7 +428,7 @@ void UIContainer::draw(bool task)
         }
         else if(_bgColor > 0)
         {
-            _tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
+            //_tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
         }
         
         for(uint8_t element = 0; element < _elements.size(); element++)
