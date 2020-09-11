@@ -18,23 +18,12 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
         _dimensions.topLeft     = _parent->getNextElementPosition();
         _dimensions.bottomRight = {_padding,_padding};
 
-        Serial.print("next element position will be: ");
-        Serial.print(_dimensions.topLeft.x);
-        Serial.print(":");
-        Serial.println(_dimensions.topLeft.y);
-
-        Serial.print("Parent w/h: ");
-        Serial.print(_parent->_dimensions.bottomRight.x);
-        Serial.print(":");
-        Serial.println(_parent->_dimensions.bottomRight.y);
-
         switch(_parent->_alignment)
         {
             case ALIGNMENT_HORIZONTAL:
                 switch(_size)
                 {
                     case SIZE_ELEMENT:
-                        Serial.println("New container has element size");
                         _dimensions.bottomRight.x = _padding;
                         if(_elements.size()>0)
                         {
@@ -42,7 +31,6 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
                         }
                         break;
                     case SIZE_FULL:
-                        Serial.println("New container has full size");
                         _dimensions.bottomRight.x =  _parent->_dimensions.bottomRight.x;
                         _dimensions.bottomRight.x -= 2*_parent->getPadding();
                         _dimensions.bottomRight.x -= _dimensions.topLeft.x;
@@ -56,7 +44,6 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
                 switch(_size)
                 {
                     case SIZE_ELEMENT:
-                        Serial.println("New container has element size");
                         _dimensions.bottomRight.y = _padding;
                         if(_elements.size()>0)
                         {
@@ -64,7 +51,6 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
                         }
                         break;
                     case SIZE_FULL:
-                        Serial.println("New container has full size");
                         _dimensions.bottomRight.y =  _parent->_dimensions.bottomRight.y;
                         _dimensions.bottomRight.y -= 2*_parent->getPadding();
                         _dimensions.bottomRight.y -= _dimensions.topLeft.y;
@@ -85,15 +71,6 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
         _dimensions.bottomRight.x   = TFT_WIDTH;
         _dimensions.bottomRight.y   = TFT_HEIGHT;
     }
-
-    Serial.print("dimensions will be: ");
-    Serial.print(_dimensions.topLeft.x);
-    Serial.print(":");
-    Serial.print(_dimensions.topLeft.y);
-    Serial.print(":");
-    Serial.print(_dimensions.bottomRight.x);
-    Serial.print(":");
-    Serial.println(_dimensions.bottomRight.y);
 }
 
 UIContainer::UIContainer(UIScreen* screen, UIESize_t size, UIEAlignment_t alignment)
@@ -111,29 +88,6 @@ void UIContainer::addUIElement(UIElement* element)
 {
     UIDimensions_t dimensions       = element->getDimensions();
     dimensions.topLeft              = getNextElementPosition();
-    
-    Serial.print("container dimensions are: ");
-    Serial.print(_dimensions.topLeft.x);
-    Serial.print(":");
-    Serial.print(_dimensions.topLeft.y);
-    Serial.print(":");
-    Serial.print(_dimensions.bottomRight.x);
-    Serial.print(":");
-    Serial.println(_dimensions.bottomRight.y);
-
-    Serial.print("Next element position: ");
-    Serial.print(dimensions.topLeft.x);
-    Serial.print(":");
-    Serial.println(dimensions.topLeft.y);
-
-    Serial.print("Elements dimensions will be: ");
-    Serial.print(dimensions.topLeft.x);
-    Serial.print(":");
-    Serial.print(dimensions.topLeft.y);
-    Serial.print(":");
-    Serial.print(dimensions.bottomRight.x);
-    Serial.print(":");
-    Serial.println(dimensions.bottomRight.y);
 
     element->setDimensions(dimensions);
     _elements.push_back(element);
@@ -221,24 +175,13 @@ UIPoint_t UIContainer::getNextElementPosition()
 
 void UIContainer::calculateSize()
 {
-    Serial.println("calculateSize()");
     _elementSize = {0,0};
-    
-    Serial.print("original container dimensions are: ");
-    Serial.print(_dimensions.topLeft.x);
-    Serial.print(":");
-    Serial.println(_dimensions.topLeft.y);
-    Serial.print(":");
-    Serial.print(_dimensions.bottomRight.x);
-    Serial.print(":");
-    Serial.println(_dimensions.bottomRight.y);
 
     for(uint8_t i = 0; i < _elements.size(); i++)
     {
         switch(_alignment)
         {
             case ALIGNMENT_VERTICAL:
-                Serial.println("container has vertical align");
                 if(_elementSize.x < _elements[i]->getDimensions().bottomRight.x + 2*_padding)
                 {
                     _elementSize.x              =  2*_padding;
@@ -253,7 +196,6 @@ void UIContainer::calculateSize()
                 break;
             case ALIGNMENT_HORIZONTAL:
             case ALIGNMENT_HORIZONTAL_FILL:
-                Serial.println("container has horizontal align");
                 if(_elementSize.y < _elements[i]->getDimensions().bottomRight.y + 2*_padding)
                 {
                     _elementSize.y              =  2*_padding;
@@ -279,20 +221,6 @@ void UIContainer::calculateSize()
             _elementSize.x += _padding;
             break;
     }
-    
-    Serial.print("new elementSize is: ");
-    Serial.print(_elementSize.x);
-    Serial.print(":");
-    Serial.println(_elementSize.y);
-    
-    Serial.print("new container dimensions are: ");
-    Serial.print(_dimensions.topLeft.x);
-    Serial.print(":");
-    Serial.print(_dimensions.topLeft.y);
-    Serial.print(":");
-    Serial.print(_dimensions.bottomRight.x);
-    Serial.print(":");
-    Serial.println(_dimensions.bottomRight.y);
 }
 
 bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
@@ -413,7 +341,7 @@ void UIContainer::draw(bool task)
     if(!task)
     {
         // check if sprite is used
-        if((_dimensions.bottomRight.x < _elementSize.x) || (_dimensions.bottomRight.y < _elementSize.y))
+        if(_parent)
         {
             if(!_sprite.created())
             {
@@ -427,18 +355,8 @@ void UIContainer::draw(bool task)
             }
             _sprite.fillScreen((_bgColor>0?_bgColor:TFT_GREENYELLOW));
         }
-        else if(
-            _bgColor > 0
-            && (
-                (_parent && (_bgColor != _parent->_bgColor))
-                || (_screen && (_bgColor != _screen->_bgColor))
-            )
-        )
+        else if(_screen && _bgColor > 0 &&(_bgColor != _screen->_bgColor))
         {
-            Serial.print("Background: ");
-            Serial.print(_bgColor);
-            Serial.print(":");
-            Serial.println((_parent?_parent->_bgColor:_screen->_bgColor));
             _tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
         }
         
@@ -447,9 +365,6 @@ void UIContainer::draw(bool task)
             _elements[element]->draw(task);
             yield();
         }
-
-        // if a sprite has been created we need to draw this on screen
-        // unless our parent also has a sprite -> we need to draw this onto this sprite then
 
         // first: draw sprite to screen
         if(_sprite.created())
@@ -470,6 +385,18 @@ void UIContainer::_pushSprite()
         pos     =  _dimensions.topLeft;
         pos.x   -= _parent->getSpritePos().x;
         pos.y   -= _parent->getSpritePos().y;
+
+        // background
+        if(_padding > 0)
+        {
+            sprite->fillRect(
+                pos.x - _padding,
+                pos.y - _padding,
+                _dimensions.bottomRight.x,
+                _dimensions.bottomRight.y,
+                _bgColor
+            );
+        }
 
         uint16_t dh = 0;
         
