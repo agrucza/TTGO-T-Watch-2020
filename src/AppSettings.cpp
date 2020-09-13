@@ -1,15 +1,15 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-#include "UIScreenSettings.h"
+#include "AppSettings.h"
 
 #include "GUI.h"
 #include "UIIcons.h"
 #include "fonts/IconsFontsSup24pt7b.h"
 
-UIScreenSettings::UIScreenSettings():UIScreen("Settings"){}
+AppSettings::AppSettings():App("Settings"){}
 
-void UIScreenSettings::draw(bool init, bool task)
+void AppSettings::draw(bool init, bool task)
 {
     if(!task)
     {
@@ -21,7 +21,7 @@ void UIScreenSettings::draw(bool init, bool task)
     _tft->setTextColor(_textColor);
 }
 
-void UIScreenSettings::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
+void AppSettings::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
     // icon background
     _tft->fillRect(x,y,w,h, _iconColor);
@@ -35,7 +35,7 @@ void UIScreenSettings::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
     );
 }
 
-void UIScreenSettings::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
+void AppSettings::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
     switch(touchType)
     {

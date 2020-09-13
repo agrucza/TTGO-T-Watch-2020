@@ -5,20 +5,20 @@
     @version 0.1 7/26/2020
 */
 
-#ifndef __UISCREENSETTINGS_H
-#define __UISCREENSETTINGS_H
+#ifndef __AppSETTINGS_H
+#define __AppSETTINGS_H
 
 #include <Arduino.h>
 
-#include "UIScreen.h"
+#include "App.h"
 #include "TouchMetrics.h"
 
 class GUI;
 class TFT_esPI;
 
-class UIScreenSettings : public UIScreen{
+class AppSettings : public App{
     public:
-        UIScreenSettings();
+        AppSettings();
         void    draw(bool init = false, bool task = false);
         void    drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
         void    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
@@ -26,4 +26,4 @@ class UIScreenSettings : public UIScreen{
         void    backgroundTaskHandler(){};
 };
 
-#endif /*__UISCREENSETTINGS_H */
+#endif /*__AppSETTINGS_H */

@@ -5,20 +5,20 @@
     @version 0.1 7/26/2020
 */
 
-#ifndef __UISCREENSTARTUP_H
-#define __UISCREENSTARTUP_H
+#ifndef __AppSTARTUP_H
+#define __AppSTARTUP_H
 
 #include <Arduino.h>
 
-#include "UIScreen.h"
+#include "App.h"
 #include "TouchMetrics.h"
 
 class GUI;
 class TFT_esPI;
 
-class UIScreenStartup : public UIScreen{
+class AppStartup : public App{
     public:
-        UIScreenStartup();
+        AppStartup();
         void    draw(bool init = false, bool task = false);
         uint8_t getIconSizeX(){return _iconSizeX;};
         uint8_t getIconSizeY(){return _iconSizeY;};
@@ -28,4 +28,4 @@ class UIScreenStartup : public UIScreen{
         void    backgroundTaskHandler(){};
 };
 
-#endif /*__UISCREENSTARTUP_H */
+#endif /*__AppSTARTUP_H */

@@ -79,6 +79,6 @@ bool UIElement::isDrawable()
 void UIElement::setEventData(ui_event_data_t* data)
 {
     _eventData.event    = data->event;
-    _eventData.screen   = data->screen;
+    _eventData.app      = data->app;
     _eventData.source   = data->source;
 }

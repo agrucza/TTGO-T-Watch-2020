@@ -5,18 +5,18 @@
     @version 0.1 7/26/2020
 */
 
-#ifndef __UISCREENSTANDBY_H
-#define __UISCREENSTANDBY_H
+#ifndef __AppSTANDBY_H
+#define __AppSTANDBY_H
 
 #include <Arduino.h>
 
-#include "UIScreen.h"
+#include "App.h"
 #include "TouchMetrics.h"
 
 class GUI;
 class TFT_esPI;
 
-class UIScreenStandby: public UIScreen{
+class AppStandby: public App{
     time_t      _currentTime;
     struct tm   _timeInfo;
     uint8_t     _iconSizeX;
@@ -27,7 +27,7 @@ class UIScreenStandby: public UIScreen{
 
     void _fillArc(int x, int y, int start_angle, int seg_count, int rx, int ry, int w, unsigned int colour);
     public:
-        UIScreenStandby();
+        AppStandby();
         void    draw(bool init = false, bool task = false);
         void    drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
         void    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
@@ -35,4 +35,4 @@ class UIScreenStandby: public UIScreen{
         void    backgroundTaskHandler(){};
 };
 
-#endif /*__UISCREENSTANDBY_H */
+#endif /*__AppSTANDBY_H */

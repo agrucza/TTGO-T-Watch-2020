@@ -10,8 +10,6 @@
 
 #include <Arduino.h>
 
-#include "gfxfont.h"
-
 #include "UITypes.h"
 #include "UIColors.h"
 #include "UIElement.h"

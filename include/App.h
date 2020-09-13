@@ -5,8 +5,8 @@
     @version 0.1 7/24/2020
 */
 
-#ifndef __UISCREEN_H
-#define __UISCREEN_H
+#ifndef __APP_H
+#define __APP_H
 
 #include <Arduino.h>
 
@@ -18,9 +18,9 @@ class GUI;
 class TFT_eSPI;
 class UIContainer;
 
-enum screens_t : uint8_t;
+enum apps_t : uint8_t;
 
-class UIScreen{
+class App{
     public:
         GUI*            _gui;
         TFT_eSPI*       _tft;
@@ -32,11 +32,11 @@ class UIScreen{
         uint8_t         _iconSizeX          = 1;
         uint8_t         _iconSizeY          = 1;
         uint8_t         _padding            = 5;
-        UIContainer*    _screenContainer    = nullptr;
+        UIContainer*    _appContainer    = nullptr;
         UIContainer*    _menuContainer      = nullptr;
         UIContainer*    _contentContainer   = nullptr;
 
-        UIScreen(String label, bool showHeader = true);
+        App(String label, bool showHeader = true);
         uint8_t         getIconSizeX(){return _iconSizeX;};
         uint8_t         getIconSizeY(){return _iconSizeY;};
         String          getLabel(){return _label;};
@@ -50,4 +50,4 @@ class UIScreen{
         virtual void    backgroundTaskHandler() = 0;
 };
 
-#endif /*__UISCREEN_H */
+#endif /*__APP_H */

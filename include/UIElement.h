@@ -10,12 +10,12 @@
 
 #include <Arduino.h>
 
-#include "gfxfont.h"
+#include "libraries\Adafruit-GFX-Library\gfxfont.h"
 
 #include "UITypes.h"
 #include "TouchMetrics.h"
 #include "UIColors.h"
-#include "UIScreen.h"
+#include "App.h"
 
 class TFT_eSPI;
 class TFT_eSprite;
@@ -23,8 +23,8 @@ class TFT_eSprite;
 class UIElement{
     public:
         TFT_eSPI*           _tft;
-        UIScreen*           _screen     = nullptr;
-        UIContainer*        _parent     = nullptr;
+        App*                _app    = nullptr;
+        UIContainer*        _parent = nullptr;
         
         const GFXfont*      _font;
         uint16_t            _textColor;

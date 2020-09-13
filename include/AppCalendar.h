@@ -5,18 +5,18 @@
     @version 0.1 7/26/2020
 */
 
-#ifndef __UISCREENCALENDAR_H
-#define __UISCREENCALENDAR_H
+#ifndef __AppCALENDAR_H
+#define __AppCALENDAR_H
 
 #include <Arduino.h>
 
-#include "UIScreen.h"
+#include "App.h"
 #include "TouchMetrics.h"
 
 class GUI;
 class TFT_esPI;
 
-class UIScreenCalendar : public UIScreen{
+class AppCalendar : public App{
     uint16_t    _weekDayColor, _weekEndColor, _todayColor, _highlightDayColor;
     time_t      _currentTime, _displayTime;
     struct tm   _timeInfo, _displayTimeInfo;
@@ -35,7 +35,7 @@ class UIScreenCalendar : public UIScreen{
     uint8_t     _todayLabelHeight;
 
     public:
-        UIScreenCalendar();
+        AppCalendar();
         void    draw(bool init = false, bool task = false);
         void    drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
         void    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
@@ -43,4 +43,4 @@ class UIScreenCalendar : public UIScreen{
         void    backgroundTaskHandler(){};
 };
 
-#endif /*__UISCREENCALENDAR_H */
+#endif /*__AppCALENDAR_H */

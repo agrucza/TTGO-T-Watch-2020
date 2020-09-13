@@ -31,6 +31,9 @@ void UIElementLabel::_setDimensions()
         case ORIENTATION_RIGHT:
             _dimensions.topLeft.x += _parent->getDimensions().bottomRight.x +_parent->getPadding() - _dimensions.bottomRight.x;
             break;
+        case ORIENTATION_LEFT:
+        default:
+            break;
     }
 }
 

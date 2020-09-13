@@ -9,7 +9,7 @@
 #define __GUI_H
 
 #include "TouchMetrics.h"
-#include "UIScreen.h"
+#include "App.h"
 #include "UITypes.h"
 
 typedef enum {
@@ -22,15 +22,15 @@ typedef enum {
     ICON_CALCULATION
 } icon_battery_t;
 
-enum screens_t : uint8_t {
-    SCREEN_NONE,
-    SCREEN_STARTUP,
-    SCREEN_STANDBY,
-    SCREEN_MAIN,
-    SCREEN_TESTING,
-    SCREEN_CALENDAR,
-    SCREEN_SETTINGS,
-    SCREEN_COUNT
+enum apps_t : uint8_t {
+    APP_NONE,
+    APP_STARTUP,
+    APP_STANDBY,
+    APP_MAIN,
+    APP_TESTING,
+    APP_CALENDAR,
+    APP_SETTINGS,
+    APP_COUNT
 };
 
 class TTGOClass;
@@ -55,9 +55,9 @@ class GUI {
     static TouchMetrics*     _touch;
     static debug_t          _debug;
     static unsigned long    _lastActionTime;
-    static UIScreen*        _screens[SCREEN_COUNT];
-    static screens_t        _lastScreen;
-    static screens_t        _activeScreen;
+    static App*             _apps[APP_COUNT];
+    static apps_t           _lastApp;
+    static apps_t           _activeApp;
     static icon_battery_t   _batteryIcon;
     static int              _batteryLevel;
 
@@ -93,13 +93,13 @@ class GUI {
         static void             wifiListAdd(const String ssid);
         static void             checkTouchScreen();
         static void             debugOutput(const String str);
-        static void             setScreen(screens_t screen, bool init = false, bool task = false);
-        static screens_t        getLastScreen(){return _lastScreen;};
-        static screens_t        getActiveScreen(){return _activeScreen;};
-        static uint8_t          getUIScreenIconWidth(screens_t screen) { return _screens[screen]->getIconSizeX();};
-        static uint8_t          getUIScreenIconHeight(screens_t screen){ return _screens[screen]->getIconSizeY();};
-        static void             drawUIScreenIcon(screens_t screen, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
-        static String           getUIScreenLabel(screens_t screen);
+        static void             setApp(apps_t app, bool init = false, bool task = false);
+        static apps_t           getLastScreen(){return _lastApp;};
+        static apps_t           getActiveScreen(){return _activeApp;};
+        static uint8_t          getAppIconWidth(apps_t app) { return _apps[app]->getIconSizeX();};
+        static uint8_t          getAppIconHeight(apps_t app){ return _apps[app]->getIconSizeY();};
+        static void             drawAppIcon(apps_t app, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
+        static String           getAppLabel(apps_t app);
         static void             setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second);
         static void             taskHandler(void * parameters);
         static void             backgroundTaskHandler();

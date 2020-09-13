@@ -1,12 +1,12 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-#include "UIScreenCalendar.h"
+#include "AppCalendar.h"
 
 #include "GUI.h"
 #include "UIColors.h"
 
-UIScreenCalendar::UIScreenCalendar():UIScreen("Calendar", false)
+AppCalendar::AppCalendar():App("Calendar", false)
 {
     _weekDayColor       = FLAT_UI_V1_SILVER;
     _weekEndColor       = FLAT_UI_V1_ASBESTOS;
@@ -20,7 +20,7 @@ UIScreenCalendar::UIScreenCalendar():UIScreen("Calendar", false)
     _setDate(true);
 }
 
-void UIScreenCalendar::_setDate(bool init)
+void AppCalendar::_setDate(bool init)
 {
     time(&_currentTime);
     localtime_r(&_currentTime, &_timeInfo);
@@ -56,14 +56,14 @@ void UIScreenCalendar::_setDate(bool init)
     _displayNextEndOfMonth  = _getDaysOfNextMonth(_displayMonth, _displayYear);
 }
 
-uint8_t UIScreenCalendar::_getDayOfWeek(uint8_t d, uint8_t m, uint16_t y)  
+uint8_t AppCalendar::_getDayOfWeek(uint8_t d, uint8_t m, uint16_t y)  
 {
     static int t[] = { 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 };
     y -= m < 3;
     return ( y + y / 4 - y / 100 +  y / 400 + t[m - 1] + d) % 7;
 }
 
-uint8_t UIScreenCalendar::_getDaysOfMonth(uint8_t month, uint16_t year)
+uint8_t AppCalendar::_getDaysOfMonth(uint8_t month, uint16_t year)
 {
 	//leap year condition, if month is 2
 	if( month == 2)
@@ -88,7 +88,7 @@ uint8_t UIScreenCalendar::_getDaysOfMonth(uint8_t month, uint16_t year)
     }
 }
 
-uint8_t UIScreenCalendar::_getDaysOfPrevMonth(uint8_t month, uint16_t year)
+uint8_t AppCalendar::_getDaysOfPrevMonth(uint8_t month, uint16_t year)
 {
     if(month<=1)
     {
@@ -103,7 +103,7 @@ uint8_t UIScreenCalendar::_getDaysOfPrevMonth(uint8_t month, uint16_t year)
     return _getDaysOfMonth(month, year);
 }
 
-uint8_t UIScreenCalendar::_getDaysOfNextMonth(uint8_t month, uint16_t year)
+uint8_t AppCalendar::_getDaysOfNextMonth(uint8_t month, uint16_t year)
 {
     if(month>=12)
     {
@@ -118,7 +118,7 @@ uint8_t UIScreenCalendar::_getDaysOfNextMonth(uint8_t month, uint16_t year)
     return _getDaysOfMonth(month, year);
 }
 
-void UIScreenCalendar::draw(bool init, bool task)
+void AppCalendar::draw(bool init, bool task)
 {
     _setDate(init);
 
@@ -168,7 +168,7 @@ void UIScreenCalendar::draw(bool init, bool task)
     }
 }
 
-void UIScreenCalendar::_drawCalendar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t padding, bool numbers)
+void AppCalendar::_drawCalendar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t padding, bool numbers)
 {
     uint8_t weeks           = 6;
     uint8_t dayWidth        = (w-(padding*2)-(6))/7;
@@ -242,7 +242,7 @@ void UIScreenCalendar::_drawCalendar(uint16_t x, uint16_t y, uint16_t w, uint16_
     }
 }
 
-void UIScreenCalendar::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
+void AppCalendar::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
     char    label[20];
     uint8_t weekdayHeight       = 0;
@@ -280,7 +280,7 @@ void UIScreenCalendar::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
     );
 }
 
-void UIScreenCalendar::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
+void AppCalendar::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
     switch(touchType)
     {

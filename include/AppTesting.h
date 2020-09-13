@@ -1,24 +1,24 @@
 /**
     This is the testing screen class
-    @file UIScreenTesting.h
+    @file AppTesting.h
     @author Alexander Grucza
     @version 0.1 8/03/2020
 */
 
-#ifndef __UISCREENTESTING_H
-#define __UISCREENTESTING_H
+#ifndef __AppTESTING_H
+#define __AppTESTING_H
 
 #include <Arduino.h>
 
 #include "UITypes.h"
-#include "UIScreen.h"
+#include "App.h"
 #include "TouchMetrics.h"
 
-enum screens_t : uint8_t;
+enum apps_t : uint8_t;
 
-class UIScreenTesting : public UIScreen{
+class AppTesting : public App{
     public:
-        UIScreenTesting();
+        AppTesting();
         void    draw(bool init = false, bool task = false);
         void    drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
         void    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
@@ -26,4 +26,4 @@ class UIScreenTesting : public UIScreen{
         void    backgroundTaskHandler(){};
 };
 
-#endif /*__UISCREENTESTING_H */
+#endif /*__AppTESTING_H */

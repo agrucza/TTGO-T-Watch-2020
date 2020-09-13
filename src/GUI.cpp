@@ -9,12 +9,12 @@
 #include "LilyGoWatch.h"
 
 #include "GUI.h"
-#include "UIScreenStartup.h"
-#include "UIScreenStandby.h"
-#include "UIScreenMain.h"
-#include "UIScreenTesting.h"
-#include "UIScreenCalendar.h"
-#include "UIScreenSettings.h"
+#include "AppStartup.h"
+#include "AppStandby.h"
+#include "AppMain.h"
+#include "AppTesting.h"
+#include "AppCalendar.h"
+#include "AppSettings.h"
 
 TTGOClass*              GUI::_ttgo              = nullptr;
 TFT_eSPI*               GUI::_tft               = nullptr;
@@ -22,9 +22,9 @@ uint32_t                GUI::_stepCounter       = 0;
 TouchMetrics*           GUI::_touch;
 GUI::debug_t            GUI::_debug;
 unsigned long           GUI::_lastActionTime    = 0;
-UIScreen*               GUI::_screens[SCREEN_COUNT];
-screens_t               GUI::_lastScreen        = SCREEN_MAIN;
-screens_t               GUI::_activeScreen      = SCREEN_STANDBY;
+App*               GUI::_apps[APP_COUNT];
+apps_t               GUI::_lastApp        = APP_MAIN;
+apps_t               GUI::_activeApp      = APP_STANDBY;
 icon_battery_t          GUI::_batteryIcon       = ICON_CALCULATION;
 int                     GUI::_batteryLevel      = 0;
 
@@ -75,20 +75,20 @@ void GUI::init()
     updateBatteryLevel();
 
     // creating screens
-    _screens[SCREEN_STARTUP]    = new UIScreenStartup();
-    _screens[SCREEN_STANDBY]    = new UIScreenStandby();
-    _screens[SCREEN_TESTING]    = new UIScreenTesting();
-    _screens[SCREEN_CALENDAR]   = new UIScreenCalendar();
-    _screens[SCREEN_SETTINGS]   = new UIScreenSettings();
+    _apps[APP_STARTUP]    = new AppStartup();
+    _apps[APP_STANDBY]    = new AppStandby();
+    _apps[APP_TESTING]    = new AppTesting();
+    _apps[APP_CALENDAR]   = new AppCalendar();
+    _apps[APP_SETTINGS]   = new AppSettings();
 
     // by now main needs to be initialized after all other screens
     // otherwise there will be a fatal error when the launcher
     // tries to access other screens methods
-    _screens[SCREEN_MAIN]       = new UIScreenMain();
+    _apps[APP_MAIN]       = new AppMain();
 
     // as we init the GUI here we want to start the standby screen
-    setScreen(SCREEN_STARTUP);
-    //setScreen(SCREEN_TESTING);
+    setApp(APP_STARTUP);
+    //setApp(APP_TESTING);
     
     if(_ttgo->power->isChargeing())
     {
@@ -183,23 +183,23 @@ void GUI::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t delt
     _lastActionTime = millis();
 
     // check for global touch gestures
-    if(_activeScreen != SCREEN_STANDBY && _activeScreen != SCREEN_MAIN)
+    if(_activeApp != APP_STANDBY && _activeApp != APP_MAIN)
     {
         switch(touchType)
         {
             case TouchMetrics::SWIPE_BOTTOM_EDGE:
-                setScreen(SCREEN_MAIN);
+                setApp(APP_MAIN);
                 break;
             default:
                 // elevate touch action to child elements
-                _screens[_activeScreen]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+                _apps[_activeApp]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
                 break;
         }
     }
     else
     {
         // elevate touch action to child elements
-        _screens[_activeScreen]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+        _apps[_activeApp]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
     }
 }
 
@@ -244,25 +244,25 @@ void GUI::debugOutput(const String str)
     }
 }
 
-void GUI::setScreen(screens_t screen, bool init, bool task)
+void GUI::setApp(apps_t app, bool init, bool task)
 {
-    _lastScreen = _activeScreen;
-    _activeScreen = screen;
-    _screens[_lastScreen]->clean();
-    _screens[screen]->draw(init, task);
+    _lastApp = _activeApp;
+    _activeApp = app;
+    _apps[_lastApp]->clean();
+    _apps[app]->draw(init, task);
 }
 
-void GUI::drawUIScreenIcon(screens_t screen, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
+void GUI::drawAppIcon(apps_t app, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
-    if(screen > SCREEN_MAIN)
+    if(app > APP_MAIN)
     {
-        _screens[screen]->drawIcon(x, y,  w, h);
+        _apps[app]->drawIcon(x, y,  w, h);
     }
 }
 
-String GUI::getUIScreenLabel(screens_t screen)
+String GUI::getAppLabel(apps_t app)
 {
-    return _screens[screen]->getLabel();
+    return _apps[app]->getLabel();
 }
 
 void GUI::setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second)
@@ -277,7 +277,7 @@ void GUI::taskHandler(void* parameters)
     for(;;)
     {
         //Serial.println("GUI::taskHandler method");
-        _screens[_activeScreen]->draw(false, true);
+        _apps[_activeApp]->draw(false, true);
         yield();
         // Pause the task for 100ms
         vTaskDelay(100 / portTICK_PERIOD_MS);
@@ -288,17 +288,17 @@ void GUI::backgroundTaskHandler()
 {
     // this will be the place where the GUI will handle tasks while in sleep mode
     // e.g. alarm or timer or other thingies
-    for(uint8_t i = SCREEN_NONE+1; i < SCREEN_COUNT; i++)
+    for(uint8_t i = APP_NONE+1; i < APP_COUNT; i++)
     {
-        _screens[static_cast<screens_t>(i)]->backgroundTaskHandler();
+        _apps[static_cast<apps_t>(i)]->backgroundTaskHandler();
         yield();
     }
 }
 
 void GUI::handleEventCallback(ui_event_data_t* eventData)
 {
-    if(eventData->screen)
+    if(eventData->app)
     {
-        eventData->screen->elementEventHandler(eventData);
+        eventData->app->elementEventHandler(eventData);
     }
 }

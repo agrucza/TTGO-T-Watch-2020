@@ -35,7 +35,7 @@ class UIContainer : public UIElement{
 
     public:
         UIContainer(UIContainer* parent = nullptr, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
-        UIContainer(UIScreen* screen, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
+        UIContainer(App* app, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
         void            addUIElement(UIElement* element);
         uint8_t         getPadding(){return _padding;};
         void            setPadding(uint8_t padding){_padding = padding;};

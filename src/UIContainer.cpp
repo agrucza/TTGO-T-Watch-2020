@@ -73,15 +73,15 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
     }
 }
 
-UIContainer::UIContainer(UIScreen* screen, UIESize_t size, UIEAlignment_t alignment)
+UIContainer::UIContainer(App* app, UIESize_t size, UIEAlignment_t alignment)
 :UIContainer()
 {
-    _screen     = screen;
+    _app        = app;
     _size       = size;
     _alignment  = alignment;
 
     // setting background color
-    _bgColor = _screen->_bgColor;
+    _bgColor = _app->_bgColor;
 }
 
 void UIContainer::addUIElement(UIElement* element)
@@ -355,7 +355,7 @@ void UIContainer::draw(bool task)
             }
             _sprite.fillScreen((_bgColor>0?_bgColor:TFT_GREENYELLOW));
         }
-        else if(_screen && _bgColor > 0 &&(_bgColor != _screen->_bgColor))
+        else if(_app && _bgColor > 0 &&(_bgColor != _app->_bgColor))
         {
             _tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
         }

@@ -10,7 +10,7 @@
 
 #include <Arduino.h>
 
-class UIScreen;
+class App;
 class UIElement;
 class UIContainer;
 
@@ -61,7 +61,7 @@ typedef void *ui_event_void_t;
 
 struct ui_event_data_t{
     UIElement*      source;
-    UIScreen*       screen;
+    App*            app;
     ui_event_t      event;
     ui_event_void_t target;
 };

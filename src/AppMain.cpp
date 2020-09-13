@@ -1,12 +1,12 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-#include "UIScreenMain.h"
+#include "AppMain.h"
 
 #include "GUI.h"
 
 
-UIScreenMain::UIScreenMain():UIScreen("Main", false)
+AppMain::AppMain():App("Main", false)
 {
     _iconSizeX      = _iconSizeY = 2;
     _iconsMax       = 4;
@@ -17,20 +17,20 @@ UIScreenMain::UIScreenMain():UIScreen("Main", false)
     _iconH          = (_iconAreaHeight - ((_iconsMax-1)*2))/_iconsMax;
 
     // setup screens
-    _setScreenIcon(SCREEN_CALENDAR, 0, 0);
-    _setScreenIcon(SCREEN_SETTINGS, 2, 0);
-    _setScreenIcon(SCREEN_TESTING, 3, 0);
+    _setAppIcon(APP_CALENDAR, 0, 0);
+    _setAppIcon(APP_SETTINGS, 2, 0);
+    _setAppIcon(APP_TESTING, 3, 0);
 }
 
-void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
+void AppMain::_setAppIcon(apps_t app, uint8_t posX, uint8_t posY)
 {
-    uint8_t iconsX  = _gui->getUIScreenIconWidth(screen);
-    uint8_t iconsY  = _gui->getUIScreenIconHeight(screen);
+    uint8_t iconsX  = _gui->getAppIconWidth(app);
+    uint8_t iconsY  = _gui->getAppIconHeight(app);
     
     while(_displayIcons.size() < (posY + iconsY)){
-        std::vector<screens_t> row;
+        std::vector<apps_t> row;
         while(row.size() < _iconsMax){
-            row.push_back(SCREEN_NONE);
+            row.push_back(APP_NONE);
         }
         _displayIcons.push_back(row);
     }
@@ -48,12 +48,12 @@ void UIScreenMain::_setScreenIcon(screens_t screen, uint8_t posX, uint8_t posY)
     {
         for(uint8_t x = posX; x < (posX + iconsX); x++)
         {
-            _displayIcons[y][x] = screen;
+            _displayIcons[y][x] = app;
         }
     }
 }
 
-void UIScreenMain::draw(bool init, bool task)
+void AppMain::draw(bool init, bool task)
 {
     if(!task)
     {
@@ -66,14 +66,14 @@ void UIScreenMain::draw(bool init, bool task)
     
         for(uint8_t iconY = 0; iconY < _displayIcons.size(); iconY++)
         {
-            std::vector<screens_t> row  = _displayIcons[iconY];
+            std::vector<apps_t> row  = _displayIcons[iconY];
             for(uint8_t iconX = 0; iconX < row.size(); iconX++)
             {
                 // check if a screens is set to display an icon
-                if(row[iconX] != SCREEN_NONE)
+                if(row[iconX] != APP_NONE)
                 {
-                    iconSizeScreenW = _gui->getUIScreenIconWidth(row[iconX]);
-                    iconSizeScreenH = _gui->getUIScreenIconHeight(row[iconX]);
+                    iconSizeScreenW = _gui->getAppIconWidth(row[iconX]);
+                    iconSizeScreenH = _gui->getAppIconHeight(row[iconX]);
 
                     // check if icon is bigger than 1x1 and check surrounding icon places
                     if(
@@ -87,7 +87,7 @@ void UIScreenMain::draw(bool init, bool task)
                         continue;
                     }
                     
-                    _gui->drawUIScreenIcon(
+                    _gui->drawAppIcon(
                         row[iconX],
                         _padding + (iconX*(_iconW + 2)),
                         _padding + (iconY*(_iconH + 2)),
@@ -100,21 +100,21 @@ void UIScreenMain::draw(bool init, bool task)
     }
 }
 
-void UIScreenMain::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
+void AppMain::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
     
 }
 
-void UIScreenMain::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
+void AppMain::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
     if(touchType == TouchMetrics::TOUCH_RELEASE)
     {
         uint8_t x = (lastX-_padding)/(_iconW+2);
         uint8_t y = (lastY-_padding)/(_iconH+2);
         
-        if(_displayIcons.size()-1 >= y && _displayIcons[y][x] != SCREEN_NONE)
+        if(_displayIcons.size()-1 >= y && _displayIcons[y][x] != APP_NONE)
         {
-            _gui->setScreen(_displayIcons[y][x], true);
+            _gui->setApp(_displayIcons[y][x], true);
         }
     }
     else if (touchType == TouchMetrics::SWIPE_LEFT)

@@ -1,7 +1,7 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-#include "UIScreenTesting.h"
+#include "AppTesting.h"
 
 #include "GUI.h"
 #include "UIContainer.h"
@@ -11,10 +11,10 @@
 #include "UIElementCheckbox.h"
 #include "UIElementButton.h"
 
-UIScreenTesting::UIScreenTesting():UIScreen("Testing")
+AppTesting::AppTesting():App("Testing")
 {
     Serial.println("########################");
-    Serial.println("# Init UIScreenTesting #");
+    Serial.println("# Init AppTesting #");
     Serial.println("########################");
     _menuContainer->setBackgroundColor(FLAT_UI_V1_MIDNIGHT_BLUE);
 
@@ -35,6 +35,11 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     //switch1->setEventCallback(GUI::handleEventCallback);
     
     _contentContainer->addUIElement(switch1);
+
+    UIElementSwitch* switch2 = new UIElementSwitch("TestSwitch2", &FreeSansBold9pt7b, _contentContainer, ORIENTATION_RIGHT);
+    switch2->setTextColor(FLAT_UI_V1_CLOUDS);
+    switch2->setEnabled(true);
+    _contentContainer->addUIElement(switch2);
     
     Serial.println("Create text input");
     UIElementTextInput* input1 = new UIElementTextInput("ssid", &FreeSansBold9pt7b, _contentContainer);
@@ -92,19 +97,19 @@ UIScreenTesting::UIScreenTesting():UIScreen("Testing")
     UIElementButton* button10 = new UIElementButton("click me 6", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
     _contentContainer->addUIElement(button10);
     
-    Serial.println("Init UIScreenTesting done");
+    Serial.println("Init AppTesting done");
 }
 
-void UIScreenTesting::draw(bool init, bool task)
+void AppTesting::draw(bool init, bool task)
 {
     if(!task)
     {
         _tft->fillScreen(_bgColor);
     }
-    _screenContainer->draw(task);
+    _appContainer->draw(task);
 }
 
-void UIScreenTesting::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
+void AppTesting::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
     _tft->fillRect(x,y,w,h, _iconColor);
     _tft->setFreeFont(&FreeSansBold9pt7b);
@@ -115,9 +120,9 @@ void UIScreenTesting::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
     );
 }
 
-void UIScreenTesting::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
+void AppTesting::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
-    _screenContainer->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+    _appContainer->touchAction(lastX, lastY, deltaX, deltaY, touchType);
     /*
     switch (touchType)
     {
@@ -138,7 +143,7 @@ void UIScreenTesting::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, 
     case TouchMetrics::SWIPE_TOP_EDGE:
         break;
     case TouchMetrics::TOUCH_RELEASE:
-        _screenContainer->touchAction(lastX, lastY, deltaX, deltaY, TouchMetrics::TOUCH_RELEASE);
+        _appContainer->touchAction(lastX, lastY, deltaX, deltaY, TouchMetrics::TOUCH_RELEASE);
         break;
     default:
         break;
@@ -146,7 +151,7 @@ void UIScreenTesting::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, 
     */
 }
 
-void UIScreenTesting::elementEventHandler(ui_event_data_t* eventData)
+void AppTesting::elementEventHandler(ui_event_data_t* eventData)
 {
     
 }
