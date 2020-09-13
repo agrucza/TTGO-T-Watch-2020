@@ -22,17 +22,6 @@ typedef enum {
     ICON_CALCULATION
 } icon_battery_t;
 
-enum apps_t : uint8_t {
-    APP_NONE,
-    APP_STARTUP,
-    APP_STANDBY,
-    APP_MAIN,
-    APP_TESTING,
-    APP_CALENDAR,
-    APP_SETTINGS,
-    APP_COUNT
-};
-
 class TTGOClass;
 class TFT_eSPI;
 
@@ -49,17 +38,19 @@ class GUI {
         int16_t top,left,width,height;
     };
 
-    static TTGOClass*        _ttgo;
-    static TFT_eSPI*         _tft;
-    static uint32_t         _stepCounter;
-    static TouchMetrics*     _touch;
-    static debug_t          _debug;
-    static unsigned long    _lastActionTime;
-    static App*             _apps[APP_COUNT];
-    static apps_t           _lastApp;
-    static apps_t           _activeApp;
-    static icon_battery_t   _batteryIcon;
-    static int              _batteryLevel;
+    static TTGOClass*           _ttgo;
+    static TFT_eSPI*            _tft;
+    static uint32_t             _stepCounter;
+    static TouchMetrics*        _touch;
+    static debug_t              _debug;
+    static unsigned long        _lastActionTime;
+    static std::vector<App*>    _apps;
+    static App*                 _lastApp;
+    static App*                 _activeApp;
+    static App*                 _standby;
+    static App*                 _launcher;
+    static icon_battery_t       _batteryIcon;
+    static int                  _batteryLevel;
 
     public:
         static TaskHandle_t     taskHandle;
@@ -67,13 +58,7 @@ class GUI {
         static TTGOClass        *getTTGO();
         static TFT_eSPI         *getTFT();
         static void             init();
-        static void             touchAction(
-            int16_t _lastX,
-            int16_t _lasty,
-            int16_t _deltaX,
-            int16_t _deltaY,
-            TouchMetrics::touch_t touchType
-        );
+        static void             touchAction(int16_t _lastX, int16_t _lasty, int16_t _deltaX, int16_t _deltaY, TouchMetrics::touch_t touchType);
         static unsigned long    getInactivityTime()
         {
             if(millis() < _lastActionTime)
@@ -93,13 +78,19 @@ class GUI {
         static void             wifiListAdd(const String ssid);
         static void             checkTouchScreen();
         static void             debugOutput(const String str);
-        static void             setApp(apps_t app, bool init = false, bool task = false);
-        static apps_t           getLastScreen(){return _lastApp;};
-        static apps_t           getActiveScreen(){return _activeApp;};
-        static uint8_t          getAppIconWidth(apps_t app) { return _apps[app]->getIconSizeX();};
-        static uint8_t          getAppIconHeight(apps_t app){ return _apps[app]->getIconSizeY();};
-        static void             drawAppIcon(apps_t app, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
-        static String           getAppLabel(apps_t app);
+
+        static std::vector<App*> getApps(){return _apps;};
+        static void             setStandbyApp(App* app){_standby = app;};
+        static App*             getStandbyApp(){return _standby;};
+        static void             showStandbyApp(bool init = false);
+        static void             setLauncherApp(App* app){_launcher = app;};
+        static App*             getLauncherApp(){return _launcher;};
+        static void             showLauncherApp(bool init = false);
+        static void             showApp(App* app, bool init = false, bool task = false);
+        static App*             getLastApp(){return _lastApp;};
+        static App*             getActiveApp(){return _activeApp;};
+        static void             addApp(App* app){_apps.push_back(app);};
+        
         static void             setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second);
         static void             taskHandler(void * parameters);
         static void             backgroundTaskHandler();

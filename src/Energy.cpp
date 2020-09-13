@@ -150,7 +150,7 @@ void Energy::lowEnergy()
         GUI::setLastActionTime(millis());
 
         // go to standby screen
-        _gui->setApp(APP_STANDBY, true);
+        _gui->showStandbyApp(true);
         vTaskResume(GUI::taskHandle);
     }
 }

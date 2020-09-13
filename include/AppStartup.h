@@ -1,12 +1,12 @@
 /**
-    This is the main screen class
+    This is the launcher app class
     @file gui.h
     @author Alexander Grucza
     @version 0.1 7/26/2020
 */
 
-#ifndef __AppSTARTUP_H
-#define __AppSTARTUP_H
+#ifndef __APPSTARTUP_H
+#define __APPSTARTUP_H
 
 #include <Arduino.h>
 
@@ -28,4 +28,4 @@ class AppStartup : public App{
         void    backgroundTaskHandler(){};
 };
 
-#endif /*__AppSTARTUP_H */
+#endif /*__APPSTARTUP_H */

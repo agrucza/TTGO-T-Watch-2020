@@ -5,7 +5,9 @@
 
 #include "GUI.h"
 
-AppStartup::AppStartup():App("StartUp", false){}
+AppStartup::AppStartup():App("StartUp", false){
+    _acceptsGlobalTouch = false;
+}
 
 void AppStartup::draw(bool init, bool task)
 {
@@ -17,11 +19,6 @@ void AppStartup::draw(bool init, bool task)
     _tft->fillRect(0,TFT_HEIGHT - 20, TFT_WIDTH, 20, TFT_RED);
     _tft->setTextColor(TFT_RED);
     _tft->drawString(label, TFT_WIDTH/2, TFT_HEIGHT/2);
-    
-    _gui->getTTGO()->openBL();
-    
-    delay(1000);
-    _gui->setApp(APP_STANDBY, true);
 }
 
 void AppStartup::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)

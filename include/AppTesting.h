@@ -1,20 +1,18 @@
 /**
-    This is the testing screen class
+    This is the testing app class
     @file AppTesting.h
     @author Alexander Grucza
     @version 0.1 8/03/2020
 */
 
-#ifndef __AppTESTING_H
-#define __AppTESTING_H
+#ifndef __APPTESTING_H
+#define __APPTESTING_H
 
 #include <Arduino.h>
 
 #include "UITypes.h"
 #include "App.h"
 #include "TouchMetrics.h"
-
-enum apps_t : uint8_t;
 
 class AppTesting : public App{
     public:
@@ -26,4 +24,4 @@ class AppTesting : public App{
         void    backgroundTaskHandler(){};
 };
 
-#endif /*__AppTESTING_H */
+#endif /*__APPTESTING_H */

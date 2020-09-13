@@ -11,10 +11,10 @@
 #include "GUI.h"
 #include "AppStartup.h"
 #include "AppStandby.h"
-#include "AppMain.h"
 #include "AppTesting.h"
 #include "AppCalendar.h"
 #include "AppSettings.h"
+#include "AppLauncher.h"
 
 TTGOClass*              GUI::_ttgo              = nullptr;
 TFT_eSPI*               GUI::_tft               = nullptr;
@@ -22,9 +22,11 @@ uint32_t                GUI::_stepCounter       = 0;
 TouchMetrics*           GUI::_touch;
 GUI::debug_t            GUI::_debug;
 unsigned long           GUI::_lastActionTime    = 0;
-App*               GUI::_apps[APP_COUNT];
-apps_t               GUI::_lastApp        = APP_MAIN;
-apps_t               GUI::_activeApp      = APP_STANDBY;
+std::vector<App*>       GUI::_apps;
+App*                    GUI::_lastApp           = nullptr;
+App*                    GUI::_activeApp         = nullptr;
+App*                    GUI::_standby           = nullptr;
+App*                    GUI::_launcher          = nullptr;
 icon_battery_t          GUI::_batteryIcon       = ICON_CALCULATION;
 int                     GUI::_batteryLevel      = 0;
 
@@ -74,21 +76,17 @@ void GUI::init()
     _lastActionTime = millis();
     updateBatteryLevel();
 
-    // creating screens
-    _apps[APP_STARTUP]    = new AppStartup();
-    _apps[APP_STANDBY]    = new AppStandby();
-    _apps[APP_TESTING]    = new AppTesting();
-    _apps[APP_CALENDAR]   = new AppCalendar();
-    _apps[APP_SETTINGS]   = new AppSettings();
-
-    // by now main needs to be initialized after all other screens
-    // otherwise there will be a fatal error when the launcher
-    // tries to access other screens methods
-    _apps[APP_MAIN]       = new AppMain();
-
+    addApp(new AppStandby());
+    //addApp(new AppStartup());
+    addApp(new AppCalendar());
+    addApp(new AppSettings());
+    addApp(new AppTesting());
+    
+    addApp(new AppLauncher());
     // as we init the GUI here we want to start the standby screen
-    setApp(APP_STARTUP);
-    //setApp(APP_TESTING);
+    
+    _ttgo->openBL();
+    showStandbyApp(true);
     
     if(_ttgo->power->isChargeing())
     {
@@ -183,23 +181,23 @@ void GUI::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t delt
     _lastActionTime = millis();
 
     // check for global touch gestures
-    if(_activeApp != APP_STANDBY && _activeApp != APP_MAIN)
+    if(_activeApp->acceptsGlobalTouch())
     {
         switch(touchType)
         {
             case TouchMetrics::SWIPE_BOTTOM_EDGE:
-                setApp(APP_MAIN);
+                showLauncherApp();
                 break;
             default:
                 // elevate touch action to child elements
-                _apps[_activeApp]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+                _activeApp->touchAction(lastX, lastY, deltaX, deltaY, touchType);
                 break;
         }
     }
     else
     {
         // elevate touch action to child elements
-        _apps[_activeApp]->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+        _activeApp->touchAction(lastX, lastY, deltaX, deltaY, touchType);
     }
 }
 
@@ -244,25 +242,37 @@ void GUI::debugOutput(const String str)
     }
 }
 
-void GUI::setApp(apps_t app, bool init, bool task)
+void GUI::showStandbyApp(bool init)
 {
-    _lastApp = _activeApp;
-    _activeApp = app;
-    _apps[_lastApp]->clean();
-    _apps[app]->draw(init, task);
-}
-
-void GUI::drawAppIcon(apps_t app, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
-{
-    if(app > APP_MAIN)
+    for(uint8_t i = 0; i<_apps.size(); i++)
     {
-        _apps[app]->drawIcon(x, y,  w, h);
+        if(_standby == _apps[i])
+        {
+            showApp(_apps[i], init);
+        }
     }
 }
 
-String GUI::getAppLabel(apps_t app)
+void GUI::showLauncherApp(bool init)
 {
-    return _apps[app]->getLabel();
+    for(uint8_t i = 0; i<_apps.size(); i++)
+    {
+        if(_launcher == _apps[i])
+        {
+            showApp(_apps[i], init);
+        }
+    }
+}
+
+void GUI::showApp(App* app, bool init, bool task)
+{
+    _lastApp = _activeApp;
+    _activeApp = app;
+    if(_lastApp != nullptr)
+    {
+        _lastApp->clean();
+    }
+    _activeApp->draw(init, task);
 }
 
 void GUI::setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second)
@@ -277,7 +287,7 @@ void GUI::taskHandler(void* parameters)
     for(;;)
     {
         //Serial.println("GUI::taskHandler method");
-        _apps[_activeApp]->draw(false, true);
+        _activeApp->draw(false, true);
         yield();
         // Pause the task for 100ms
         vTaskDelay(100 / portTICK_PERIOD_MS);
@@ -288,9 +298,9 @@ void GUI::backgroundTaskHandler()
 {
     // this will be the place where the GUI will handle tasks while in sleep mode
     // e.g. alarm or timer or other thingies
-    for(uint8_t i = APP_NONE+1; i < APP_COUNT; i++)
+    for(uint8_t i = 0; i < _apps.size(); i++)
     {
-        _apps[static_cast<apps_t>(i)]->backgroundTaskHandler();
+        _apps[i]->backgroundTaskHandler();
         yield();
     }
 }

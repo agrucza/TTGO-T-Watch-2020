@@ -1,12 +1,12 @@
 /**
-    This is the standby screen class
+    This is the standby app class
     @file gui.h
     @author Alexander Grucza
     @version 0.1 7/26/2020
 */
 
-#ifndef __AppSTANDBY_H
-#define __AppSTANDBY_H
+#ifndef __APPSTANDBY_H
+#define __APPSTANDBY_H
 
 #include <Arduino.h>
 
@@ -35,4 +35,4 @@ class AppStandby: public App{
         void    backgroundTaskHandler(){};
 };
 
-#endif /*__AppSTANDBY_H */
+#endif /*__APPSTANDBY_H */

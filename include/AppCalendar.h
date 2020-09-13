@@ -1,12 +1,12 @@
 /**
-    This is the calendar screen class
+    This is the calendar app class
     @file gui.h
     @author Alexander Grucza
     @version 0.1 7/26/2020
 */
 
-#ifndef __AppCALENDAR_H
-#define __AppCALENDAR_H
+#ifndef __APPCALENDAR_H
+#define __APPCALENDAR_H
 
 #include <Arduino.h>
 
@@ -43,4 +43,4 @@ class AppCalendar : public App{
         void    backgroundTaskHandler(){};
 };
 
-#endif /*__AppCALENDAR_H */
+#endif /*__APPCALENDAR_H */

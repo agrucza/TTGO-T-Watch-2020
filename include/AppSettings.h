@@ -1,12 +1,12 @@
 /**
-    This is the settings screen class
+    This is the settings app class
     @file gui.h
     @author Alexander Grucza
     @version 0.1 7/26/2020
 */
 
-#ifndef __AppSETTINGS_H
-#define __AppSETTINGS_H
+#ifndef __APPSETTINGS_H
+#define __APPSETTINGS_H
 
 #include <Arduino.h>
 
@@ -26,4 +26,4 @@ class AppSettings : public App{
         void    backgroundTaskHandler(){};
 };
 
-#endif /*__AppSETTINGS_H */
+#endif /*__APPSETTINGS_H */

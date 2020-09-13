@@ -18,25 +18,27 @@ class GUI;
 class TFT_eSPI;
 class UIContainer;
 
-enum apps_t : uint8_t;
-
 class App{
     public:
         GUI*            _gui;
         TFT_eSPI*       _tft;
         String          _label;
         bool            _showHeader         = true;
+        bool            _acceptsGlobalTouch = true;
+        bool            _showInLauncher     = true;
         uint16_t        _textColor          = FLAT_UI_V1_CLOUDS;
         uint16_t        _bgColor            = FLAT_UI_V1_WET_ASPHALT;
         uint16_t        _iconColor          = FLAT_UI_V1_PETER_RIVER;
         uint8_t         _iconSizeX          = 1;
         uint8_t         _iconSizeY          = 1;
         uint8_t         _padding            = 5;
-        UIContainer*    _appContainer    = nullptr;
+        UIContainer*    _appContainer       = nullptr;
         UIContainer*    _menuContainer      = nullptr;
         UIContainer*    _contentContainer   = nullptr;
 
         App(String label, bool showHeader = true);
+        bool            acceptsGlobalTouch(){return _acceptsGlobalTouch;};
+        bool            getShowInLauncher(){return _showInLauncher;};
         uint8_t         getIconSizeX(){return _iconSizeX;};
         uint8_t         getIconSizeY(){return _iconSizeY;};
         String          getLabel(){return _label;};

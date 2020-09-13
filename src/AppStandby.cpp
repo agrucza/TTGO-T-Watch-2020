@@ -9,8 +9,10 @@
 
 AppStandby::AppStandby():App("Standby", false)
 {
-    _lastMinute = 0;
-    _lastMonth  = 0;
+    _acceptsGlobalTouch = false;
+    _lastMinute         = 0;
+    _lastMonth          = 0;
+    _gui->setStandbyApp(this);
 }
 
 void AppStandby::draw(bool init, bool task)
@@ -77,13 +79,13 @@ void AppStandby::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16
 {
     if(touchType == TouchMetrics::SWIPE_TOP)
     {
-        if(_gui->getLastScreen() > APP_STANDBY)
+        if(_gui->getLastApp() > _gui->getStandbyApp())
         {
-            _gui->setApp(_gui->getLastScreen());
+            _gui->showApp(_gui->getLastApp());
         }
         else
         {
-            _gui->setApp(APP_MAIN, true);
+            _gui->showApp(_gui->getLauncherApp(), true);
         }
     }
 }

@@ -38,5 +38,8 @@ App::App(String label, bool showHeader)
 
 void App::clean()
 {
-    _appContainer->clean();
+    if(_appContainer != nullptr)
+    {
+        _appContainer->clean();
+    }
 };
