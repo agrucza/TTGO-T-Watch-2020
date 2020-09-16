@@ -5,6 +5,7 @@
     @version 0.1 7/17/2020
 */
  
+<<<<<<< HEAD
 // Please select the model you want to use in config.h
 
 #include "config.h"
@@ -17,12 +18,36 @@
 #include "UIScreenTesting.h"
 #include "UIScreenCalendar.h"
 #include "UIScreenSettings.h"
+=======
+#include "config.h"
+#include "LilyGoWatch.h"
+
+#include "GUI.h"
+#include "AppStartup.h"
+#include "AppStandby.h"
+#include "AppTesting.h"
+#include "AppCalendar.h"
+#include "AppSettings.h"
+#include "AppLauncher.h"
+>>>>>>> no_lvgl
 
 TTGOClass*              GUI::_ttgo              = nullptr;
 uint32_t                GUI::_stepCounter       = 0;
+<<<<<<< HEAD
 std::vector<UIScreen*>  GUI::_screens;
 screens_t               GUI::_lastScreen        = SCREEN_STANDBY;
 screens_t               GUI::_activeScreen      = SCREEN_STANDBY;
+=======
+TouchMetrics*           GUI::_touch;
+GUI::debug_t            GUI::_debug;
+unsigned long           GUI::_lastActionTime    = 0;
+std::vector<App*>       GUI::_apps;
+App*                    GUI::_lastApp           = nullptr;
+App*                    GUI::_activeApp         = nullptr;
+App*                    GUI::_standby           = nullptr;
+App*                    GUI::_launcher          = nullptr;
+icon_battery_t          GUI::_batteryIcon       = ICON_CALCULATION;
+>>>>>>> no_lvgl
 int                     GUI::_batteryLevel      = 0;
 lv_style_t              GUI::borderlessStyle;
 lv_style_t              GUI::modalStyle;
@@ -65,6 +90,7 @@ TTGOClass* GUI::getTTGO()
  */
 void GUI::init()
 {
+<<<<<<< HEAD
     _ttgo->motor_begin();
 
     lv_style_init(&borderlessStyle);
@@ -107,6 +133,25 @@ void GUI::screenEventCallback(lv_obj_t * obj, lv_event_t event)
 {
     ScreenCallback* data = (ScreenCallback*)lv_obj_get_user_data(obj);
     switch(data->getCommand())
+=======
+    _tft->setTextDatum(MC_DATUM);
+    _tft->fillScreen(TFT_BLACK);
+    _touch = new TouchMetrics();
+    _touch->setTouch(false);
+    _lastActionTime = millis();
+    updateBatteryLevel();
+
+    addApp(new AppStandby());
+    addApp(new AppCalendar());
+    addApp(new AppSettings());
+    addApp(new AppTesting());
+    addApp(new AppLauncher());
+    
+    _ttgo->openBL();
+    showStandbyApp(true);
+    
+    if(_ttgo->power->isChargeing())
+>>>>>>> no_lvgl
     {
         case CALLBACK_SWITCH_SCREEN:
             if(event == LV_EVENT_CLICKED){
@@ -116,6 +161,15 @@ void GUI::screenEventCallback(lv_obj_t * obj, lv_event_t event)
         default:
             data->getOrigin()->eventCallback(obj, event, data);
     }
+    
+    xTaskCreate(
+        taskHandler,        // call GUI task hadler
+        "GUI task handler", // Name of the task (for debugging)
+        4096,               // Stack size (bytes)
+        NULL,               // Parameter to pass
+        5,                  // Task priority
+        &taskHandle         // Task handle
+    );
 }
 
 void GUI::modalEventCallback(lv_obj_t * obj, lv_event_t event)
@@ -183,6 +237,7 @@ void GUI::updateBatteryLevel()
 
 char* GUI::getBatteryIcon()
 {
+<<<<<<< HEAD
     updateBatteryLevel();
     if(isPluggedIn && isStillConnected){
         return LV_SYMBOL_USB;
@@ -211,6 +266,20 @@ char* GUI::getBatteryIcon()
     {
         return LV_SYMBOL_BATTERY_EMPTY;
     }
+=======
+    _batteryIcon = index;
+}
+
+/**
+ * @brief  Adds an SSID to the wifi list
+ * @note   
+ * @param  *ssid: name of ssid to add to the wifi list
+ * @retval None
+ */
+void GUI::wifiListAdd(const String ssid)
+{
+
+>>>>>>> no_lvgl
 }
 
 void GUI::showScreen(screens_t screen)
@@ -221,12 +290,50 @@ void GUI::showScreen(screens_t screen)
     _screens[_activeScreen]->show();
 }
 
+<<<<<<< HEAD
 
 std::vector<screens_t> GUI::getUIScreensForLauncher()
 {
     std::vector<screens_t> screens;
     
     for(uint8_t i = 0; i < _screens.size(); i++)
+=======
+void GUI::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
+{
+    _lastActionTime = millis();
+
+    // check for global touch gestures
+    if(_activeApp->acceptsGlobalTouch())
+    {
+        switch(touchType)
+        {
+            case TouchMetrics::SWIPE_BOTTOM_EDGE:
+                showLauncherApp();
+                break;
+            default:
+                // elevate touch action to child elements
+                _activeApp->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+                break;
+        }
+    }
+    else
+    {
+        // elevate touch action to child elements
+        _activeApp->touchAction(lastX, lastY, deltaX, deltaY, touchType);
+    }
+}
+
+void GUI::debugOutput(const String str)
+{
+    if(_debug.visible)
+    {
+        _tft->pushRect(_debug.left, _debug.top, _debug.width, _debug.height, _debug.displayContent);
+        free(_debug.displayContent);
+        _debug.visible = false;
+    }
+    
+    if(str)
+>>>>>>> no_lvgl
     {
         bool launcher = _screens[i]->showInLauncher();
         
@@ -239,6 +346,7 @@ std::vector<screens_t> GUI::getUIScreensForLauncher()
     return screens;
 }
 
+<<<<<<< HEAD
 char* GUI::getUIScreenLabel(screens_t screen)
 {
     return _screens[screen]->getLabel();
@@ -257,10 +365,75 @@ const char* GUI::getRTCHMS()
 const char* GUI::getRTCDDMMYYYY()
 {
     return _ttgo->rtc->formatDateTime(PCF_TIMEFORMAT_DD_MM_YYYY);
+=======
+void GUI::showStandbyApp(bool init)
+{
+    for(uint8_t i = 0; i<_apps.size(); i++)
+    {
+        if(_standby == _apps[i])
+        {
+            showApp(_apps[i], init);
+        }
+    }
+}
+
+void GUI::showLauncherApp(bool init)
+{
+    for(uint8_t i = 0; i<_apps.size(); i++)
+    {
+        if(_launcher == _apps[i])
+        {
+            showApp(_apps[i], init);
+        }
+    }
+}
+
+void GUI::showApp(App* app, bool init, bool task)
+{
+    _lastApp = _activeApp;
+    _activeApp = app;
+    if(_lastApp != nullptr)
+    {
+        _lastApp->clean();
+    }
+    _activeApp->draw(init, task);
+>>>>>>> no_lvgl
 }
 
 void GUI::setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second)
 {
     _ttgo->rtc->setDateTime(year,month,day,hour,minute,second);
     //_ttgo->rtc->syncToRtc();
+}
+
+void GUI::taskHandler(void* parameters)
+{
+    // infinite loop
+    for(;;)
+    {
+        //Serial.println("GUI::taskHandler method");
+        _activeApp->draw(false, true);
+        yield();
+        // Pause the task for 100ms
+        vTaskDelay(100 / portTICK_PERIOD_MS);
+    }
+}
+
+void GUI::backgroundTaskHandler()
+{
+    // this will be the place where the GUI will handle tasks while in sleep mode
+    // e.g. alarm or timer or other thingies
+    for(uint8_t i = 0; i < _apps.size(); i++)
+    {
+        _apps[i]->backgroundTaskHandler();
+        yield();
+    }
+}
+
+void GUI::handleEventCallback(ui_event_data_t* eventData)
+{
+    if(eventData->app)
+    {
+        eventData->app->elementEventHandler(eventData);
+    }
 }

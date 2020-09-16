@@ -14,7 +14,7 @@ class GUI;
 class Energy {
     static TTGOClass *_ttgo;
     static GUI *_gui;
-    static bool _lenergy;
+    static bool _lowEnergy;
     public:
         static void setup(TTGOClass *ttgo, GUI *gui)
         {
@@ -27,6 +27,8 @@ class Energy {
         static void network();
         static void lowEnergy();
         static void checkIRQ();
+        static void getWakeup();
+        static void setSleep();
 };
 
 #endif /*__ENERGY_H */

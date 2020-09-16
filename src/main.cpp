@@ -12,6 +12,11 @@ Created by Lewis he on October 10, 2019.
 #include <FS.h>
 #include <SPI.h>
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/timers.h"
+#include "freertos/queue.h"
+#include <soc/rtc.h>
 #include "esp_wifi.h"
 #include "esp_sleep.h"
 #include <WiFi.h>
@@ -27,7 +32,10 @@ GUI *gui;
 void setup()
 {
     Serial.begin(115200);
+
+    Serial.println("Setup...");
     
+    Serial.println("SPIFFS init");
     if (!SPIFFS.begin())
     {
         Serial.println("SPIFFS initialisation failed!");
@@ -36,48 +44,61 @@ void setup()
     
     ttgo = TTGOClass::getWatch();
 
+    Serial.println("Init TTGO");
     //Initialize TWatch
     ttgo->begin();
 
+    Serial.println("Energy setup");
     Energy::setup(ttgo, gui);
 
+    Serial.println("APX IRQ setup");
     // Turn on the IRQ used
     Energy::setupAXPIRQ();
 
+    Serial.println("Turning off unused power");
     // Turn off unused power
     Energy::disableUnusedPower();
-    
-    //Initialize lvgl
-    ttgo->lvgl_begin();
 
+    Serial.println("IRQ setup");
     Energy::setupIRQ();
 
+    Serial.println("RTC check");
     //Check if the RTC clock matches, if not, use compile time
     ttgo->rtc->check();
 
+    Serial.println("RTC sync");
     //Synchronize time to system time
     ttgo->rtc->syncToSystem();
 
+    Serial.println("Network setup");
     //Setting up the network
     Energy::network();
 
+    Serial.println("GUI init");
     //Execute your own GUI interface
     gui->setTTGO(ttgo);
     gui->init();
-
-    //Clear lvgl counter
-    lv_disp_trig_activity(NULL);
 }
 
 void loop()
 {
     Energy::checkIRQ();
+<<<<<<< HEAD
 
     if (lv_disp_get_inactive_time(NULL) < DEFAULT_SCREEN_TIMEOUT) {
         lv_task_handler();
     } else {
+=======
+    GUI::checkTouchScreen();
+    
+    if (ttgo->bl->isOn() && GUI::getInactivityTime() > DEFAULT_SCREEN_TIMEOUT) {
+>>>>>>> no_lvgl
         Energy::lowEnergy();
     }
+
+    // if wakeup get reason
+    Energy::getWakeup();
     
     delay(50);
+    yield();
 }

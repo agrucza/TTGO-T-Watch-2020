@@ -1,5 +1,12 @@
 #include <Arduino.h>
 #include <WiFi.h>
+<<<<<<< HEAD
+=======
+
+#include "config.h"
+#include "LilyGoWatch.h"
+
+>>>>>>> no_lvgl
 #include "GUI.h"
 #include "Energy.h"
 #include "Event.h"
@@ -23,9 +30,10 @@ enum {
     Q_EVENT_AXP_INT,
 };
 
-TTGOClass       *Energy::_ttgo      = nullptr;
-GUI             *Energy::_gui       = nullptr;
-bool            Energy::_lenergy    = false;
+TTGOClass       *Energy::_ttgo          = nullptr;
+GUI             *Energy::_gui           = nullptr;
+bool            Energy::_lowEnergy      = false;
+TaskHandle_t    GUI::taskHandle;
 
 void Energy::setupAXPIRQ()
 {
@@ -129,18 +137,24 @@ void Energy::lowEnergy()
         _ttgo->stopLvglTick();
         _ttgo->bma->enableStepCountInterrupt(false);
         _ttgo->displaySleep();
+<<<<<<< HEAD
         if(!WiFi.isConnected())
         {
             _lenergy = true;
+=======
+        if (!WiFi.isConnected()) {
+            _lowEnergy = true;
+            vTaskSuspend(GUI::taskHandle);
+>>>>>>> no_lvgl
             WiFi.mode(WIFI_OFF);
             // rtc_clk_cpu_freq_set(RTC_CPU_FREQ_2M);
             setCpuFrequencyMhz(20);
 
-            Serial.println("ENTER IN LIGHT SLEEEP MODE");
+            Serial.println("SLEEP");
             gpio_wakeup_enable ((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
             gpio_wakeup_enable ((gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL);
             esp_sleep_enable_gpio_wakeup ();
-            esp_light_sleep_start();
+            setSleep();
         }
     }
     else
@@ -152,8 +166,20 @@ void Energy::lowEnergy()
         _gui->showScreen(SCREEN_STANDBY);
         _gui->updateStepCounter();
         _gui->updateBatteryLevel();
+<<<<<<< HEAD
         _ttgo->openBL();
         _ttgo->bma->enableStepCountInterrupt();
+=======
+        _gui->updateBatteryIcon(ICON_CALCULATION);
+        _ttgo->openBL();
+        _ttgo->bma->enableStepCountInterrupt();
+        
+        GUI::setLastActionTime(millis());
+
+        // go to standby screen
+        _gui->showStandbyApp(true);
+        vTaskResume(GUI::taskHandle);
+>>>>>>> no_lvgl
     }
 }
 
@@ -163,11 +189,17 @@ void Energy::checkIRQ()
     uint8_t data;
     //! Fast response wake-up interrupt
     EventBits_t  bits = xEventGroupGetBits(Event::isrGroup);
+<<<<<<< HEAD
     if(bits & WATCH_FLAG_SLEEP_EXIT)
     {
         if(_lenergy)
         {
             _lenergy = false;
+=======
+    if (bits & WATCH_FLAG_SLEEP_EXIT) {
+        if (_lowEnergy) {
+            _lowEnergy = false;
+>>>>>>> no_lvgl
             // rtc_clk_cpu_freq_set(RTC_CPU_FREQ_160M);
             setCpuFrequencyMhz(160);
         }
@@ -249,4 +281,31 @@ void Energy::checkIRQ()
                 break;
         }
     }
+}
+
+void Energy::getWakeup()
+{
+    esp_sleep_wakeup_cause_t wakeup_reason;
+
+    wakeup_reason = esp_sleep_get_wakeup_cause();
+
+    switch(wakeup_reason)
+    {
+        case ESP_SLEEP_WAKEUP_TIMER:
+            // handle tasks
+            _gui->backgroundTaskHandler();
+            // set light sleep
+            Energy::setSleep();
+        break;
+        default:
+            //Serial.println("NO Wakeup timer");
+            break;
+    }
+}
+
+void Energy::setSleep()
+{
+    // timer wakeup every 2 seconds
+    esp_sleep_enable_timer_wakeup(2000000);
+    esp_light_sleep_start();
 }

@@ -1,8 +1,7 @@
-#include "UIScreenStandby.h"
-#include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
 
+<<<<<<< HEAD:src/UIScreenStandby.cpp
 extern GUI* gui;
 
 UIScreenStandby::UIScreenStandby():UIScreen()
@@ -17,12 +16,34 @@ UIScreenStandby::UIScreenStandby():UIScreen()
 
     // Create a container
     _container = lv_cont_create(lv_scr_act(), NULL);
+=======
+#include "AppStandby.h"
+
+#include "GUI.h"
+
+#define DEG2RAD 0.0174532925
+
+AppStandby::AppStandby():App("Standby", false)
+{
+    _acceptsGlobalTouch = false;
+    _lastMinute         = 0;
+    _lastMonth          = 0;
+    _gui->setStandbyApp(this);
+}
+
+void AppStandby::draw(bool init, bool task)
+{
+    uint16_t    margin      = 40;
+    uint16_t    labelTop    = margin;
+    char        label[20];
+>>>>>>> no_lvgl:src/AppStandby.cpp
 
     lv_obj_set_hidden(_container, true);
     lv_obj_move_background(_container);
     
     _callbackData = new ScreenCallback(this, CALLBACK_NONE);
 
+<<<<<<< HEAD:src/UIScreenStandby.cpp
     lv_obj_set_user_data(_container,_callbackData);
     lv_obj_set_event_cb(_container,GUI::screenEventCallback);
     
@@ -31,6 +52,24 @@ UIScreenStandby::UIScreenStandby():UIScreen()
     lv_obj_set_auto_realign(_container, true);
     lv_obj_align_origo(_container, NULL, LV_ALIGN_CENTER, 0, 0);
     lv_cont_set_layout(_container, LV_LAYOUT_COLUMN_MID);
+=======
+    if(!task)
+    {
+        _tft->fillScreen(_bgColor);
+    }
+    
+    // time label
+    _tft->setFreeFont(&FreeSansBold24pt7b);
+    _tft->setTextColor(_textColor,_bgColor);
+    strftime(label, sizeof(label), "%H : %M", &_timeInfo);
+    if(init || (_lastMinute != _timeInfo.tm_min))
+    {
+        _tft->fillRect(0,labelTop,TFT_WIDTH, _tft->fontHeight(), _bgColor);
+        _lastMinute = _timeInfo.tm_min;
+        _tft->drawString(label, TFT_WIDTH/2, labelTop + _tft->fontHeight()/2);
+    }
+    labelTop += _tft->fontHeight();
+>>>>>>> no_lvgl:src/AppStandby.cpp
 
     lv_obj_set_size(_container, LV_HOR_RES, LV_VER_RES);
     lv_obj_align(_container, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -43,6 +82,7 @@ UIScreenStandby::UIScreenStandby():UIScreen()
     GUI::updateTimeLabel(_timeLabel, GUI::timeFormatHM);
     
     // date label
+<<<<<<< HEAD:src/UIScreenStandby.cpp
     _dateLabel = lv_label_create(_container, NULL);
     GUI::updateTimeLabel(_dateLabel, GUI::dateFormatLong);
 
@@ -79,6 +119,37 @@ UIScreenStandby::UIScreenStandby():UIScreen()
 }
 
 void UIScreenStandby::updateIcons()
+=======
+    _tft->setFreeFont(&FreeSansBold9pt7b);
+    _tft->setTextColor(_tft->color565(127, 140, 141)); //#7f8c8d
+    strftime(label, sizeof(label), "%a %d %B", &_timeInfo);
+    if(init || (_lastMonth != _timeInfo.tm_mon))
+    {
+        _tft->fillRect(0,labelTop,TFT_WIDTH, _tft->fontHeight(), _bgColor);
+        _lastMonth = _timeInfo.tm_mon;
+        _tft->drawString(label, TFT_WIDTH/2, labelTop + (_tft->fontHeight()/2));
+    }
+    labelTop += _tft->fontHeight();
+
+    // getting batery level
+    _gui->updateBatteryLevel();
+
+    // small bar beneath date
+    uint16_t barHeight  = _tft->fontHeight() + 4;
+    sprintf(label, "TODO: icons %d", barHeight);
+    uint16_t barWidth   = _tft->textWidth(label) + 6;
+    labelTop += 10;
+    _tft->fillRoundRect((TFT_WIDTH - barWidth)/2, labelTop, barWidth, barHeight, 4, _tft->color565(189, 195, 199)); //#bdc3c7
+    _tft->setTextColor(_bgColor);
+    _tft->drawString(label, TFT_WIDTH/2, labelTop + (_tft->fontHeight()/2) + 2);
+
+    // swipe up text
+    _tft->setTextColor(_tft->color565(189, 195, 199));
+    _tft->drawString("^ swipe up ^", TFT_WIDTH/2, TFT_HEIGHT - _tft->fontHeight());
+}
+
+void AppStandby::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
+>>>>>>> no_lvgl:src/AppStandby.cpp
 {
     char* systemIcon;
     for(uint8_t i = 0; i < GUI::systemIcons.size(); i++)
@@ -116,7 +187,11 @@ void UIScreenStandby::updateIcons()
     }
 }
 
+<<<<<<< HEAD:src/UIScreenStandby.cpp
 void UIScreenStandby::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback)
+=======
+void AppStandby::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
+>>>>>>> no_lvgl:src/AppStandby.cpp
 {
     if(!_touched && event == LV_EVENT_PRESSED){
         _touched = true;
@@ -125,6 +200,7 @@ void UIScreenStandby::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t eve
 
     if(event == LV_EVENT_LONG_PRESSED)
     {
+<<<<<<< HEAD:src/UIScreenStandby.cpp
         //_gui->getTTGO()->motor->onec();
         lv_obj_set_hidden(_touchLabel,true);
         if(_gui->getLastScreen() > SCREEN_STANDBY)
@@ -134,6 +210,15 @@ void UIScreenStandby::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t eve
         else
         {
             _gui->showScreen(SCREEN_MAIN);
+=======
+        if(_gui->getLastApp() > _gui->getStandbyApp())
+        {
+            _gui->showApp(_gui->getLastApp());
+        }
+        else
+        {
+            _gui->showApp(_gui->getLauncherApp(), true);
+>>>>>>> no_lvgl:src/AppStandby.cpp
         }
         _touched = false;
     }

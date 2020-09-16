@@ -12,28 +12,60 @@
 
 class TTGOClass;
 
+extern TTGOClass* ttgo;
+
 class TouchMetrics {
-    TTGOClass   *_ttgo;
-    bool        _touch;
-    int16_t     _x, _y, _lastX, _lastY;
-    int16_t     _swipeTolerance;
-    int16_t     _swipeEdgeDetection;
+    TTGOClass   *_ttgo              = ttgo;
+    bool        _touch              = false;
+    int16_t     _x                  = -1;
+    int16_t     _y                  = -1;
+    int16_t     _lastX              = -1;
+    int16_t     _lastY              = -1;
+    int16_t     _swipeEdgeDetection = 30;
+    void        _sendTouchType();
+
     public:
         typedef enum{
-            TOUCH,
+            TOUCH_START,
+            TOUCHING,
+            TOUCH_RELEASE,
+            
+            SWIPE_VERTICAL_STARTED,
             SWIPE_TOP,
+            SWIPING_TOP,
             SWIPE_TOP_EDGE,
-            SWIPE_RIGHT,
-            SWIPE_RIGHT_EDGE,
+            SWIPING_TOP_EDGE,
             SWIPE_BOTTOM,
+            SWIPING_BOTTOM,
             SWIPE_BOTTOM_EDGE,
+            SWIPING_BOTTOM_EDGE,
+
+            SWIPE_HORIZONTAL_STARTED,
+            SWIPE_RIGHT,
+            SWIPING_RIGHT,
+            SWIPE_RIGHT_EDGE,
+            SWIPING_RIGHT_EDGE,
             SWIPE_LEFT,
-            SWIPE_LEFT_EDGE
+            SWIPING_LEFT,
+            SWIPE_LEFT_EDGE,
+            SWIPING_LEFT_EDGE,
+
+            // Additional types for blocking other touch guestures
+            TOUCH_NONE,
+            SWIPING_HORIZONTAL,
+            SWIPING_VERTICAL,
         } touch_t;
 
+<<<<<<< HEAD
         TouchMetrics();
         void    checkTouch();
         bool    getTouch(){return _touch;}
+=======
+        TouchMetrics(){};
+        touch_t touchBlockedBy = TOUCH_NONE;
+        void checkTouch();
+        bool getTouch(){return _touch;}
+>>>>>>> no_lvgl
         int16_t getSwipeEdgeDetection(){return _swipeEdgeDetection;}
         void    setTouch(bool touch){_touch = touch;}
         int16_t getX(){return _x;}
