@@ -16,20 +16,6 @@
 class GUI;
 class TFT_esPI;
 
-<<<<<<< HEAD:include/UIScreenCalendar.h
-class UIScreenCalendar : public UIScreen{
-    lv_obj_t*           _calendar;
-    lv_calendar_date_t  today;
-    lv_calendar_date_t* _highlightedDays;
-
-    public:
-        UIScreenCalendar();
-        void    eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback = nullptr);
-        void    updateTask(struct _lv_task_t* data);
-};
-
-#endif /*__UISCREENCALENDAR_H */
-=======
 class AppCalendar : public App{
     uint16_t    _weekDayColor, _weekEndColor, _todayColor, _highlightDayColor;
     time_t      _currentTime, _displayTime;
@@ -58,4 +44,3 @@ class AppCalendar : public App{
 };
 
 #endif /*__APPCALENDAR_H */
->>>>>>> no_lvgl:include/AppCalendar.h

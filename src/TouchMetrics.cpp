@@ -5,7 +5,7 @@
 
 #include "GUI.h"
 
-extern TTGOClass* ttgo;
+extern TTGOClass *ttgo;
 
 void TouchMetrics::checkTouch()
 {
@@ -71,7 +71,6 @@ void TouchMetrics::_sendTouchType()
             // check for left swipe
             if(deltaX>0)
             {
-                /*
                 GUI::touchAction(
                     _lastX,
                     _lastY,
@@ -84,11 +83,9 @@ void TouchMetrics::_sendTouchType()
                         :(_touch?touch_t::SWIPING_LEFT:touch_t::SWIPE_LEFT)
                     )
                 );
-                */
             }
             else
             {
-                /*
                 GUI::touchAction(
                     _lastX,
                     _lastY,
@@ -101,7 +98,6 @@ void TouchMetrics::_sendTouchType()
                         :(_touch?touch_t::SWIPING_RIGHT:touch_t::SWIPE_RIGHT)
                     )
                 );
-                */
             }
         }
     }
@@ -122,7 +118,6 @@ void TouchMetrics::_sendTouchType()
             // check for up swipe
             if(deltaY>0)
             {
-                /*
                 GUI::touchAction(
                     _lastX,
                     _lastY,
@@ -135,11 +130,9 @@ void TouchMetrics::_sendTouchType()
                         :(_touch?touch_t::SWIPING_TOP:touch_t::SWIPE_TOP)
                     )
                 );
-                */
             }
             else
             {
-                /*
                 // check for top screen edge
                 GUI::touchAction(
                     _lastX,
@@ -152,15 +145,7 @@ void TouchMetrics::_sendTouchType()
                         :(_touch?touch_t::SWIPING_BOTTOM:touch_t::SWIPE_BOTTOM)
                     )
                 );
-                */
             }
         }
-<<<<<<< HEAD
-        else
-        {
-            //GUI::touchAction(_lastX, _lastY, deltaX, deltaY, touch_t::TOUCH);
-        }
-=======
->>>>>>> no_lvgl
     }
 }

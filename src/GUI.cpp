@@ -5,20 +5,6 @@
     @version 0.1 7/17/2020
 */
  
-<<<<<<< HEAD
-// Please select the model you want to use in config.h
-
-#include "config.h"
-#include "LilyGoWatch.h"
-
-#include "GUI.h"
-
-#include "UIScreenStandby.h"
-#include "UIScreenMain.h"
-#include "UIScreenTesting.h"
-#include "UIScreenCalendar.h"
-#include "UIScreenSettings.h"
-=======
 #include "config.h"
 #include "LilyGoWatch.h"
 
@@ -29,15 +15,10 @@
 #include "AppCalendar.h"
 #include "AppSettings.h"
 #include "AppLauncher.h"
->>>>>>> no_lvgl
 
 TTGOClass*              GUI::_ttgo              = nullptr;
+TFT_eSPI*               GUI::_tft               = nullptr;
 uint32_t                GUI::_stepCounter       = 0;
-<<<<<<< HEAD
-std::vector<UIScreen*>  GUI::_screens;
-screens_t               GUI::_lastScreen        = SCREEN_STANDBY;
-screens_t               GUI::_activeScreen      = SCREEN_STANDBY;
-=======
 TouchMetrics*           GUI::_touch;
 GUI::debug_t            GUI::_debug;
 unsigned long           GUI::_lastActionTime    = 0;
@@ -47,20 +28,7 @@ App*                    GUI::_activeApp         = nullptr;
 App*                    GUI::_standby           = nullptr;
 App*                    GUI::_launcher          = nullptr;
 icon_battery_t          GUI::_batteryIcon       = ICON_CALCULATION;
->>>>>>> no_lvgl
 int                     GUI::_batteryLevel      = 0;
-lv_style_t              GUI::borderlessStyle;
-lv_style_t              GUI::modalStyle;
-std::vector<icon_t>     GUI::systemIcons;
-std::vector<String>     GUI::wifiSSIDs;
-bool                    GUI::isPluggedIn;
-bool                    GUI::isStillConnected;
-int8_t                  GUI::timeZone           = 1;
-char                    GUI::timeFormatHM[]     = "%H:%M";
-char                    GUI::timeFormatHMS[]    = "%H:%M:%S";
-char                    GUI::dateFormat[]       = "%d.%m.%Y";
-char                    GUI::dateFormatLong[]   = "%a %d %B";
-lv_task_t*              GUI::lvUpdateTask;
 
 /**
  * @brief  Sets the TTGOClass object to the GUI class
@@ -71,6 +39,7 @@ lv_task_t*              GUI::lvUpdateTask;
 void GUI::setTTGO(TTGOClass *ttgo)
 {
     _ttgo = ttgo;
+    _tft = _ttgo->tft;
 }
 
 /**
@@ -78,9 +47,19 @@ void GUI::setTTGO(TTGOClass *ttgo)
  * @note   
  * @retval TTGOClass watch reference
  */
-TTGOClass* GUI::getTTGO()
+TTGOClass *GUI::getTTGO()
 {
     return _ttgo;
+}
+
+/**
+ * @brief  Returns the TFT_eSPI tft reference
+ * @note   
+ * @retval TFT_eSPI reference
+ */
+TFT_eSPI *GUI::getTFT()
+{
+    return _tft;
 }
 
 /**
@@ -90,50 +69,6 @@ TTGOClass* GUI::getTTGO()
  */
 void GUI::init()
 {
-<<<<<<< HEAD
-    _ttgo->motor_begin();
-
-    lv_style_init(&borderlessStyle);
-    lv_style_set_border_width(&borderlessStyle,LV_STATE_DEFAULT,0);
-
-    lv_style_init(&modalStyle);
-    lv_style_set_bg_color(&modalStyle, LV_OBJ_PART_MAIN, LV_COLOR_BLACK);
-    lv_style_set_bg_opa(&modalStyle, LV_OBJ_PART_MAIN, LV_OPA_50);
-    lv_style_set_border_width(&modalStyle, LV_OBJ_PART_MAIN, 0);
-    lv_style_set_radius(&modalStyle, LV_OBJ_PART_MAIN, 0);
-
-    systemIcons.push_back({nullptr,LV_SYMBOL_BELL,false,false});
-    systemIcons.push_back({nullptr,LV_SYMBOL_WIFI,false,false});
-    systemIcons.push_back({nullptr,LV_SYMBOL_BLUETOOTH,false,false});
-    systemIcons.push_back({nullptr,LV_SYMBOL_CHARGE,true,true});
-
-    lv_task_create(updateTask, 200, LV_TASK_PRIO_MID, NULL);
-    lvUpdateTask = lv_task_create(lvUpdateTaskMethod, lv_task_handler(), LV_TASK_PRIO_HIGH, NULL);
-    updateBatteryLevel();
-
-    // creating screens
-    _screens.push_back(new UIScreenStandby());
-    _screens.push_back(new UIScreenMain());
-    _screens.push_back(new UIScreenTesting());
-    _screens.push_back(new UIScreenSettings());
-    _screens.push_back(new UIScreenCalendar());
-
-    // as we init the GUI here we want to start the standby screen
-    _ttgo->openBL();
-    showScreen(SCREEN_STANDBY);
-}
-
-void GUI::updateTask(struct _lv_task_t* data){
-    //_ttgo->motor->onec();
-    updateBatteryLevel();
-    _screens[_activeScreen]->updateTask(data);
-};
-
-void GUI::screenEventCallback(lv_obj_t * obj, lv_event_t event)
-{
-    ScreenCallback* data = (ScreenCallback*)lv_obj_get_user_data(obj);
-    switch(data->getCommand())
-=======
     _tft->setTextDatum(MC_DATUM);
     _tft->fillScreen(TFT_BLACK);
     _touch = new TouchMetrics();
@@ -151,15 +86,8 @@ void GUI::screenEventCallback(lv_obj_t * obj, lv_event_t event)
     showStandbyApp(true);
     
     if(_ttgo->power->isChargeing())
->>>>>>> no_lvgl
     {
-        case CALLBACK_SWITCH_SCREEN:
-            if(event == LV_EVENT_CLICKED){
-                showScreen(data->getTarget());
-            }
-            break;
-        default:
-            data->getOrigin()->eventCallback(obj, event, data);
+        _batteryIcon = ICON_CHARGE;
     }
     
     xTaskCreate(
@@ -170,23 +98,6 @@ void GUI::screenEventCallback(lv_obj_t * obj, lv_event_t event)
         5,                  // Task priority
         &taskHandle         // Task handle
     );
-}
-
-void GUI::modalEventCallback(lv_obj_t * obj, lv_event_t event)
-{
-    UIModal* modal = (UIModal*)lv_obj_get_user_data(obj);
-    modal->eventCallback(obj, event);
-}
-
-void GUI::updateTimeLabel(lv_obj_t* label, char* format)
-{
-    time_t now;
-    struct tm  info;
-    char buf[64];
-    time(&now);
-    localtime_r(&now, &info);
-    strftime(buf, sizeof(buf), format, &info);
-    lv_label_set_text(label, buf);
 }
 
 /**
@@ -228,45 +139,16 @@ uint32_t GUI::getStepCounter()
 void GUI::updateBatteryLevel()
 {
     _batteryLevel = _ttgo->power->getBattPercentage();
-    if(_ttgo->power->isChargeing())
-    {
-        isPluggedIn = true;
-        isStillConnected = false;
-    }
 }
 
-char* GUI::getBatteryIcon()
+/**
+ * @brief  Updates the battery icon with a new one
+ * @note   
+ * @param  index: icon
+ * @retval None
+ */
+void GUI::updateBatteryIcon(icon_battery_t index)
 {
-<<<<<<< HEAD
-    updateBatteryLevel();
-    if(isPluggedIn && isStillConnected){
-        return LV_SYMBOL_USB;
-    }
-    else if(isPluggedIn)
-    {
-        return LV_SYMBOL_CHARGE;
-    }
-    else if(_batteryLevel > 75 && _batteryLevel <= 100)
-    {
-        return LV_SYMBOL_BATTERY_FULL;
-    }
-    else if(_batteryLevel > 50 && _batteryLevel <= 75)
-    {
-        return LV_SYMBOL_BATTERY_3;
-    }
-    else if(_batteryLevel > 25 && _batteryLevel <= 50)
-    {
-        return LV_SYMBOL_BATTERY_2;
-    }
-    else if(_batteryLevel > 5 && _batteryLevel <= 25)
-    {
-        return LV_SYMBOL_BATTERY_1;
-    }
-    else
-    {
-        return LV_SYMBOL_BATTERY_EMPTY;
-    }
-=======
     _batteryIcon = index;
 }
 
@@ -279,25 +161,18 @@ char* GUI::getBatteryIcon()
 void GUI::wifiListAdd(const String ssid)
 {
 
->>>>>>> no_lvgl
 }
 
-void GUI::showScreen(screens_t screen)
+/**
+ * @brief  Will check for touch gestures
+ * @note   
+ * @retval None
+ */
+void GUI::checkTouchScreen()
 {
-    _lastScreen = _activeScreen;
-    _activeScreen = screen;
-    _screens[_lastScreen]->hide();
-    _screens[_activeScreen]->show();
+    _touch->checkTouch();
 }
 
-<<<<<<< HEAD
-
-std::vector<screens_t> GUI::getUIScreensForLauncher()
-{
-    std::vector<screens_t> screens;
-    
-    for(uint8_t i = 0; i < _screens.size(); i++)
-=======
 void GUI::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
     _lastActionTime = millis();
@@ -333,39 +208,37 @@ void GUI::debugOutput(const String str)
     }
     
     if(str)
->>>>>>> no_lvgl
     {
-        bool launcher = _screens[i]->showInLauncher();
+        uint16_t textWidth  = _tft->textWidth(str);
+        uint16_t textHeight = _tft->fontHeight(2);
+        uint16_t boxHeight  = (textHeight * 2) + 7;
+        uint16_t boxWidth   = textWidth + (2*8);
+        uint16_t topStart   = (TFT_HEIGHT - boxHeight)/2;
+        uint16_t leftStart  = (TFT_WIDTH - boxWidth)/2;
+
+        _debug.top = topStart;
+        _debug.left = leftStart;
+        _debug.width = boxWidth;
+        _debug.height = boxHeight;
+
+        _debug.displayContent = ( uint16_t*) ps_calloc(boxWidth * boxHeight, sizeof(uint16_t));
+        _tft->readRect(leftStart, topStart, boxWidth, boxHeight, _debug.displayContent);
         
-        if(launcher)
-        {
-            screens.push_back(static_cast<screens_t>(i));
-        }
+        // background
+        _tft->fillRect(leftStart, topStart, boxWidth, boxHeight, TFT_RED);
+        _tft->drawRect(leftStart + 1, topStart + textHeight, boxWidth - 2, boxHeight - textHeight -2, TFT_WHITE);
+
+        // element style
+        _tft->setTextFont(2);
+        _tft->setTextSize(1);
+        _tft->setTextColor(TFT_WHITE, TFT_RED);
+
+        _tft->drawString(" DEBUG: ", (TFT_WIDTH - _tft->textWidth(" DEBUG: "))/2, topStart);
+        _tft->drawString(str, (TFT_WIDTH - _tft->textWidth(str))/2, topStart + textHeight + 2);
+        _debug.visible = true;
     }
-    
-    return screens;
 }
 
-<<<<<<< HEAD
-char* GUI::getUIScreenLabel(screens_t screen)
-{
-    return _screens[screen]->getLabel();
-}
-
-RTC_Date GUI::getDateTime()
-{
-    return _ttgo->rtc->getDateTime();
-}
-
-const char* GUI::getRTCHMS()
-{
-    return _ttgo->rtc->formatDateTime(PCF_TIMEFORMAT_HMS);
-}
-
-const char* GUI::getRTCDDMMYYYY()
-{
-    return _ttgo->rtc->formatDateTime(PCF_TIMEFORMAT_DD_MM_YYYY);
-=======
 void GUI::showStandbyApp(bool init)
 {
     for(uint8_t i = 0; i<_apps.size(); i++)
@@ -397,7 +270,6 @@ void GUI::showApp(App* app, bool init, bool task)
         _lastApp->clean();
     }
     _activeApp->draw(init, task);
->>>>>>> no_lvgl
 }
 
 void GUI::setRTC(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second)

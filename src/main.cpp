@@ -83,16 +83,9 @@ void setup()
 void loop()
 {
     Energy::checkIRQ();
-<<<<<<< HEAD
-
-    if (lv_disp_get_inactive_time(NULL) < DEFAULT_SCREEN_TIMEOUT) {
-        lv_task_handler();
-    } else {
-=======
     GUI::checkTouchScreen();
     
     if (ttgo->bl->isOn() && GUI::getInactivityTime() > DEFAULT_SCREEN_TIMEOUT) {
->>>>>>> no_lvgl
         Energy::lowEnergy();
     }
 

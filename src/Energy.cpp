@@ -1,16 +1,12 @@
 #include <Arduino.h>
 #include <WiFi.h>
-<<<<<<< HEAD
-=======
 
 #include "config.h"
 #include "LilyGoWatch.h"
 
->>>>>>> no_lvgl
 #include "GUI.h"
 #include "Energy.h"
 #include "Event.h"
-#include "UIModal.h"
 
 #define WATCH_FLAG_SLEEP_MODE       _BV(1)
 #define WATCH_FLAG_SLEEP_EXIT       _BV(2)
@@ -104,48 +100,34 @@ void Energy::setupIRQ()
 void Energy::network()
 {
     WiFi.mode(WIFI_STA);
-    WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info)
-    {
+    WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info) {
         xEventGroupClearBits(Event::groupHandle, G_EVENT_WIFI_CONNECTED);
     }, WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
 
-    WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info)
-    {
+    WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info) {
         uint8_t data = Q_EVENT_WIFI_SCAN_DONE;
         xQueueSend(Event::queueHandle, &data, portMAX_DELAY);
     }, WiFiEvent_t::SYSTEM_EVENT_SCAN_DONE);
 
-    WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info)
-    {
+    WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info) {
         xEventGroupSetBits(Event::groupHandle, G_EVENT_WIFI_CONNECTED);
     }, WiFiEvent_t::SYSTEM_EVENT_STA_CONNECTED);
 
-    WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info)
-    {
+    WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info) {
         _gui->wifiConnectStatus(true);
     }, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
 }
 
 void Energy::lowEnergy()
 {
-    lv_disp_trig_activity(NULL);
-    if (_ttgo->bl->isOn())
-    {
+    if (_ttgo->bl->isOn()) {
         xEventGroupSetBits(Event::isrGroup, WATCH_FLAG_SLEEP_MODE);
         _ttgo->closeBL();
-        UIModal::hideAll();
-        _ttgo->stopLvglTick();
         _ttgo->bma->enableStepCountInterrupt(false);
         _ttgo->displaySleep();
-<<<<<<< HEAD
-        if(!WiFi.isConnected())
-        {
-            _lenergy = true;
-=======
         if (!WiFi.isConnected()) {
             _lowEnergy = true;
             vTaskSuspend(GUI::taskHandle);
->>>>>>> no_lvgl
             WiFi.mode(WIFI_OFF);
             // rtc_clk_cpu_freq_set(RTC_CPU_FREQ_2M);
             setCpuFrequencyMhz(20);
@@ -156,20 +138,11 @@ void Energy::lowEnergy()
             esp_sleep_enable_gpio_wakeup ();
             setSleep();
         }
-    }
-    else
-    {
-        _ttgo->startLvglTick();
+    } else {
         _ttgo->displayWakeup();
         _ttgo->rtc->syncToSystem();
-        // go to standby screen
-        _gui->showScreen(SCREEN_STANDBY);
         _gui->updateStepCounter();
         _gui->updateBatteryLevel();
-<<<<<<< HEAD
-        _ttgo->openBL();
-        _ttgo->bma->enableStepCountInterrupt();
-=======
         _gui->updateBatteryIcon(ICON_CALCULATION);
         _ttgo->openBL();
         _ttgo->bma->enableStepCountInterrupt();
@@ -179,7 +152,6 @@ void Energy::lowEnergy()
         // go to standby screen
         _gui->showStandbyApp(true);
         vTaskResume(GUI::taskHandle);
->>>>>>> no_lvgl
     }
 }
 
@@ -189,32 +161,22 @@ void Energy::checkIRQ()
     uint8_t data;
     //! Fast response wake-up interrupt
     EventBits_t  bits = xEventGroupGetBits(Event::isrGroup);
-<<<<<<< HEAD
-    if(bits & WATCH_FLAG_SLEEP_EXIT)
-    {
-        if(_lenergy)
-        {
-            _lenergy = false;
-=======
     if (bits & WATCH_FLAG_SLEEP_EXIT) {
         if (_lowEnergy) {
             _lowEnergy = false;
->>>>>>> no_lvgl
             // rtc_clk_cpu_freq_set(RTC_CPU_FREQ_160M);
             setCpuFrequencyMhz(160);
         }
 
         Energy::lowEnergy();
 
-        if(bits & WATCH_FLAG_BMA_IRQ)
-        {
+        if (bits & WATCH_FLAG_BMA_IRQ) {
             do {
                 rlst =  _ttgo->bma->readInterrupt();
             } while (!rlst);
             xEventGroupClearBits(Event::isrGroup, WATCH_FLAG_BMA_IRQ);
         }
-        if (bits & WATCH_FLAG_AXP_IRQ)
-        {
+        if (bits & WATCH_FLAG_AXP_IRQ) {
             _ttgo->power->readIRQ();
             _ttgo->power->clearIRQ();
             //TODO: Only accept axp power pek key short press
@@ -223,62 +185,51 @@ void Energy::checkIRQ()
         xEventGroupClearBits(Event::isrGroup, WATCH_FLAG_SLEEP_EXIT);
         xEventGroupClearBits(Event::isrGroup, WATCH_FLAG_SLEEP_MODE);
     }
-    if ((bits & WATCH_FLAG_SLEEP_MODE))
-    {
+    if ((bits & WATCH_FLAG_SLEEP_MODE)) {
         //! No event processing after entering the information screen
         return;
     }
 
     //! Normal polling
-    if (xQueueReceive(Event::queueHandle, &data, 5 / portTICK_RATE_MS) == pdPASS)
-    {
-        switch (data){
-            case Q_EVENT_BMA_INT:
-                do {
-                    rlst = _ttgo->bma->readInterrupt();
-                } while (!rlst);
+    if (xQueueReceive(Event::queueHandle, &data, 5 / portTICK_RATE_MS) == pdPASS) {
+        switch (data) {
+        case Q_EVENT_BMA_INT:
+            do {
+                rlst = _ttgo->bma->readInterrupt();
+            } while (!rlst);
 
-                //! setp counter
-                if(_ttgo->bma->isStepCounter())
-                {
-                    _gui->updateStepCounter();
-                }
-                break;
-            case Q_EVENT_AXP_INT:
-                _ttgo->power->readIRQ();
-                if (_ttgo->power->isVbusPlugInIRQ())
-                {
-                    _gui->isPluggedIn = true;
-                }
-                if (_ttgo->power->isVbusRemoveIRQ())
-                {
-                    _gui->isPluggedIn       = false;
-                    _gui->isStillConnected  = false;
-                }
-                if (_ttgo->power->isChargingDoneIRQ())
-                {
-                    _gui->isStillConnected = true;
-                }
-                if (_ttgo->power->isPEKShortPressIRQ())
-                {
-                    _ttgo->power->clearIRQ();
-                    lowEnergy();
-                    return;
-                }
+            //! setp counter
+            if (_ttgo->bma->isStepCounter()) {
+                _gui->updateStepCounter();
+            }
+            break;
+        case Q_EVENT_AXP_INT:
+            _ttgo->power->readIRQ();
+            if (_ttgo->power->isVbusPlugInIRQ()) {
+                _gui->updateBatteryIcon(ICON_CHARGE);
+            }
+            if (_ttgo->power->isVbusRemoveIRQ()) {
+                _gui->updateBatteryIcon(ICON_CALCULATION);
+            }
+            if (_ttgo->power->isChargingDoneIRQ()) {
+                _gui->updateBatteryIcon(ICON_CALCULATION);
+            }
+            if (_ttgo->power->isPEKShortPressIRQ()) {
                 _ttgo->power->clearIRQ();
-                break;
-            /*
-            case Q_EVENT_WIFI_SCAN_DONE:
-                int16_t len =  WiFi.scanComplete();
-                _gui->wifiSSIDs.clear();
-                for (int i = 0; i < len; ++i) {
-                    _gui->wifiSSIDs.push_back(WiFi.SSID(i));
-                }
-                
-                break;
-            */
-            default:
-                break;
+                lowEnergy();
+                return;
+            }
+            _ttgo->power->clearIRQ();
+            break;
+        case Q_EVENT_WIFI_SCAN_DONE: {
+            int16_t len =  WiFi.scanComplete();
+            for (int i = 0; i < len; ++i) {
+                _gui->wifiListAdd(WiFi.SSID(i).c_str());
+            }
+            break;
+        }
+        default:
+            break;
         }
     }
 }

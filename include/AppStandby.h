@@ -9,47 +9,13 @@
 #define __APPSTANDBY_H
 
 #include <Arduino.h>
-<<<<<<< HEAD:include/UIScreenStandby.h
-#include "UIScreen.h"
-
-#include "lvgl/src/lv_core/lv_obj.h"
-=======
 
 #include "App.h"
 #include "TouchMetrics.h"
->>>>>>> no_lvgl:include/AppStandby.h
 
 class GUI;
 class TFT_esPI;
 
-<<<<<<< HEAD:include/UIScreenStandby.h
-enum screens_t : uint8_t;
-typedef _lv_obj_t lv_obj_t;
-
-class UIScreenStandby : public UIScreen{
-    lv_obj_t*           _timeLabel;
-    lv_style_t          _timeLabelStyle;
-    
-    lv_obj_t*           _dateLabel;
-    lv_style_t          _dateLabelStyle;
-
-    lv_obj_t*           _iconContainer;
-    lv_style_t          _iconContainerStyle;
-
-    lv_obj_t*           _touchNotifyLabel;
-
-    lv_obj_t*           _touchLabel;
-    bool                _touched;
-
-    public:
-        UIScreenStandby();
-        void    eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback = nullptr);
-        void    updateTask(struct _lv_task_t* data);
-        void    updateIcons();
-};
-
-#endif /*__UISCREENSTANDBY_H */
-=======
 class AppStandby: public App{
     time_t      _currentTime;
     struct tm   _timeInfo;
@@ -70,4 +36,3 @@ class AppStandby: public App{
 };
 
 #endif /*__APPSTANDBY_H */
->>>>>>> no_lvgl:include/AppStandby.h

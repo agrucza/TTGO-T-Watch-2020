@@ -20,7 +20,7 @@ class Energy {
         {
             _ttgo = ttgo;
             _gui = gui;
-        }
+        };
         static void setupAXPIRQ();
         static void setupIRQ();
         static void disableUnusedPower();
