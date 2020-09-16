@@ -27,9 +27,8 @@ class AppLauncher : public App{
     
     std::vector<std::vector<App*>> _displayIcons;
     
-    void        _initDisplayIcons();
     void        _setAppIcon(App* app, uint8_t posX, uint8_t posY);
-
+    
     public:
         AppLauncher();
         void    draw(bool init = false, bool task = false);

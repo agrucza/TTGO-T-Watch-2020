@@ -77,13 +77,10 @@ void GUI::init()
     updateBatteryLevel();
 
     addApp(new AppStandby());
-    //addApp(new AppStartup());
     addApp(new AppCalendar());
     addApp(new AppSettings());
     addApp(new AppTesting());
-    
     addApp(new AppLauncher());
-    // as we init the GUI here we want to start the standby screen
     
     _ttgo->openBL();
     showStandbyApp(true);

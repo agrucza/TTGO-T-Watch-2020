@@ -21,7 +21,7 @@ AppLauncher::AppLauncher():App("Launcher", false)
     _gui->setLauncherApp(this);
 
     std::vector<App*> apps = _gui->getApps();
-
+    
     for(uint8_t i = 0; i < apps.size(); i++)
     {
         if(apps[i]->getShowInLauncher())
@@ -50,7 +50,8 @@ void AppLauncher::_setAppIcon(App* app, uint8_t posX, uint8_t posY)
     uint8_t iconsX  = app->getIconSizeX();
     uint8_t iconsY  = app->getIconSizeY();
     
-    while(_displayIcons.size() < (posY + iconsY)){
+    while(_displayIcons.size() < (posY + iconsY))
+    {
         std::vector<App*> row;
         while(row.size() < _iconsMax){
             row.push_back(nullptr);
