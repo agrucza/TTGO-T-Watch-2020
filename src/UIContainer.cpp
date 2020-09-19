@@ -18,7 +18,7 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
         _dimensions.topLeft     = _parent->getNextElementPosition();
         _dimensions.bottomRight = {_padding,_padding};
 
-        switch(_parent->_alignment)
+        switch(_parent->getAlignment())
         {
             case ALIGNMENT_HORIZONTAL:
                 switch(_size)
@@ -31,13 +31,13 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
                         }
                         break;
                     case SIZE_FULL:
-                        _dimensions.bottomRight.x =  _parent->_dimensions.bottomRight.x;
+                        _dimensions.bottomRight.x =  _parent->getDimensions().bottomRight.x;
                         _dimensions.bottomRight.x -= 2*_parent->getPadding();
                         _dimensions.bottomRight.x -= _dimensions.topLeft.x;
                         break;
                     
                 }
-                _dimensions.bottomRight.y =  _parent->_dimensions.bottomRight.y;
+                _dimensions.bottomRight.y =  _parent->getDimensions().bottomRight.y;
                 _dimensions.bottomRight.y -= 2*_parent->getPadding();
                 break;
             case ALIGNMENT_VERTICAL:
@@ -51,19 +51,19 @@ UIContainer::UIContainer(UIContainer* parent, UIESize_t size, UIEAlignment_t ali
                         }
                         break;
                     case SIZE_FULL:
-                        _dimensions.bottomRight.y =  _parent->_dimensions.bottomRight.y;
+                        _dimensions.bottomRight.y =  _parent->getDimensions().bottomRight.y;
                         _dimensions.bottomRight.y -= 2*_parent->getPadding();
                         _dimensions.bottomRight.y -= _dimensions.topLeft.y;
                         break;
                     
                 }
-                _dimensions.bottomRight.x =  _parent->_dimensions.bottomRight.x;
+                _dimensions.bottomRight.x =  _parent->getDimensions().bottomRight.x;
                 _dimensions.bottomRight.x -= 2*_parent->getPadding();
                 break;
         }
 
         // setting background color
-        _bgColor = _parent->_bgColor;
+        _bgColor = _parent->getBackgroundColor();
     }
     else
     {
@@ -81,7 +81,7 @@ UIContainer::UIContainer(App* app, UIESize_t size, UIEAlignment_t alignment)
     _alignment  = alignment;
 
     // setting background color
-    _bgColor = _app->_bgColor;
+    _bgColor = _app->getBackgroundColor();
 }
 
 void UIContainer::addUIElement(UIElement* element)
@@ -175,7 +175,7 @@ UIPoint_t UIContainer::getNextElementPosition()
 
 void UIContainer::calculateSize()
 {
-    _elementSize = {0,0};
+    _elementSize = defaultUIPoint;
 
     for(uint8_t i = 0; i < _elements.size(); i++)
     {
@@ -267,8 +267,8 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
             {
                 // found a container which dimensions will cover the gesture and has a created sprite
                 return container->touchAction(
-                    lastX + _spritePos.x - container->_dimensions.topLeft.x,
-                    lastY + _spritePos.y - container->_dimensions.topLeft.y,
+                    lastX + _spritePos.x - container->getDimensions().topLeft.x,
+                    lastY + _spritePos.y - container->getDimensions().topLeft.y,
                     deltaX,
                     deltaY,
                     touchType
@@ -321,7 +321,7 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
         {
             if(_elements[i]->isWithinDimensions(lastX, lastY))
             {
-                if(_elements[i]->touchAction(lastX - _elements[i]->_dimensions.topLeft.x, lastY - _elements[i]->_dimensions.topLeft.y, deltaX, deltaY, touchType)){
+                if(_elements[i]->touchAction(lastX - _elements[i]->getDimensions().topLeft.x, lastY - _elements[i]->getDimensions().topLeft.y, deltaX, deltaY, touchType)){
                     // for sprites
                     reDraw();
                     return true;
@@ -355,7 +355,7 @@ void UIContainer::draw(bool task)
             }
             _sprite.fillScreen((_bgColor>0?_bgColor:TFT_GREENYELLOW));
         }
-        else if(_app && _bgColor > 0 &&(_bgColor != _app->_bgColor))
+        else if(_app && _bgColor > 0 &&(_bgColor != _app->getBackgroundColor()))
         {
             _tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
         }

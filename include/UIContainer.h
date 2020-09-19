@@ -13,25 +13,27 @@
 #include "UITypes.h"
 #include "UIElement.h"
 
-extern UIDimensions_t defaultUIDimensions;
+extern UIDimensions_t   defaultUIDimensions;
+extern UIPoint_t        defaultUIPoint;
 
 class UIContainer : public UIElement{
-    UIEAlignment_t              _alignment;
-    uint8_t                     _padding                = 5;
-    std::vector<UIElement*>     _elements;
-    UIPoint_t                   _elementSize            = {0,0};
-    TFT_eSprite                 _sprite                 = TFT_eSprite(_tft);
-    uint16_t*                   _spriteData             = nullptr;
-    UIPoint_t                   _spritePosOld           = {0,0};
-    UIPoint_t                   _spritePos              = {0,0};
-    UIPoint_t                   _spritePosMax           = {0,0};
-    uint8_t                     _spriteBottomSafety     = 32;
-    struct{
-        bool x = true;
-        bool y = true;
-    } _spritePosMaxReached;
-    void                        _setDimensions(){};
-    void                        _pushSprite();
+    protected:
+        UIEAlignment_t              _alignment;
+        uint8_t                     _padding                = 5;
+        std::vector<UIElement*>     _elements;
+        UIPoint_t                   _elementSize            = defaultUIPoint;
+        TFT_eSprite                 _sprite                 = TFT_eSprite(_tft);
+        uint16_t*                   _spriteData             = nullptr;
+        UIPoint_t                   _spritePosOld           = defaultUIPoint;
+        UIPoint_t                   _spritePos              = defaultUIPoint;
+        UIPoint_t                   _spritePosMax           = defaultUIPoint;
+        uint8_t                     _spriteBottomSafety     = 32;
+        struct{
+            bool x = true;
+            bool y = true;
+        } _spritePosMaxReached;
+        void                        _setDimensions(){};
+        void                        _pushSprite();
 
     public:
         UIContainer(UIContainer* parent = nullptr, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);

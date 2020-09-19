@@ -65,9 +65,9 @@ bool UIElement::isDrawable()
             // check for left
             || (absPos.x + _dimensions.bottomRight.x < 0)
             // check for bottom
-            || (absPos.y > _parent->_dimensions.bottomRight.y - 2*_parent->getPadding())
+            || (absPos.y > _parent->getDimensions().bottomRight.y - 2*_parent->getPadding())
             // check for right
-            || (absPos.x > _parent->_dimensions.bottomRight.x - 2*_parent->getPadding())
+            || (absPos.x > _parent->getDimensions().bottomRight.x - 2*_parent->getPadding())
         )
         {
             return false;

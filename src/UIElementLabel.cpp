@@ -74,7 +74,7 @@ void UIElementLabel::draw(bool task)
                 target->fillRect(
                     absPos.x,
                     absPos.y + _dimensions.bottomRight.y - _lineHeight,
-                    _parent->_dimensions.bottomRight.x + (_lineOrientation == ORIENTATION_CENTER?(_parent)->getPadding():0),
+                    _parent->getDimensions().bottomRight.x + (_lineOrientation == ORIENTATION_CENTER?(_parent)->getPadding():0),
                     _lineHeight,
                     _textColor
                 );

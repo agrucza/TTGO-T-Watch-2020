@@ -21,7 +21,7 @@ class TFT_eSPI;
 class TFT_eSprite;
 
 class UIElement{
-    public:
+    protected:
         TFT_eSPI*           _tft;
         App*                _app    = nullptr;
         UIContainer*        _parent = nullptr;
@@ -44,7 +44,7 @@ class UIElement{
 
         ui_event_cb_t       _eventCallback = nullptr;
         ui_event_data_t     _eventData;
-
+    public:
         UIElement(UIContainer* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_CENTER);
         UIDimensions_t          getDimensions(){return _dimensions;};
         void                    setDimensions(UIDimensions_t dimensions){_dimensions = dimensions;};
@@ -52,6 +52,7 @@ class UIElement{
         void                    setEventCallback(ui_event_cb_t eventCallback){_eventCallback = eventCallback;};
         
         void                    setBackgroundColor(int16_t color){_bgColor = color;};
+        uint16_t                getBackgroundColor(){return _bgColor;};
         void                    setTextColor(uint16_t color){_textColor = color;};
         void                    setEnabled(bool enable){_enabled = enable;};
         bool                    getEnabled(){return _enabled;};

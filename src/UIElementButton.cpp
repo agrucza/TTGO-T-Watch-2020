@@ -29,7 +29,7 @@ void UIElementButton::_setDimensions()
             _dimensions.bottomRight.x = _tft->textWidth(_label) + 2*_padding;
         break;
         default:
-            _dimensions.bottomRight.x = _parent->_dimensions.bottomRight.x - 2*_parent->getPadding();
+            _dimensions.bottomRight.x = _parent->getDimensions().bottomRight.x - 2*_parent->getPadding();
         break;
     }
 }

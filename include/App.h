@@ -19,7 +19,7 @@ class TFT_eSPI;
 class UIContainer;
 
 class App{
-    public:
+    protected:
         GUI*            _gui;
         TFT_eSPI*       _tft;
         String          _label;
@@ -35,7 +35,8 @@ class App{
         UIContainer*    _appContainer       = nullptr;
         UIContainer*    _menuContainer      = nullptr;
         UIContainer*    _contentContainer   = nullptr;
-
+        
+    public:
         App(String label, bool showHeader = true);
         bool            acceptsGlobalTouch(){return _acceptsGlobalTouch;};
         bool            getShowInLauncher(){return _showInLauncher;};
@@ -44,6 +45,7 @@ class App{
         String          getLabel(){return _label;};
         bool            getShowHeader(){return _showHeader;};
         void            clean();
+        uint16_t        getBackgroundColor(){return _bgColor;};
         
         virtual void    draw(bool init = false, bool task = false) = 0;
         virtual void    drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t h) = 0;
