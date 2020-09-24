@@ -19,6 +19,7 @@ extern UIPoint_t        defaultUIPoint;
 class UIContainer : public UIElement{
     protected:
         UIEAlignment_t              _alignment;
+        int16_t                     _activeSubElement       = -1;
         uint8_t                     _padding                = 5;
         std::vector<UIElement*>     _elements;
         UIPoint_t                   _elementSize            = defaultUIPoint;
@@ -38,10 +39,14 @@ class UIContainer : public UIElement{
     public:
         UIContainer(UIContainer* parent = nullptr, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
         UIContainer(App* app, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
-        void            addUIElement(UIElement* element);
+        UIEAlignment_t  getAlignment(){return _alignment;};
+        int16_t         getActiveSubElement(){return _activeSubElement;};
+        void            setActiveSubElement(int16_t activeSubELement){_activeSubElement = activeSubELement;};
+        
         uint8_t         getPadding(){return _padding;};
         void            setPadding(uint8_t padding){_padding = padding;};
-        UIEAlignment_t  getAlignment(){return _alignment;};
+
+        void            addUIElement(UIElement* element);
         
         TFT_eSprite*    getSprite(){return &_sprite;};
         UIPoint_t       getSpritePos(){return _spritePos;};

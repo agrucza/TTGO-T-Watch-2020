@@ -25,6 +25,8 @@ class UIElement{
         TFT_eSPI*           _tft;
         App*                _app    = nullptr;
         UIContainer*        _parent = nullptr;
+
+        String              _name   = "";
         
         const GFXfont*      _font;
         uint16_t            _textColor;
@@ -46,6 +48,8 @@ class UIElement{
         ui_event_data_t     _eventData;
     public:
         UIElement(UIContainer* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_CENTER);
+        String                  getName(){return _name;};
+
         UIDimensions_t          getDimensions(){return _dimensions;};
         void                    setDimensions(UIDimensions_t dimensions){_dimensions = dimensions;};
         void                    setEventData(ui_event_data_t* data);

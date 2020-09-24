@@ -5,7 +5,7 @@
 
 #include "GUI.h"
 #include "UIContainer.h"
-#include "UISideMenu.h"
+#include "UITab.h"
 
 extern GUI* gui;
 
@@ -19,10 +19,7 @@ App::App(String label, bool showHeader)
     _appContainer = new UIContainer(this, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL);
     _appContainer->setPadding(0);
     
-    _menuContainer = new UISideMenu(_appContainer);
-    _appContainer->addUIElement(_menuContainer);
-    
-    _contentContainer = new UIContainer(_appContainer, SIZE_FULL);
+    _contentContainer = new UITab(_appContainer, ALIGNMENT_VERTICAL);
     _appContainer->addUIElement(_contentContainer);
 }
 
