@@ -19,7 +19,6 @@ extern UIPoint_t        defaultUIPoint;
 class UIContainer : public UIElement{
     protected:
         UIEAlignment_t              _alignment;
-        int16_t                     _activeSubElement       = -1;
         uint8_t                     _padding                = 5;
         std::vector<UIElement*>     _elements;
         UIPoint_t                   _elementSize            = defaultUIPoint;
@@ -40,8 +39,7 @@ class UIContainer : public UIElement{
         UIContainer(UIContainer* parent = nullptr, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
         UIContainer(App* app, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
         UIEAlignment_t  getAlignment(){return _alignment;};
-        int16_t         getActiveSubElement(){return _activeSubElement;};
-        void            setActiveSubElement(int16_t activeSubELement){_activeSubElement = activeSubELement;};
+        UIElement*      getElementByName(String name);
         
         uint8_t         getPadding(){return _padding;};
         void            setPadding(uint8_t padding){_padding = padding;};

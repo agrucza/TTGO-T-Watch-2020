@@ -5,7 +5,7 @@
 
 #include "GUI.h"
 #include "UIContainer.h"
-#include "UITab.h"
+#include "UIElementTab.h"
 
 extern GUI* gui;
 

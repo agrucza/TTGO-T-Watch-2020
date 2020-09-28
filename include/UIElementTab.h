@@ -14,10 +14,14 @@
 #include "UIContainer.h"
 
 class UITab : public UIContainer{
+    UIContainer* _tabIcons      = nullptr;
+    UIContainer* _tabContent    = nullptr;
+    
     public:
         UITab(UIContainer* parent, UIEAlignment_t alignment);
-        void    addTab(String name, String icon);
-        void    addElementToTabContent(String name, UIElement* element);
+        void            addTab(String tabName, String icon);
+        UIContainer*    getTabContent(String name){return (UIContainer*)_tabContent->getElementByName(name);};
+        void            addElementToTabContent(String tabName, UIElement* element);
 };
 
 #endif /*__UITAB_H */

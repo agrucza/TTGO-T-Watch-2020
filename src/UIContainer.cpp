@@ -84,10 +84,34 @@ UIContainer::UIContainer(App* app, UIESize_t size, UIEAlignment_t alignment)
     _bgColor = _app->getBackgroundColor();
 }
 
+UIElement* UIContainer::getElementByName(String name)
+{
+    for(uint8_t i = 0; i < _elements.size(); i++)
+    {
+        if(_elements[i]->getName() == name)
+        {
+            return _elements[i];
+        }
+    }
+
+    return nullptr;
+}
+
 void UIContainer::addUIElement(UIElement* element)
 {
     UIDimensions_t dimensions       = element->getDimensions();
     dimensions.topLeft              = getNextElementPosition();
+
+    Serial.println("### addUIElement ###");
+    Serial.print(_elements.size());
+    Serial.print(" - new Element: ");
+    Serial.print(dimensions.topLeft.x);
+    Serial.print(":");
+    Serial.print(dimensions.topLeft.y);
+    Serial.print("/");
+    Serial.print(dimensions.bottomRight.x);
+    Serial.print(":");
+    Serial.println(dimensions.bottomRight.y);
 
     element->setDimensions(dimensions);
     _elements.push_back(element);
@@ -175,6 +199,9 @@ UIPoint_t UIContainer::getNextElementPosition()
 
 void UIContainer::calculateSize()
 {
+    Serial.print("[UIContainer] calculateSize for ");
+    Serial.print(_elements.size());
+    Serial.println(" child elements");
     _elementSize = defaultUIPoint;
 
     for(uint8_t i = 0; i < _elements.size(); i++)
@@ -221,6 +248,10 @@ void UIContainer::calculateSize()
             _elementSize.x += _padding;
             break;
     }
+    Serial.print("[UIContainer] calculateSize has elementSize of ");
+    Serial.print(_elementSize.x);
+    Serial.print(":");
+    Serial.println(_elementSize.y);
 }
 
 bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)

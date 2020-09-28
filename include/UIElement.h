@@ -49,6 +49,7 @@ class UIElement{
     public:
         UIElement(UIContainer* parent = nullptr, UIEOrientation_t orientation = ORIENTATION_CENTER);
         String                  getName(){return _name;};
+        void                    setName(String name){_name = name;};
 
         UIDimensions_t          getDimensions(){return _dimensions;};
         void                    setDimensions(UIDimensions_t dimensions){_dimensions = dimensions;};

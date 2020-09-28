@@ -33,7 +33,6 @@ class App{
         uint8_t         _iconSizeY          = 1;
         uint8_t         _padding            = 5;
         UIContainer*    _appContainer       = nullptr;
-        UIContainer*    _menuContainer      = nullptr;
         UIContainer*    _contentContainer   = nullptr;
         
     public:
