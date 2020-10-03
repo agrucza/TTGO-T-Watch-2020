@@ -9,18 +9,21 @@
 
 extern GUI* gui;
 
-App::App(String label, bool showHeader)
+App::App(String label, bool showTab)
 {
     _gui                = gui;
     _tft                = _gui->getTTGO()->tft;
     _label              = label;
-    _showHeader         = showHeader;
+    _showTab            = showTab;
 
-    _appContainer = new UIContainer(this, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL);
+    _appContainer = new UIContainer(this, SIZE_FULL);
     _appContainer->setPadding(0);
-    
-    _contentContainer = new UITab(_appContainer, ALIGNMENT_VERTICAL);
-    _appContainer->addUIElement(_contentContainer);
+
+    if(_showTab)
+    {
+        _contentContainer = new UIElementTab(_appContainer, ALIGNMENT_HORIZONTAL);
+        _appContainer->addUIElement(_contentContainer);
+    }
 }
 
 void App::clean()
@@ -29,4 +32,4 @@ void App::clean()
     {
         _appContainer->clean();
     }
-};
+}

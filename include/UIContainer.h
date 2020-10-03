@@ -21,6 +21,7 @@ class UIContainer : public UIElement{
         UIEAlignment_t              _alignment;
         uint8_t                     _padding                = 5;
         std::vector<UIElement*>     _elements;
+        int16_t                     _drawElement            = -1;
         UIPoint_t                   _elementSize            = defaultUIPoint;
         TFT_eSprite                 _sprite                 = TFT_eSprite(_tft);
         uint16_t*                   _spriteData             = nullptr;
@@ -38,26 +39,28 @@ class UIContainer : public UIElement{
     public:
         UIContainer(UIContainer* parent = nullptr, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
         UIContainer(App* app, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);
-        UIEAlignment_t  getAlignment(){return _alignment;};
-        UIElement*      getElementByName(String name);
+        UIEAlignment_t          getAlignment(){return _alignment;};
+        std::vector<UIElement*> getElements(){return _elements;};
+        UIElement*              getElementByName(String name);
+        void                    setDrawElement(int16_t element){_drawElement = element;};
         
-        uint8_t         getPadding(){return _padding;};
-        void            setPadding(uint8_t padding){_padding = padding;};
+        uint8_t                 getPadding(){return _padding;};
+        void                    setPadding(uint8_t padding){_padding = padding;};
 
-        void            addUIElement(UIElement* element);
+        void                    addUIElement(UIElement* element);
         
-        TFT_eSprite*    getSprite(){return &_sprite;};
-        UIPoint_t       getSpritePos(){return _spritePos;};
-        bool            hasActiveSprite(){return _sprite.created();};
-        bool            isWithinDimensions(int x, int y);
-        bool            acceptsTouchType(TouchMetrics::touch_t touchType);
-        void            clean();
-        UIPoint_t       getNextElementPosition();
-        void            calculateSize();
+        TFT_eSprite*            getSprite(){return &_sprite;};
+        UIPoint_t               getSpritePos(){return _spritePos;};
+        bool                    hasActiveSprite(){return _sprite.created();};
+        bool                    isWithinDimensions(int x, int y);
+        bool                    acceptsTouchType(TouchMetrics::touch_t touchType);
+        void                    clean();
+        UIPoint_t               getNextElementPosition();
+        void                    calculateSize();
 
-        bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
-        void            draw(bool task = false);
-        void            reDraw(bool recursive = false);
+        bool                    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
+        void                    draw(bool task = false);
+        void                    reDraw(bool recursive = false);
 };
 
 #endif /*__UICONTAINER_H */

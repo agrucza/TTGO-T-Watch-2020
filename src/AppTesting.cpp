@@ -18,8 +18,8 @@ AppTesting::AppTesting():App("Testing")
     Serial.println("#   Init AppTesting   #");
     Serial.println("#######################");
 
-    UITab* tab = new UITab(_contentContainer, ALIGNMENT_HORIZONTAL);
-    UIContainer* tabContentHome = (UIContainer*)tab->getTabContent("Home");
+    UIElementTab* tab = (UIElementTab*)_contentContainer;
+    UIContainer* tabContentHome = tab->getTabContent("Home");
     Serial.println("Create label");
     UIElementLabel* label1 = new UIElementLabel("Test1", &FreeSansBold9pt7b, tabContentHome, ORIENTATION_LEFT);
     label1->setTextColor(FLAT_UI_V1_CLOUDS);

@@ -256,6 +256,17 @@ void UIContainer::calculateSize()
 
 bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
+    // check if we use only a subcontainer of the active one
+    std::vector<UIElement *> elements;
+    if(_drawElement >= 0)
+    {
+        elements = ((UIContainer*)_elements[_drawElement])->getElements();
+    }
+    else
+    {
+        elements = _elements;
+    }
+
     // check if container is using a sprite
     // we cant say for sure if guesture is for this container or a child container
     if(_sprite.created())
@@ -263,15 +274,16 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
         // setting up max sprite scrolling
         _spritePosMax.x = (_elementSize.x - 2*_padding) - _sprite.width();
         _spritePosMax.y = (_elementSize.y - 2*_padding) - _sprite.height() + _spriteBottomSafety;
-
+        
         // check for swipe gestures - those will only be for containers by now
         // (and maybe special elements in the future)
         // normal elements should not accept guestures
-        for(uint8_t i = 0; i < _elements.size(); i++)
+        for(uint8_t i = 0; i < elements.size(); i++)
         {
+
             UIContainer* container  = nullptr;
-            UIElement* element      = _elements[i];
-            if(UIContainer* tmp = dynamic_cast<UIContainer*>(_elements[i]))
+            UIElement* element      = elements[i];
+            if(UIContainer* tmp = dynamic_cast<UIContainer*>(elements[i]))
             {
                 container = tmp;
             }
@@ -350,9 +362,10 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
     } else {
         for(uint8_t i = 0; i < _elements.size(); i++)
         {
-            if(_elements[i]->isWithinDimensions(lastX, lastY))
+
+            if(elements[i]->isWithinDimensions(lastX, lastY))
             {
-                if(_elements[i]->touchAction(lastX - _elements[i]->getDimensions().topLeft.x, lastY - _elements[i]->getDimensions().topLeft.y, deltaX, deltaY, touchType)){
+                if(elements[i]->touchAction(lastX - elements[i]->getDimensions().topLeft.x, lastY - elements[i]->getDimensions().topLeft.y, deltaX, deltaY, touchType)){
                     // for sprites
                     reDraw();
                     return true;
@@ -371,6 +384,7 @@ void UIContainer::draw(bool task)
     UIPoint_t absPos = getTopPosition();
     if(!task)
     {
+        Serial.println("UIContainer draw");
         // check if sprite is used
         if(_parent)
         {
@@ -382,6 +396,10 @@ void UIContainer::draw(bool task)
                     _dimensions.bottomRight.x - 2*_padding,
                     _dimensions.bottomRight.y - 2*_padding + _spriteBottomSafety
                 );
+                Serial.print("Sprite: ");
+                Serial.print(_sprite.width());
+                Serial.print(":");
+                Serial.println(_sprite.height());
                 _sprite.setTextDatum(MC_DATUM);
             }
             _sprite.fillScreen((_bgColor>0?_bgColor:TFT_GREENYELLOW));
@@ -390,14 +408,25 @@ void UIContainer::draw(bool task)
         {
             _tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
         }
-        
-        for(uint8_t element = 0; element < _elements.size(); element++)
+
+        // check if we use only a subcontainer of the active one
+        std::vector<UIElement *> elements;
+        if(_drawElement >= 0)
         {
-            _elements[element]->draw(task);
-            yield();
+            UIContainer* child = (UIContainer*)_elements[_drawElement];
+            child->draw(task);
+        }
+        else
+        {
+            for(uint8_t element = 0; element < _elements.size(); element++)
+            {
+                Serial.println("UIContainer draw - passing draw to element");
+                _elements[element]->draw(task);
+                yield();
+            }
         }
 
-        // first: draw sprite to screen
+        // first: draw sprite to parent
         if(_sprite.created())
         {
             reDraw();

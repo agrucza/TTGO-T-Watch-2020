@@ -6,7 +6,7 @@
 #include "UIIcons.h"
 #include "fonts/IconsFontsSup18pt7b.h"
 
-UITab::UITab(UIContainer* parent, UIEAlignment_t alignment)
+UIElementTab::UIElementTab(UIContainer* parent, UIEAlignment_t alignment)
 :UIContainer::UIContainer(parent, SIZE_FULL, alignment)
 {
     Serial.println("Init UITab");
@@ -26,12 +26,12 @@ UITab::UITab(UIContainer* parent, UIEAlignment_t alignment)
     // just create tabs straight ahead addTab will take care of container init
     // create first tab for apps main/home
     addTab("Home", UIICON_HOME);
-
     // create second tab for settings
     addTab("Settings", UIICON_SUP_GEAR);
+    setTabContent("Home");
 }
 
-void UITab::addTab(String tabName, String icon)
+void UIElementTab::addTab(String tabName, String icon)
 {
     Serial.println("Adding Tab");
 
@@ -66,12 +66,28 @@ void UITab::addTab(String tabName, String icon)
     }
 
     // create tab content container
-    UIContainer* newTabContent = new UIContainer(_tabContent);
+    UIContainer* newTabContent = new UIContainer(_tabContent, SIZE_FULL);
     newTabContent->setName(tabName);
     _tabContent->addUIElement(newTabContent);
 }
 
-void UITab::addElementToTabContent(String tabName, UIElement* element)
+void UIElementTab::setTabContent(String name)
+{
+    Serial.println("Inside setTabContent");
+    std::vector<UIElement*> elements = _tabContent->getElements();
+    for(uint8_t i = 0; i<elements.size(); i++)
+    {
+        Serial.println("checking " + elements[i]->getName());
+        if(elements[i]->getName() == name)
+        {
+            Serial.println("Setting active tab to " + name);
+            _tabContent->setDrawElement(i);
+            break;
+        }
+    }
+}
+
+void UIElementTab::addElementToTabContent(String tabName, UIElement* element)
 {
     Serial.println("Adding element to tab");
     UIContainer* tabContent = (UIContainer*)_tabContent->getElementByName(tabName);

@@ -73,7 +73,9 @@ void setup()
     Serial.println("Network setup");
     //Setting up the network
     Energy::network();
-
+    
+    psramInit();
+    
     Serial.println("GUI init");
     //Execute your own GUI interface
     gui->setTTGO(ttgo);

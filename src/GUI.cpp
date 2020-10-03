@@ -69,6 +69,17 @@ TFT_eSPI *GUI::getTFT()
  */
 void GUI::init()
 {
+    Serial.print("Total heap: ");
+    Serial.println(ESP.getHeapSize());
+    Serial.print("Free heap: ");
+    Serial.println(ESP.getFreeHeap());
+    
+    if(psramFound()){
+        Serial.print("Total PSRAM: ");
+        Serial.println(ESP.getPsramSize());
+        Serial.print("Free PSRAM: ");
+        Serial.println(ESP.getFreePsram());
+    }
     _tft->setTextDatum(MC_DATUM);
     _tft->fillScreen(TFT_BLACK);
     _touch = new TouchMetrics();
