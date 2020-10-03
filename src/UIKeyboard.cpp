@@ -1,16 +1,16 @@
 #include "UIKeyboard.h"
-#include "UIScreen.h"
+#include "App.h"
 
-UIScreen*   UIKeyboard::screen      = nullptr;
+App*        UIKeyboard::app         = nullptr;
 lv_obj_t*   UIKeyboard::modal       = nullptr;
 lv_obj_t*   UIKeyboard::kb          = nullptr;
 lv_obj_t*   UIKeyboard::ta          = nullptr;
 lv_obj_t*   UIKeyboard::boundObj    = nullptr;
 
-void UIKeyboard::bindObj(UIScreen* scr, lv_obj_t* obj)
+void UIKeyboard::bindObj(App* scr, lv_obj_t* obj)
 {
     UIKeyboardInit();
-    screen      = scr;
+    app         = scr;
     boundObj    = obj;
     lv_label_set_align(lv_textarea_get_label(ta), lv_label_get_align(lv_textarea_get_label(obj)));
     lv_textarea_set_one_line(ta, lv_textarea_get_one_line(obj));
@@ -67,7 +67,7 @@ void UIKeyboard::eventCallback(lv_obj_t * obj, lv_event_t event)
     {
         case LV_EVENT_APPLY:
             // when apply we need to notify the screen of the changes
-            screen->eventCallback(boundObj, ta, LV_EVENT_VALUE_CHANGED);
+            app->eventCallback(boundObj, ta, LV_EVENT_VALUE_CHANGED);
             close();
             break;
         case LV_EVENT_CANCEL:

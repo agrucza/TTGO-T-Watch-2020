@@ -1,11 +1,11 @@
-#include "UIScreenTesting.h"
+#include "AppTesting.h"
 #include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
 
 extern GUI* gui;
 
-UIScreenTesting::UIScreenTesting():UIScreen()
+AppTesting::AppTesting():App()
 {
     _label              = "Testing";
     _showInLauncher     = true;
@@ -20,14 +20,14 @@ UIScreenTesting::UIScreenTesting():UIScreen()
 
     // Add control button to the header
     _closeBtn       = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
-    _callbackData   = new ScreenCallback(this, CALLBACK_SWITCH_SCREEN, SCREEN_MAIN);
+    _callbackData   = new AppCallback(this, CALLBACK_SWITCH_APP, APP_LAUNCHER);
     lv_obj_set_user_data(_closeBtn, _callbackData);
-    lv_obj_set_event_cb(_closeBtn, GUI::screenEventCallback);
+    lv_obj_set_event_cb(_closeBtn, GUI::appEventCallback);
     
     _settingsBtn    = lv_win_add_btn(_container, LV_SYMBOL_SETTINGS);
-    _callbackData   = new ScreenCallback(this, CALLBACK_SWITCH_SCREEN, SCREEN_MAIN);
+    _callbackData   = new AppCallback(this, CALLBACK_SWITCH_APP, APP_LAUNCHER);
     lv_obj_set_user_data(_settingsBtn, _callbackData);
-    lv_obj_set_event_cb(_settingsBtn, GUI::screenEventCallback);
+    lv_obj_set_event_cb(_settingsBtn, GUI::appEventCallback);
 
     // Add some dummy content
     lv_obj_t * txt = lv_label_create(_container, NULL);
@@ -41,13 +41,13 @@ UIScreenTesting::UIScreenTesting():UIScreen()
                            "See the scroll bar on the right!");
 }
 
-void UIScreenTesting::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback)
+void AppTesting::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, AppCallback* callback)
 {
     if(event == LV_EVENT_CLICKED)
     {
         if(obj == _closeBtn)
         {
-            _gui->showScreen(SCREEN_MAIN);
+            _gui->showApp(APP_LAUNCHER);
         }
         else if(obj == _settingsBtn)
         {
@@ -56,7 +56,7 @@ void UIScreenTesting::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t eve
     }
 }
 
-void UIScreenTesting::updateTask(struct _lv_task_t* data)
+void AppTesting::updateTask(struct _lv_task_t* data)
 {
 
 }

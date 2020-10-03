@@ -1,11 +1,11 @@
-#include "UIScreenCalendar.h"
+#include "AppCalendar.h"
 #include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
 
 extern GUI *gui;
 
-UIScreenCalendar::UIScreenCalendar():UIScreen()
+AppCalendar::AppCalendar():App()
 {
     _label              = "Calendar";
     _showInLauncher     = true;
@@ -21,25 +21,25 @@ UIScreenCalendar::UIScreenCalendar():UIScreen()
 
     // Add control button to the header
     _closeBtn = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
-    _callbackData = new ScreenCallback(this, CALLBACK_SWITCH_SCREEN,SCREEN_MAIN);
+    _callbackData = new AppCallback(this, CALLBACK_SWITCH_APP, APP_LAUNCHER);
     lv_obj_set_user_data(_closeBtn, _callbackData);
-    lv_obj_set_event_cb(_closeBtn,GUI::screenEventCallback);
+    lv_obj_set_event_cb(_closeBtn,GUI::appEventCallback);
     
     _settingsBtn = lv_win_add_btn(_container, LV_SYMBOL_SETTINGS);
-    _callbackData = new ScreenCallback(this, CALLBACK_NONE);
+    _callbackData = new AppCallback(this, CALLBACK_NONE);
     lv_obj_set_user_data(_settingsBtn, _callbackData);
-    lv_obj_set_event_cb(_settingsBtn,GUI::screenEventCallback);
+    lv_obj_set_event_cb(_settingsBtn,GUI::appEventCallback);
 
     // calendar
     _calendar = lv_calendar_create(_container, NULL);
     lv_obj_add_style(_calendar, LV_CONT_PART_MAIN, &GUI::borderlessStyle);
-    _callbackData = new ScreenCallback(this, CALLBACK_NONE);
+    _callbackData = new AppCallback(this, CALLBACK_NONE);
     lv_obj_set_pos(_calendar,0,0);
     lv_obj_set_width(_calendar, TFT_WIDTH);
     lv_obj_set_height(_calendar, TFT_HEIGHT-lv_win_get_header_height(_container));
     lv_obj_align(_calendar, NULL, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_user_data(_calendar, _callbackData);
-    lv_obj_set_event_cb(_calendar, GUI::screenEventCallback);
+    lv_obj_set_event_cb(_calendar, GUI::appEventCallback);
 
     /*Make the date number smaller to be sure they fit into their area*/
     lv_obj_set_style_local_text_font(_calendar, LV_CALENDAR_PART_HEADER, LV_STATE_DEFAULT, &lv_font_montserrat_12);
@@ -48,31 +48,29 @@ UIScreenCalendar::UIScreenCalendar():UIScreen()
 
     /*Set today's date*/
     RTC_Date rtc_today  = GUI::getDateTime();
-    today.year          = rtc_today.year;
-    today.month         = rtc_today.month;
-    today.day           = rtc_today.day;
+    _today.year          = rtc_today.year;
+    _today.month         = rtc_today.month;
+    _today.day           = rtc_today.day;
 
-    lv_calendar_set_today_date(_calendar, &today);
-    lv_calendar_set_showed_date(_calendar, &today);
+    lv_calendar_set_today_date(_calendar, &_today);
+    lv_calendar_set_showed_date(_calendar, &_today);
 
     /*Highlight a few days*/
-    /*
     _highlightedDays = new lv_calendar_date_t[3];
     
     _highlightedDays[0].year = 2020;
-    _highlightedDays[0].month = 8;
-    _highlightedDays[0].day = 14;
+    _highlightedDays[0].month = 10;
+    _highlightedDays[0].day = 1;
     
     _highlightedDays[1].year = 2020;
-    _highlightedDays[1].month = 8;
-    _highlightedDays[1].day = 15;
+    _highlightedDays[1].month = 10;
+    _highlightedDays[1].day = 2;
 
     _highlightedDays[2].year = 2020;
-    _highlightedDays[2].month = 8;
-    _highlightedDays[2].day = 16;
+    _highlightedDays[2].month = 10;
+    _highlightedDays[2].day = 4;
     
     lv_calendar_set_highlighted_dates(_calendar, _highlightedDays, 3);
-    */
 
     // modal
     /*
@@ -81,13 +79,13 @@ UIScreenCalendar::UIScreenCalendar():UIScreen()
     */
 }
 
-void UIScreenCalendar::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback)
+void AppCalendar::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, AppCallback* callback)
 {
     if(event == LV_EVENT_CLICKED)
     {
         if(obj == _closeBtn)
         {
-            _gui->showScreen(SCREEN_MAIN);
+            _gui->showApp(APP_LAUNCHER);
         }
         else if(obj == _settingsBtn)
         {
@@ -104,10 +102,10 @@ void UIScreenCalendar::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t ev
     }
 }
 
-void UIScreenCalendar::updateTask(struct _lv_task_t* data)
+void AppCalendar::updateTask(struct _lv_task_t* data)
 {
     RTC_Date rtc_today  = GUI::getDateTime();
-    today.year          = rtc_today.year;
-    today.month         = rtc_today.month;
-    today.day           = rtc_today.day;
+    _today.year          = rtc_today.year;
+    _today.month         = rtc_today.month;
+    _today.day           = rtc_today.day;
 }

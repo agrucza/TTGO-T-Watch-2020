@@ -1,22 +1,22 @@
 /**
-    This is the UI class
-    @file gui.h
+    This is the App class
+    @file App.h
     @author Alexander Grucza
     @version 0.1 7/24/2020
 */
 
-#ifndef __UISCREEN_H
-#define __UISCREEN_H
+#ifndef __APP_H
+#define __APP_H
 
 #include <Arduino.h>
 #include "GUI.h"
 #include "UIModal.h"
 
-enum screens_t : uint8_t;
+enum apps_t : uint8_t;
 
 extern GUI* gui;
 
-class UIScreen{
+class App{
     public:
         GUI*                _gui;
 
@@ -25,16 +25,12 @@ class UIScreen{
         
         lv_obj_t*           _container;
         lv_obj_t*           _callbackElement;
-        ScreenCallback*     _callbackData;
+        AppCallback*        _callbackData;
 
         lv_obj_t*           _closeBtn;
         lv_obj_t*           _settingsBtn;
         
-        UIScreen(){
-            _gui                = gui;
-            _container          = nullptr;
-            _callbackElement    = nullptr;
-        };
+        App();
         
         bool            showInLauncher(){return _showInLauncher;};
         char*           getLabel(){return _label;};
@@ -43,8 +39,8 @@ class UIScreen{
         void            hide();
         
         virtual void    updateTask(struct _lv_task_t* data) = 0;
-        void            eventCallback(lv_obj_t* obj, lv_event_t event, ScreenCallback* callback = nullptr);
-        virtual void    eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback = nullptr) = 0;
+        void            eventCallback(lv_obj_t* obj, lv_event_t event, AppCallback* callback = nullptr);
+        virtual void    eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, AppCallback* callback = nullptr) = 0;
 };
 
-#endif /*__UISCREEN_H */
+#endif /*__APP_H */

@@ -12,17 +12,17 @@
 
 #include "GUI.h"
 
-#include "UIScreenStandby.h"
-#include "UIScreenMain.h"
-#include "UIScreenTesting.h"
-#include "UIScreenCalendar.h"
-#include "UIScreenSettings.h"
+#include "AppStandby.h"
+#include "AppLauncher.h"
+#include "AppTesting.h"
+#include "AppCalendar.h"
+#include "AppSettings.h"
 
 TTGOClass*              GUI::_ttgo              = nullptr;
 uint32_t                GUI::_stepCounter       = 0;
-std::vector<UIScreen*>  GUI::_screens;
-screens_t               GUI::_lastScreen        = SCREEN_STANDBY;
-screens_t               GUI::_activeScreen      = SCREEN_STANDBY;
+std::vector<App*>       GUI::_apps;
+apps_t               GUI::_lastApp           = APP_STANDBY;
+apps_t               GUI::_activeApp         = APP_STANDBY;
 int                     GUI::_batteryLevel      = 0;
 lv_style_t              GUI::borderlessStyle;
 lv_style_t              GUI::modalStyle;
@@ -85,32 +85,32 @@ void GUI::init()
     lvUpdateTask = lv_task_create(lvUpdateTaskMethod, lv_task_handler(), LV_TASK_PRIO_HIGH, NULL);
     updateBatteryLevel();
 
-    // creating screens
-    _screens.push_back(new UIScreenStandby());
-    _screens.push_back(new UIScreenMain());
-    _screens.push_back(new UIScreenTesting());
-    _screens.push_back(new UIScreenSettings());
-    _screens.push_back(new UIScreenCalendar());
+    // creating apps
+    _apps.push_back(new AppStandby());
+    _apps.push_back(new AppLauncher());
+    _apps.push_back(new AppTesting());
+    _apps.push_back(new AppSettings());
+    _apps.push_back(new AppCalendar());
 
-    // as we init the GUI here we want to start the standby screen
+    // as we init the GUI here we want to start the standby app
     _ttgo->openBL();
-    showScreen(SCREEN_STANDBY);
+    showApp(APP_STANDBY);
 }
 
 void GUI::updateTask(struct _lv_task_t* data){
     //_ttgo->motor->onec();
     updateBatteryLevel();
-    _screens[_activeScreen]->updateTask(data);
+    _apps[_activeApp]->updateTask(data);
 };
 
-void GUI::screenEventCallback(lv_obj_t * obj, lv_event_t event)
+void GUI::appEventCallback(lv_obj_t * obj, lv_event_t event)
 {
-    ScreenCallback* data = (ScreenCallback*)lv_obj_get_user_data(obj);
+    AppCallback* data = (AppCallback*)lv_obj_get_user_data(obj);
     switch(data->getCommand())
     {
-        case CALLBACK_SWITCH_SCREEN:
+        case CALLBACK_SWITCH_APP:
             if(event == LV_EVENT_CLICKED){
-                showScreen(data->getTarget());
+                showApp(data->getTarget());
             }
             break;
         default:
@@ -213,35 +213,35 @@ char* GUI::getBatteryIcon()
     }
 }
 
-void GUI::showScreen(screens_t screen)
+void GUI::showApp(apps_t app)
 {
-    _lastScreen = _activeScreen;
-    _activeScreen = screen;
-    _screens[_lastScreen]->hide();
-    _screens[_activeScreen]->show();
+    _lastApp = _activeApp;
+    _activeApp = app;
+    _apps[_lastApp]->hide();
+    _apps[_activeApp]->show();
 }
 
 
-std::vector<screens_t> GUI::getUIScreensForLauncher()
+std::vector<apps_t> GUI::getAppsForLauncher()
 {
-    std::vector<screens_t> screens;
+    std::vector<apps_t> apps;
     
-    for(uint8_t i = 0; i < _screens.size(); i++)
+    for(uint8_t i = 0; i < _apps.size(); i++)
     {
-        bool launcher = _screens[i]->showInLauncher();
+        bool launcher = _apps[i]->showInLauncher();
         
         if(launcher)
         {
-            screens.push_back(static_cast<screens_t>(i));
+            apps.push_back(static_cast<apps_t>(i));
         }
     }
     
-    return screens;
+    return apps;
 }
 
-char* GUI::getUIScreenLabel(screens_t screen)
+char* GUI::getAppLabel(apps_t app)
 {
-    return _screens[screen]->getLabel();
+    return _apps[app]->getLabel();
 }
 
 RTC_Date GUI::getDateTime()

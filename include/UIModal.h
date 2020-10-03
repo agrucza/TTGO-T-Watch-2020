@@ -9,24 +9,24 @@
 #define __UIMODAL_H
 
 #include <Arduino.h>
-#include "UIScreen.h"
+#include "App.h"
 
 class UIModal{
     static std::vector<UIModal*>    store;
-    bool        showAcceptBtn       = true;
-    bool        showCloseBtn        = true;
-    bool        showOnScreenOpen;
-    UIScreen*   screen;
-    lv_obj_t*   trigger;
-    lv_obj_t*   modalContainer;
-    ScreenCallback* _callbackData;
-    lv_obj_t*   closeBtn            = nullptr;
-    lv_obj_t*   acceptBtn           = nullptr;
+    bool            showAcceptBtn       = true;
+    bool            showCloseBtn        = true;
+    bool            showOnScreenOpen;
+    App*            app;
+    lv_obj_t*       trigger;
+    lv_obj_t*       modalContainer;
+    AppCallback*    _callbackData;
+    lv_obj_t*       closeBtn            = nullptr;
+    lv_obj_t*       acceptBtn           = nullptr;
 
     public:
-        UIModal(UIScreen* screen, lv_obj_t* trigger, char* head, bool accept = true, bool close = true);
+        UIModal(App* app, lv_obj_t* trigger, char* head, bool accept = true, bool close = true);
         lv_obj_t*   modalContent;
-        static void show(UIScreen* screen, lv_obj_t* trigger = nullptr);
+        static void show(App* app, lv_obj_t* trigger = nullptr);
         static void hideAll();
         void        show();
         void        hide();

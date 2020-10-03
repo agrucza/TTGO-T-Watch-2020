@@ -11,7 +11,7 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-class UIScreen;
+class App;
 
 struct icon_t{
     lv_obj_t*   obj;
@@ -20,9 +20,9 @@ struct icon_t{
     bool        shownBefore;
 };
 
-enum screen_callback_t{
+enum app_callback_t{
     CALLBACK_NONE,
-    CALLBACK_SWITCH_SCREEN
+    CALLBACK_SWITCH_APP
 };
 
 typedef enum {
@@ -35,30 +35,30 @@ typedef enum {
     ICON_CALCULATION
 } icon_battery_t;
 
-enum screens_t : uint8_t {
-    SCREEN_STANDBY,
-    SCREEN_MAIN,
-    SCREEN_TESTING,
-    SCREEN_CALENDAR,
-    SCREEN_SETTINGS,
-    SCREEN_COUNT
+enum apps_t : uint8_t {
+    APP_STANDBY,
+    APP_LAUNCHER,
+    APP_TESTING,
+    APP_CALENDAR,
+    APP_SETTINGS,
+    APP_COUNT
 };
 
-class ScreenCallback{
-    UIScreen*           origin;
-    screen_callback_t   command;
-    screens_t           target;
+class AppCallback{
+    App*            origin;
+    app_callback_t  command;
+    apps_t          target;
     
     public:
-        ScreenCallback(UIScreen* origin, screen_callback_t command, screens_t target = SCREEN_STANDBY)
+        AppCallback(App* origin, app_callback_t command, apps_t target = APP_STANDBY)
         {
             this->origin    = origin;
             this->command   = command;
             this->target    = target;
         };
-        UIScreen*           getOrigin(){return origin;};
-        screen_callback_t   getCommand(){return command;};
-        screens_t           getTarget(){return target;};
+        App*            getOrigin(){return origin;};
+        app_callback_t  getCommand(){return command;};
+        apps_t          getTarget(){return target;};
 };
 
 class TTGOClass;
@@ -67,9 +67,9 @@ class TFT_eSPI;
 class GUI {
     static TTGOClass*                   _ttgo;
     static uint32_t                     _stepCounter;
-    static std::vector<UIScreen*>       _screens;
-    static screens_t                    _lastScreen;
-    static screens_t                    _activeScreen;
+    static std::vector<App*>            _apps;
+    static apps_t                       _lastApp;
+    static apps_t                       _activeApp;
     static int                          _batteryLevel;
 
     public:
@@ -90,7 +90,7 @@ class GUI {
         static void                     setTTGO(TTGOClass *ttgo);
         static TTGOClass*               getTTGO();
         static void                     init();
-        static void                     screenEventCallback(lv_obj_t* obj, lv_event_t event);
+        static void                     appEventCallback(lv_obj_t* obj, lv_event_t event);
         static void                     modalEventCallback(lv_obj_t* obj, lv_event_t event);
         static void                     updateTask(struct _lv_task_t* data);
         static void                     lvUpdateTaskMethod(struct _lv_task_t* data){ lv_task_set_period(lvUpdateTask, lv_task_handler());};
@@ -101,11 +101,11 @@ class GUI {
         static void                     updateBatteryLevel();
         static int                      getBatteryLevel(){return _batteryLevel;};
         static char*                    getBatteryIcon();
-        static void                     showScreen(screens_t screen);
-        static screens_t                getLastScreen(){return _lastScreen;};
-        static screens_t                getActiveScreen(){return _activeScreen;};
-        static std::vector<screens_t>   getUIScreensForLauncher();
-        static char*                    getUIScreenLabel(screens_t screen);
+        static void                     showApp(apps_t app);
+        static apps_t                   getLastApp(){return _lastApp;};
+        static apps_t                   getActiveApp(){return _activeApp;};
+        static std::vector<apps_t>      getAppsForLauncher();
+        static char*                    getAppLabel(apps_t app);
         static RTC_Date                 getDateTime();
         static const char*              getRTCHMS();
         static const char*              getRTCDDMMYYYY();

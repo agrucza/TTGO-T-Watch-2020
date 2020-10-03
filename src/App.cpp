@@ -1,20 +1,27 @@
-#include "UIScreen.h"
+#include "App.h"
 
-void UIScreen::eventCallback(lv_obj_t *obj, lv_event_t event, ScreenCallback* callback)
+App::App()
+{
+    _gui                = gui;
+    _container          = nullptr;
+    _callbackElement    = nullptr;
+}
+
+void App::eventCallback(lv_obj_t *obj, lv_event_t event, AppCallback* callback)
 {
     eventCallback(obj,  NULL, event, callback);
-};
+}
 
-void UIScreen::show(){
+void App::show(){
     if(_container != nullptr)
     {
         lv_obj_set_hidden(_container,false);
         lv_obj_move_foreground(_container);
         UIModal::show(this);
     }
-};
+}
 
-void UIScreen::hide()
+void App::hide()
 {
     if(_container != nullptr)
     {

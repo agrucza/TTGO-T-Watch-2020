@@ -1,21 +1,21 @@
 /**
-    This is the settings screen class
-    @file gui.h
+    This is the settings app class
+    @file AppSettings.h
     @author Alexander Grucza
     @version 0.1 7/26/2020
 */
 
-#ifndef __UISCREENSETTINGS_H
-#define __UISCREENSETTINGS_H
+#ifndef __APPSETTINGS_H
+#define __APPSETTINGS_H
 
 #include <Arduino.h>
-#include "UIScreen.h"
+#include "App.h"
 #include "TouchMetrics.h"
 
 class GUI;
 class TFT_esPI;
 
-class UIScreenSettings : public UIScreen{
+class AppSettings : public App{
     // date & time
     lv_obj_t*   _dtTzUp             = nullptr;
     lv_obj_t*   _dtTzLabel          = nullptr;
@@ -45,8 +45,8 @@ class UIScreenSettings : public UIScreen{
     void        _createBluetoothModal();
 
     public:
-        UIScreenSettings();
-        void    eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback = nullptr);
+        AppSettings();
+        void    eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, AppCallback* callback = nullptr);
         void    updateTask(struct _lv_task_t* data);
 };
 

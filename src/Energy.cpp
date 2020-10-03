@@ -149,7 +149,7 @@ void Energy::lowEnergy()
         _ttgo->displayWakeup();
         _ttgo->rtc->syncToSystem();
         // go to standby screen
-        _gui->showScreen(SCREEN_STANDBY);
+        _gui->showApp(APP_STANDBY);
         _gui->updateStepCounter();
         _gui->updateBatteryLevel();
         _ttgo->openBL();

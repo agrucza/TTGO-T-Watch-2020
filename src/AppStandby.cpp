@@ -1,11 +1,11 @@
-#include "UIScreenStandby.h"
+#include "AppStandby.h"
 #include "GUI.h"
 #include "config.h"
 #include "LilyGoWatch.h"
 
 extern GUI* gui;
 
-UIScreenStandby::UIScreenStandby():UIScreen()
+AppStandby::AppStandby():App()
 {
     _label              = "Standby";
     _showInLauncher     = false;
@@ -21,10 +21,10 @@ UIScreenStandby::UIScreenStandby():UIScreen()
     lv_obj_set_hidden(_container, true);
     lv_obj_move_background(_container);
     
-    _callbackData = new ScreenCallback(this, CALLBACK_NONE);
+    _callbackData = new AppCallback(this, CALLBACK_NONE);
 
     lv_obj_set_user_data(_container,_callbackData);
-    lv_obj_set_event_cb(_container,GUI::screenEventCallback);
+    lv_obj_set_event_cb(_container,GUI::appEventCallback);
     
     lv_obj_add_style(_container, LV_CONT_PART_MAIN, &GUI::borderlessStyle);
 
@@ -78,7 +78,7 @@ UIScreenStandby::UIScreenStandby():UIScreen()
     updateIcons();
 }
 
-void UIScreenStandby::updateIcons()
+void AppStandby::updateIcons()
 {
     char* systemIcon;
     for(uint8_t i = 0; i < GUI::systemIcons.size(); i++)
@@ -116,7 +116,7 @@ void UIScreenStandby::updateIcons()
     }
 }
 
-void UIScreenStandby::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback)
+void AppStandby::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, AppCallback* callback)
 {
     if(!_touched && event == LV_EVENT_PRESSED){
         _touched = true;
@@ -127,13 +127,13 @@ void UIScreenStandby::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t eve
     {
         //_gui->getTTGO()->motor->onec();
         lv_obj_set_hidden(_touchLabel,true);
-        if(_gui->getLastScreen() > SCREEN_STANDBY)
+        if(_gui->getLastApp() > APP_STANDBY)
         {
-            _gui->showScreen(_gui->getLastScreen());
+            _gui->showApp(_gui->getLastApp());
         }
         else
         {
-            _gui->showScreen(SCREEN_MAIN);
+            _gui->showApp(APP_LAUNCHER);
         }
         _touched = false;
     }
@@ -144,7 +144,7 @@ void UIScreenStandby::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t eve
     }
 }
 
-void UIScreenStandby::updateTask(struct _lv_task_t* data)
+void AppStandby::updateTask(struct _lv_task_t* data)
 {
     if(_touched && lv_obj_get_hidden(_touchLabel))
     {

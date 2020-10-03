@@ -3,13 +3,13 @@
 
 std::vector<UIModal*> UIModal::store;
 
-UIModal::UIModal(UIScreen* screen, lv_obj_t* trigger, char* header, bool accept, bool close)
+UIModal::UIModal(App* app, lv_obj_t* trigger, char* header, bool accept, bool close)
 {
-    showCloseBtn    = close;
-    showAcceptBtn   = accept;
-    this->screen    = screen;
-    this->trigger   = trigger;
-    showOnScreenOpen = false;
+    showCloseBtn        = close;
+    showAcceptBtn       = accept;
+    this->app           = app;
+    this->trigger       = trigger;
+    showOnScreenOpen    = false;
 
     modalContainer = lv_cont_create(lv_scr_act(), nullptr);
 
@@ -40,12 +40,12 @@ UIModal::UIModal(UIScreen* screen, lv_obj_t* trigger, char* header, bool accept,
     this->store.push_back(this);
 }
 
-void UIModal::show(UIScreen* screen, lv_obj_t* trigger)
+void UIModal::show(App* app, lv_obj_t* trigger)
 {
     for(uint8_t i = 0; i < store.size(); i++)
     {
         UIModal* modal = store[i];
-        if(modal->screen == screen)
+        if(modal->app == app)
         {
             if((trigger != nullptr && trigger == modal->trigger) || (modal->showOnScreenOpen))
             {
@@ -100,7 +100,7 @@ void UIModal::eventCallback(lv_obj_t* obj, lv_event_t event)
         }
         else
         {
-            screen->eventCallback(obj, event);
+            app->eventCallback(obj, event);
         }
     }
 }

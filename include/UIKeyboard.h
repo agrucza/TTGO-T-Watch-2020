@@ -12,10 +12,10 @@
 #include "config.h"
 #include "LilyGoWatch.h"
 
-class UIScreen;
+class App;
 
 class UIKeyboard{
-    static UIScreen*    screen;
+    static App*         app;
     static lv_obj_t*    modal;
     static lv_obj_t*    kb;
     static lv_obj_t*    ta;
@@ -24,7 +24,7 @@ class UIKeyboard{
     static void         eventCallback(lv_obj_t * obj, lv_event_t event);
     
     public:
-        static void bindObj(UIScreen* screen, lv_obj_t* obj);
+        static void bindObj(App* app, lv_obj_t* obj);
         static void show();
         static void close();
 };

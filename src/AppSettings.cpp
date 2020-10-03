@@ -1,4 +1,4 @@
-#include "UIScreenSettings.h"
+#include "AppSettings.h"
 #include "UIModal.h"
 #include "GUI.h"
 #include "UIKeyboard.h"
@@ -10,7 +10,7 @@
 
 extern GUI *gui;
 
-UIScreenSettings::UIScreenSettings():UIScreen()
+AppSettings::AppSettings():App()
 {
     _label              = "Settings";
     _showInLauncher     = true;
@@ -28,9 +28,9 @@ UIScreenSettings::UIScreenSettings():UIScreen()
 
     // Add control button to the header
     _closeBtn       = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
-    _callbackData   = new ScreenCallback(this, CALLBACK_SWITCH_SCREEN, SCREEN_MAIN);
+    _callbackData   = new AppCallback(this, CALLBACK_SWITCH_APP, APP_LAUNCHER);
     lv_obj_set_user_data(_closeBtn, _callbackData);
-    lv_obj_set_event_cb(_closeBtn, GUI::screenEventCallback);
+    lv_obj_set_event_cb(_closeBtn, GUI::appEventCallback);
 
     // create a list
     lv_obj_t* list = lv_list_create(_container, NULL);
@@ -40,25 +40,25 @@ UIScreenSettings::UIScreenSettings():UIScreen()
     lv_obj_align(list, NULL, LV_ALIGN_CENTER, 0, 0);
 
     _callbackElement    = lv_list_add_btn(list, LV_SYMBOL_BELL, "Date & Time");
-    _callbackData       = new ScreenCallback(this, CALLBACK_NONE);
+    _callbackData       = new AppCallback(this, CALLBACK_NONE);
     lv_obj_set_user_data(_callbackElement, _callbackData);
-    lv_obj_set_event_cb(_callbackElement, GUI::screenEventCallback);
+    lv_obj_set_event_cb(_callbackElement, GUI::appEventCallback);
     _createDateTimeModal();
 
     _callbackWifi       = lv_list_add_btn(list, LV_SYMBOL_WIFI, "WiFi");
-    _callbackData       = new ScreenCallback(this, CALLBACK_NONE);
+    _callbackData       = new AppCallback(this, CALLBACK_NONE);
     lv_obj_set_user_data(_callbackWifi, _callbackData);
-    lv_obj_set_event_cb(_callbackWifi, GUI::screenEventCallback);
+    lv_obj_set_event_cb(_callbackWifi, GUI::appEventCallback);
     _createWiFiModal();
 
     _callbackElement    = lv_list_add_btn(list, LV_SYMBOL_BLUETOOTH, "Bluetooth");
-    _callbackData       = new ScreenCallback(this, CALLBACK_NONE);
+    _callbackData       = new AppCallback(this, CALLBACK_NONE);
     lv_obj_set_user_data(_callbackElement, _callbackData);
-    lv_obj_set_event_cb(_callbackElement, GUI::screenEventCallback);
+    lv_obj_set_event_cb(_callbackElement, GUI::appEventCallback);
     _createBluetoothModal();
 }
 
-void UIScreenSettings::_createDateTimeModal()
+void AppSettings::_createDateTimeModal()
 {
     UIModal* modal      = new UIModal(this, _callbackElement, "Date & Time");
 
@@ -106,7 +106,7 @@ void UIScreenSettings::_createDateTimeModal()
     lv_obj_set_style_local_value_str(_dtBtnNTP, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, "Get time (NTP)");
 }
 
-void UIScreenSettings::_getDateTimeNTP()
+void AppSettings::_getDateTimeNTP()
 {
     const long  gmtOffsetSec       = (_dtTzValue * 3600);
     const int   daylightOffsetSec  = (_dtDstValue?3600:0);
@@ -125,7 +125,7 @@ void UIScreenSettings::_getDateTimeNTP()
     _gui->getTTGO()->tft->drawString(buf,0,0);
 }
 
-void UIScreenSettings::_createWiFiModal()
+void AppSettings::_createWiFiModal()
 {
     UIModal* modal      = new UIModal(this, _callbackElement, "WiFi", false);
     
@@ -180,18 +180,18 @@ void UIScreenSettings::_createWiFiModal()
      */
 }
 
-void UIScreenSettings::_createBluetoothModal()
+void AppSettings::_createBluetoothModal()
 {
     UIModal* modal      = new UIModal(this, _callbackElement, "Bluetooth");
 }
 
-void UIScreenSettings::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, ScreenCallback* callback)
+void AppSettings::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, AppCallback* callback)
 {
     switch(event){
         case LV_EVENT_CLICKED:
             if(obj == _closeBtn)
             {
-                _gui->showScreen(SCREEN_MAIN);
+                _gui->showApp(APP_LAUNCHER);
             }
             else if(obj == _dtTzUp)
             {
@@ -248,7 +248,7 @@ void UIScreenSettings::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t ev
     }
 }
 
-void UIScreenSettings::_updateDateTimeModal()
+void AppSettings::_updateDateTimeModal()
 {
     char buf[7];
     sprintf(buf,"UTC%+i", _dtTzValue);
@@ -266,7 +266,7 @@ void UIScreenSettings::_updateDateTimeModal()
     }
 }
 
-void UIScreenSettings::_switchWiFi()
+void AppSettings::_switchWiFi()
 {
     if(WiFi.getMode() == WIFI_STA){
         WiFi.mode(WIFI_OFF);
@@ -284,7 +284,7 @@ void UIScreenSettings::_switchWiFi()
     }
 }
 
-void UIScreenSettings::_scanWiFi()
+void AppSettings::_scanWiFi()
 {
         // scan for APs
         uint8_t apNum= WiFi.scanNetworks();
@@ -306,7 +306,7 @@ void UIScreenSettings::_scanWiFi()
         lv_obj_set_hidden(_wifiAPList, false);
 }
 
-void UIScreenSettings::updateTask(struct _lv_task_t* data)
+void AppSettings::updateTask(struct _lv_task_t* data)
 {
     _updateDateTimeModal();
     _wifiEnableValue = (WiFi.getMode() == WIFI_OFF?false:true);
