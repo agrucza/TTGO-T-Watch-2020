@@ -136,7 +136,7 @@ void Energy::lowEnergy()
             // rtc_clk_cpu_freq_set(RTC_CPU_FREQ_2M);
             setCpuFrequencyMhz(20);
 
-            Serial.println("ENTER IN LIGHT SLEEEP MODE");
+            Serial.println("SLEEP");
             gpio_wakeup_enable ((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
             gpio_wakeup_enable ((gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL);
             esp_sleep_enable_gpio_wakeup ();
@@ -149,7 +149,8 @@ void Energy::lowEnergy()
         _ttgo->displayWakeup();
         _ttgo->rtc->syncToSystem();
         // go to standby screen
-        _gui->showApp(APP_STANDBY);
+        Serial.println("Start Standby");
+        _gui->showApp("Standby");
         _gui->updateStepCounter();
         _gui->updateBatteryLevel();
         _ttgo->openBL();

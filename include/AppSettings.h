@@ -50,4 +50,4 @@ class AppSettings : public App{
         void    updateTask(struct _lv_task_t* data);
 };
 
-#endif /*__UISCREENSETTINGS_H */
+#endif /*__APPSETTINGS_H */

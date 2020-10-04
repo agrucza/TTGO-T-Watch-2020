@@ -10,11 +10,8 @@
 
 extern GUI *gui;
 
-AppSettings::AppSettings():App()
+AppSettings::AppSettings():App("Settings")
 {
-    _label              = "Settings";
-    _showInLauncher     = true;
-
     // Create a window
     _container          = lv_win_create(lv_scr_act(), NULL);
 
@@ -24,17 +21,17 @@ AppSettings::AppSettings():App()
     lv_win_set_scrollbar_mode(_container, LV_SCROLLBAR_MODE_OFF);
     
     // title
-    lv_win_set_title(_container, _label);
+    lv_win_set_title(_container, _label.c_str());
 
     // Add control button to the header
     _closeBtn       = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
-    _callbackData   = new AppCallback(this, CALLBACK_SWITCH_APP, APP_LAUNCHER);
+    _callbackData   = new AppCallback(this, CALLBACK_SWITCH_APP, _gui->getApp("Launcher"));
     lv_obj_set_user_data(_closeBtn, _callbackData);
     lv_obj_set_event_cb(_closeBtn, GUI::appEventCallback);
 
     // create a list
     lv_obj_t* list = lv_list_create(_container, NULL);
-    lv_obj_add_style(list, LV_CONT_PART_MAIN, &GUI::borderlessStyle);
+    lv_obj_add_style(list, LV_CONT_PART_MAIN, &GUI::styleBorderless);
     lv_obj_set_pos(list,0,0);
     lv_obj_set_size(list, TFT_WIDTH, TFT_HEIGHT-lv_win_get_header_height(_container));
     lv_obj_align(list, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -66,7 +63,7 @@ void AppSettings::_createDateTimeModal()
 
     // timezone
     lv_obj_t* _dtTzCont    = lv_cont_create(modal->modalContent, NULL);
-    lv_obj_add_style(_dtTzCont, LV_OBJ_PART_MAIN, &GUI::borderlessStyle);
+    lv_obj_add_style(_dtTzCont, LV_OBJ_PART_MAIN, &GUI::styleBorderless);
     lv_obj_set_width(_dtTzCont, lv_win_get_width(modal->modalContent));
     lv_cont_set_layout(_dtTzCont, LV_LAYOUT_OFF);
 
@@ -134,7 +131,7 @@ void AppSettings::_createWiFiModal()
     lv_win_set_layout(modal->modalContent, LV_LAYOUT_COLUMN_MID);
 
     lv_obj_t* _wifiEnableCont = lv_cont_create(modal->modalContent, NULL);
-    lv_obj_add_style(_wifiEnableCont, LV_OBJ_PART_MAIN, &GUI::borderlessStyle);
+    lv_obj_add_style(_wifiEnableCont, LV_OBJ_PART_MAIN, &GUI::styleBorderless);
     lv_obj_set_width(_wifiEnableCont, lv_win_get_width(modal->modalContent));
     lv_cont_set_layout(_wifiEnableCont, LV_LAYOUT_OFF);
 
@@ -148,7 +145,7 @@ void AppSettings::_createWiFiModal()
     lv_obj_set_event_cb(_wifiEnableSwitch, GUI::modalEventCallback);
 
     _wifiScanCont = lv_cont_create(modal->modalContent, NULL);
-    lv_obj_add_style(_wifiScanCont, LV_OBJ_PART_MAIN, &GUI::borderlessStyle);
+    lv_obj_add_style(_wifiScanCont, LV_OBJ_PART_MAIN, &GUI::styleBorderless);
     lv_obj_set_width(_wifiScanCont, lv_win_get_width(modal->modalContent));
     lv_cont_set_layout(_wifiScanCont, LV_LAYOUT_PRETTY_MID);
 
@@ -191,7 +188,8 @@ void AppSettings::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, 
         case LV_EVENT_CLICKED:
             if(obj == _closeBtn)
             {
-                _gui->showApp(APP_LAUNCHER);
+                Serial.println("Start Launcher");
+                _gui->showApp("Launcher");
             }
             else if(obj == _dtTzUp)
             {

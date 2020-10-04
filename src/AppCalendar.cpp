@@ -5,11 +5,8 @@
 
 extern GUI *gui;
 
-AppCalendar::AppCalendar():App()
+AppCalendar::AppCalendar():App("Calendar")
 {
-    _label              = "Calendar";
-    _showInLauncher     = true;
-    
     // Create a window*/
     _container = lv_win_create(lv_scr_act(), NULL);
 
@@ -17,11 +14,11 @@ AppCalendar::AppCalendar():App()
     lv_obj_move_background(_container);
     
     lv_win_set_scrollbar_mode(_container, LV_SCROLLBAR_MODE_OFF);
-    lv_win_set_title(_container, _label);
+    lv_win_set_title(_container, _label.c_str());
 
     // Add control button to the header
     _closeBtn = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
-    _callbackData = new AppCallback(this, CALLBACK_SWITCH_APP, APP_LAUNCHER);
+    _callbackData = new AppCallback(this, CALLBACK_SWITCH_APP, _gui->getApp("Launcher"));
     lv_obj_set_user_data(_closeBtn, _callbackData);
     lv_obj_set_event_cb(_closeBtn,GUI::appEventCallback);
     
@@ -32,7 +29,7 @@ AppCalendar::AppCalendar():App()
 
     // calendar
     _calendar = lv_calendar_create(_container, NULL);
-    lv_obj_add_style(_calendar, LV_CONT_PART_MAIN, &GUI::borderlessStyle);
+    lv_obj_add_style(_calendar, LV_CONT_PART_MAIN, &GUI::styleBorderless);
     _callbackData = new AppCallback(this, CALLBACK_NONE);
     lv_obj_set_pos(_calendar,0,0);
     lv_obj_set_width(_calendar, TFT_WIDTH);
@@ -85,7 +82,7 @@ void AppCalendar::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, 
     {
         if(obj == _closeBtn)
         {
-            _gui->showApp(APP_LAUNCHER);
+            _gui->showApp("Launcher");
         }
         else if(obj == _settingsBtn)
         {

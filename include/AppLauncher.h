@@ -5,8 +5,8 @@
     @version 0.1 7/26/2020
 */
 
-#ifndef __UISCREENMAIN_H
-#define __UISCREENMAIN_H
+#ifndef __APPLAUNCHER_H
+#define __APPLAUNCHER_H
 
 #include <Arduino.h>
 #include "App.h"
@@ -18,9 +18,6 @@ class TFT_esPI;
 enum screens_t : uint8_t;
 
 class AppLauncher : public App{
-    std::vector<icon_t> _launcherIcons;
-    std::vector<AppCallback*> _callbackData;
-
     public:
         AppLauncher();
         void    updateLauncherList();
@@ -28,4 +25,4 @@ class AppLauncher : public App{
         void    updateTask(struct _lv_task_t* data);
 };
 
-#endif /*__UISCREENMAIN_H */
+#endif /*__APPLAUNCHER_H */

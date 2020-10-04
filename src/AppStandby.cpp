@@ -5,11 +5,8 @@
 
 extern GUI* gui;
 
-AppStandby::AppStandby():App()
+AppStandby::AppStandby():App("Standby", false)
 {
-    _label              = "Standby";
-    _showInLauncher     = false;
-
     _timeLabel          = nullptr;
     _dateLabel          = nullptr;
     
@@ -26,7 +23,7 @@ AppStandby::AppStandby():App()
     lv_obj_set_user_data(_container,_callbackData);
     lv_obj_set_event_cb(_container,GUI::appEventCallback);
     
-    lv_obj_add_style(_container, LV_CONT_PART_MAIN, &GUI::borderlessStyle);
+    lv_obj_add_style(_container, LV_CONT_PART_MAIN, &GUI::styleBorderless);
 
     lv_obj_set_auto_realign(_container, true);
     lv_obj_align_origo(_container, NULL, LV_ALIGN_CENTER, 0, 0);
@@ -47,7 +44,7 @@ AppStandby::AppStandby():App()
     GUI::updateTimeLabel(_dateLabel, GUI::dateFormatLong);
 
     // create a container with some icons
-    lv_style_copy(&_iconContainerStyle, &GUI::borderlessStyle);
+    lv_style_copy(&_iconContainerStyle, &GUI::styleBorderless);
     lv_style_set_bg_color(&_iconContainerStyle, LV_CONT_PART_MAIN, LV_COLOR_GRAY);
     lv_style_set_pad_inner(&_iconContainerStyle, LV_CONT_PART_MAIN, 2);
     lv_style_set_pad_top(&_iconContainerStyle, LV_CONT_PART_MAIN, 2);
@@ -80,7 +77,7 @@ AppStandby::AppStandby():App()
 
 void AppStandby::updateIcons()
 {
-    char* systemIcon;
+    String systemIcon;
     for(uint8_t i = 0; i < GUI::systemIcons.size(); i++)
     {
         if(GUI::systemIcons[i].obj != nullptr)
@@ -91,7 +88,7 @@ void AppStandby::updateIcons()
                 if(systemIcon != GUI::systemIcons[i].label)
                 {
                     // icon needs to be removed and another has to be added
-                    lv_label_set_text(GUI::systemIcons[i].obj, systemIcon);
+                    lv_label_set_text(GUI::systemIcons[i].obj, systemIcon.c_str());
                     GUI::systemIcons[i].label = systemIcon;
                 }
             }
@@ -100,7 +97,7 @@ void AppStandby::updateIcons()
                 if(!(GUI::systemIcons[i].show && (GUI::systemIcons[i].label != nullptr)))
                 {
                     lv_obj_clean(_iconContainer);
-                    GUI::systemIcons[i].label = nullptr;
+                    GUI::systemIcons[i].label = "";
                     updateIcons();
                 }
             }
@@ -110,7 +107,7 @@ void AppStandby::updateIcons()
             if(GUI::systemIcons[i].show)
             {
                 GUI::systemIcons[i].obj = lv_label_create(_iconContainer, NULL);
-                lv_label_set_text(GUI::systemIcons[i].obj, GUI::systemIcons[i].label);
+                lv_label_set_text(GUI::systemIcons[i].obj, GUI::systemIcons[i].label.c_str());
             }
         }
     }
@@ -125,15 +122,15 @@ void AppStandby::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, A
 
     if(event == LV_EVENT_LONG_PRESSED)
     {
-        //_gui->getTTGO()->motor->onec();
+        _gui->getTTGO()->motor->onec();
         lv_obj_set_hidden(_touchLabel,true);
-        if(_gui->getLastApp() > APP_STANDBY)
+        if(_gui->getLastApp() == nullptr || _gui->getLastApp() == _gui->getApp("Standby"))
         {
-            _gui->showApp(_gui->getLastApp());
+            _gui->showApp("Launcher");
         }
         else
         {
-            _gui->showApp(APP_LAUNCHER);
+            _gui->showApp(_gui->getLastApp());
         }
         _touched = false;
     }

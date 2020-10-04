@@ -15,7 +15,7 @@ class UIModal{
     static std::vector<UIModal*>    store;
     bool            showAcceptBtn       = true;
     bool            showCloseBtn        = true;
-    bool            showOnScreenOpen;
+    bool            showOnAppOpen;
     App*            app;
     lv_obj_t*       trigger;
     lv_obj_t*       modalContainer;
@@ -24,7 +24,7 @@ class UIModal{
     lv_obj_t*       acceptBtn           = nullptr;
 
     public:
-        UIModal(App* app, lv_obj_t* trigger, char* head, bool accept = true, bool close = true);
+        UIModal(App* app, lv_obj_t* trigger, String head, bool accept = true, bool close = true);
         lv_obj_t*   modalContent;
         static void show(App* app, lv_obj_t* trigger = nullptr);
         static void hideAll();

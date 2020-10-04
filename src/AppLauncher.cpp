@@ -5,57 +5,46 @@
 
 extern GUI *gui;
 
-AppLauncher::AppLauncher():App()
+AppLauncher::AppLauncher():App("Launcher", false)
 {
-    _label              = "Launcher";
-    _showInLauncher     = false;
-    
-    // Create a container
     _container = lv_page_create(lv_scr_act(), NULL);
-
+    lv_cont_set_layout(lv_page_get_scrollable(_container), LV_LAYOUT_GRID);
+    lv_obj_set_size(_container, TFT_WIDTH, TFT_HEIGHT);
+    
     lv_obj_set_hidden(_container, true);
     lv_obj_move_background(_container);
-    
-    lv_obj_set_size(_container, TFT_WIDTH, TFT_HEIGHT);
-    lv_obj_align(_container, NULL, LV_ALIGN_CENTER, 0, 0);
-    
-    lv_obj_add_style(_container,LV_CONT_PART_MAIN,&GUI::borderlessStyle);
 
-    lv_obj_t* cont = lv_page_get_scrl(_container);
+    lv_obj_add_style(_container, LV_CONT_PART_MAIN, &GUI::styleBorderless);
 
-    lv_cont_set_layout(cont,LV_LAYOUT_GRID);
+    lv_obj_set_style_local_pad_all(_container, LV_PAGE_PART_BG, LV_STATE_DEFAULT, 5);
+    lv_obj_set_style_local_pad_top(_container, LV_PAGE_PART_BG, LV_STATE_DEFAULT, 0);
+    lv_obj_set_style_local_pad_right(_container, LV_PAGE_PART_BG, LV_STATE_DEFAULT, 0);
+    lv_obj_set_style_local_pad_bottom(_container, LV_PAGE_PART_BG, LV_STATE_DEFAULT, 0);
+    lv_obj_set_style_local_pad_left(_container, LV_PAGE_PART_BG, LV_STATE_DEFAULT, 0);
 
-    updateLauncherList();
-}
+    std::vector<App*> apps = _gui->getAppsForLauncher();
 
-void AppLauncher::updateLauncherList()
-{
-    std::vector<apps_t> tmp = _gui->getAppsForLauncher();
-    _callbackData.clear();
-    _launcherIcons.clear();
-
-    for(uint8_t i=0; i<tmp.size(); i++)
-    {
-        apps_t app = static_cast<apps_t>(tmp[i]);
-        icon_t icon;
-        _callbackData.push_back(new AppCallback(this, CALLBACK_SWITCH_APP, app));
-
-        _launcherIcons.push_back(icon);
-        _launcherIcons[i].obj = lv_cont_create(_container,NULL);
-
-        // setup callback event
-        lv_obj_set_user_data(_launcherIcons[i].obj, _callbackData[i]);
-        lv_obj_set_event_cb(_launcherIcons[i].obj,GUI::appEventCallback);
-
-        lv_cont_set_fit(_launcherIcons[i].obj, LV_FIT_TIGHT);
-        lv_cont_set_layout(_launcherIcons[i].obj, LV_LAYOUT_ROW_TOP);
-        //lv_obj_add_style(icons[i],LV_CONT_PART_MAIN,&GUI::borderlessStyle);
-        lv_obj_t* iconLabel = lv_label_create(_launcherIcons[i].obj,NULL);
-        lv_label_set_text(iconLabel, LV_SYMBOL_SETTINGS);
+    for(uint8_t i = 0; i < apps.size(); i++) {
+        lv_obj_t * holder = lv_cont_create(_container, NULL);
         
-        _launcherIcons[i].label = _gui->getAppLabel(tmp[i]);
-        lv_obj_t* textLabel = lv_label_create(_launcherIcons[i].obj,NULL);
-        lv_label_set_text(textLabel,_launcherIcons[i].label);
+        _callbackData = new AppCallback(this, CALLBACK_SWITCH_APP, apps[i]);
+        lv_obj_set_user_data(holder, _callbackData);
+        lv_obj_set_event_cb(holder, GUI::appEventCallback);
+        
+        lv_obj_add_style(holder, LV_CONT_PART_MAIN, &GUI::styleBorderless);
+        lv_obj_set_style_local_radius(holder, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, 0);
+        lv_obj_set_style_local_bg_color(holder, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_MAGENTA);
+
+        lv_obj_set_size(
+            holder,
+            lv_obj_get_width_grid(lv_page_get_scrollable(_container), 4, 2),
+            lv_obj_get_width_grid(lv_page_get_scrollable(_container), 4, 2)
+        );
+        
+        lv_cont_set_layout(holder, LV_LAYOUT_PRETTY_MID);
+
+        lv_obj_t * label = lv_label_create(holder, NULL);
+        lv_label_set_text(label, apps[i]->getLabel().c_str());
     }
 }
 
@@ -66,8 +55,5 @@ void AppLauncher::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, 
 
 void AppLauncher::updateTask(struct _lv_task_t* data)
 {
-    if(_launcherIcons.size() < 1)
-    {
-        updateLauncherList();
-    }
+
 }

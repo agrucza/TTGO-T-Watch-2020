@@ -12,15 +12,13 @@
 #include "GUI.h"
 #include "UIModal.h"
 
-enum apps_t : uint8_t;
-
 extern GUI* gui;
 
 class App{
     public:
         GUI*                _gui;
 
-        char*               _label;
+        String              _label;
         bool                _showInLauncher;
         
         lv_obj_t*           _container;
@@ -30,10 +28,10 @@ class App{
         lv_obj_t*           _closeBtn;
         lv_obj_t*           _settingsBtn;
         
-        App();
+        App(String label, bool showInLauncher = true);
         
         bool            showInLauncher(){return _showInLauncher;};
-        char*           getLabel(){return _label;};
+        String          getLabel(){return _label;};
         
         void            show();
         void            hide();

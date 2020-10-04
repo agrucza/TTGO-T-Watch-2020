@@ -3,13 +3,13 @@
 
 std::vector<UIModal*> UIModal::store;
 
-UIModal::UIModal(App* app, lv_obj_t* trigger, char* header, bool accept, bool close)
+UIModal::UIModal(App* app, lv_obj_t* trigger, String header, bool accept, bool close)
 {
     showCloseBtn        = close;
     showAcceptBtn       = accept;
     this->app           = app;
     this->trigger       = trigger;
-    showOnScreenOpen    = false;
+    showOnAppOpen       = false;
 
     modalContainer = lv_cont_create(lv_scr_act(), nullptr);
 
@@ -21,7 +21,7 @@ UIModal::UIModal(App* app, lv_obj_t* trigger, char* header, bool accept, bool cl
     lv_obj_add_style(modalContainer, LV_OBJ_PART_MAIN, &GUI::modalStyle);
 
     modalContent = lv_win_create(modalContainer, NULL);
-    lv_win_set_title(modalContent, header);
+    lv_win_set_title(modalContent, header.c_str());
 
     if(showCloseBtn)
     {
@@ -47,7 +47,7 @@ void UIModal::show(App* app, lv_obj_t* trigger)
         UIModal* modal = store[i];
         if(modal->app == app)
         {
-            if((trigger != nullptr && trigger == modal->trigger) || (modal->showOnScreenOpen))
+            if((trigger != nullptr && trigger == modal->trigger) || (modal->showOnAppOpen))
             {
                 modal->show();
             }
@@ -69,7 +69,7 @@ void UIModal::hideAll()
 
 void UIModal::show()
 {
-    showOnScreenOpen = true;
+    showOnAppOpen = true;
     lv_obj_set_hidden(modalContainer,false);
     lv_obj_move_foreground(modalContainer);
 }
@@ -82,7 +82,7 @@ void UIModal::hide()
 
 void UIModal::close()
 {
-    showOnScreenOpen = false;
+    showOnAppOpen = false;
     hide();
 }
 

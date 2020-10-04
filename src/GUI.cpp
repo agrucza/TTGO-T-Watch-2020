@@ -21,10 +21,10 @@
 TTGOClass*              GUI::_ttgo              = nullptr;
 uint32_t                GUI::_stepCounter       = 0;
 std::vector<App*>       GUI::_apps;
-apps_t               GUI::_lastApp           = APP_STANDBY;
-apps_t               GUI::_activeApp         = APP_STANDBY;
+App*                    GUI::_lastApp           = nullptr;
+App*                    GUI::_activeApp         = nullptr;
 int                     GUI::_batteryLevel      = 0;
-lv_style_t              GUI::borderlessStyle;
+lv_style_t              GUI::styleBorderless;
 lv_style_t              GUI::modalStyle;
 std::vector<icon_t>     GUI::systemIcons;
 std::vector<String>     GUI::wifiSSIDs;
@@ -65,10 +65,12 @@ TTGOClass* GUI::getTTGO()
  */
 void GUI::init()
 {
+    _lastApp = _activeApp = getApp("Standby");
+
     _ttgo->motor_begin();
 
-    lv_style_init(&borderlessStyle);
-    lv_style_set_border_width(&borderlessStyle,LV_STATE_DEFAULT,0);
+    lv_style_init(&styleBorderless);
+    lv_style_set_border_width(&styleBorderless,LV_STATE_DEFAULT,0);
 
     lv_style_init(&modalStyle);
     lv_style_set_bg_color(&modalStyle, LV_OBJ_PART_MAIN, LV_COLOR_BLACK);
@@ -87,29 +89,33 @@ void GUI::init()
 
     // creating apps
     _apps.push_back(new AppStandby());
-    _apps.push_back(new AppLauncher());
     _apps.push_back(new AppTesting());
     _apps.push_back(new AppSettings());
     _apps.push_back(new AppCalendar());
+    _apps.push_back(new AppLauncher());
 
     // as we init the GUI here we want to start the standby app
     _ttgo->openBL();
-    showApp(APP_STANDBY);
+    showApp("Standby");
 }
 
 void GUI::updateTask(struct _lv_task_t* data){
     //_ttgo->motor->onec();
     updateBatteryLevel();
-    _apps[_activeApp]->updateTask(data);
+    _activeApp->updateTask(data);
 };
 
 void GUI::appEventCallback(lv_obj_t * obj, lv_event_t event)
 {
+    Serial.println("appEventCallback");
     AppCallback* data = (AppCallback*)lv_obj_get_user_data(obj);
     switch(data->getCommand())
     {
         case CALLBACK_SWITCH_APP:
-            if(event == LV_EVENT_CLICKED){
+            if(event == LV_EVENT_CLICKED)
+            {
+                Serial.println("got switch app cb");
+                Serial.println(data->getTarget()->getLabel());
                 showApp(data->getTarget());
             }
             break;
@@ -124,14 +130,14 @@ void GUI::modalEventCallback(lv_obj_t * obj, lv_event_t event)
     modal->eventCallback(obj, event);
 }
 
-void GUI::updateTimeLabel(lv_obj_t* label, char* format)
+void GUI::updateTimeLabel(lv_obj_t* label, String format)
 {
     time_t now;
     struct tm  info;
     char buf[64];
     time(&now);
     localtime_r(&now, &info);
-    strftime(buf, sizeof(buf), format, &info);
+    strftime(buf, sizeof(buf), format.c_str(), &info);
     lv_label_set_text(label, buf);
 }
 
@@ -181,7 +187,7 @@ void GUI::updateBatteryLevel()
     }
 }
 
-char* GUI::getBatteryIcon()
+String GUI::getBatteryIcon()
 {
     updateBatteryLevel();
     if(isPluggedIn && isStillConnected){
@@ -213,18 +219,49 @@ char* GUI::getBatteryIcon()
     }
 }
 
-void GUI::showApp(apps_t app)
+App* GUI::getApp(String label)
+{
+    for(uint8_t i = 0; i<_apps.size(); i++)
+    {
+        if(_apps[i]->getLabel() == label)
+        {
+            return _apps[i];
+        }
+    }
+
+    return nullptr;
+}
+
+void GUI::showApp(String label)
+{
+    _lastApp = _activeApp;
+    for(uint8_t i = 0; i<_apps.size(); i++)
+    {
+        if(_apps[i] == _lastApp)
+        {
+            _apps[i]->hide();
+        }
+        else if(_apps[i]->getLabel() == label)
+        {
+            _activeApp = _apps[i];
+            _apps[i]->show();
+        }
+    }
+}
+
+void GUI::showApp(App* app)
 {
     _lastApp = _activeApp;
     _activeApp = app;
-    _apps[_lastApp]->hide();
-    _apps[_activeApp]->show();
+    
+    _lastApp->hide();
+    _activeApp->show();
 }
 
 
-std::vector<apps_t> GUI::getAppsForLauncher()
+std::vector<App*> GUI::getAppsForLauncher()
 {
-    std::vector<apps_t> apps;
+    std::vector<App*> apps;
     
     for(uint8_t i = 0; i < _apps.size(); i++)
     {
@@ -232,16 +269,16 @@ std::vector<apps_t> GUI::getAppsForLauncher()
         
         if(launcher)
         {
-            apps.push_back(static_cast<apps_t>(i));
+            apps.push_back(_apps[i]);
         }
     }
     
     return apps;
 }
 
-char* GUI::getAppLabel(apps_t app)
+String GUI::getAppLabel(App* app)
 {
-    return _apps[app]->getLabel();
+    app->getLabel();
 }
 
 RTC_Date GUI::getDateTime()
@@ -249,12 +286,12 @@ RTC_Date GUI::getDateTime()
     return _ttgo->rtc->getDateTime();
 }
 
-const char* GUI::getRTCHMS()
+String GUI::getRTCHMS()
 {
     return _ttgo->rtc->formatDateTime(PCF_TIMEFORMAT_HMS);
 }
 
-const char* GUI::getRTCDDMMYYYY()
+String GUI::getRTCDDMMYYYY()
 {
     return _ttgo->rtc->formatDateTime(PCF_TIMEFORMAT_DD_MM_YYYY);
 }

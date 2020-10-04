@@ -5,27 +5,24 @@
 
 extern GUI* gui;
 
-AppTesting::AppTesting():App()
+AppTesting::AppTesting():App("Testing")
 {
-    _label              = "Testing";
-    _showInLauncher     = true;
-    
     // Create a window*/
     _container = lv_win_create(lv_scr_act(), NULL);
 
     lv_obj_set_hidden(_container, true);
     lv_obj_move_background(_container);
     
-    lv_win_set_title(_container, _label);
+    lv_win_set_title(_container, _label.c_str());
 
     // Add control button to the header
     _closeBtn       = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
-    _callbackData   = new AppCallback(this, CALLBACK_SWITCH_APP, APP_LAUNCHER);
+    _callbackData   = new AppCallback(this, CALLBACK_SWITCH_APP, _gui->getApp("Launcher"));
     lv_obj_set_user_data(_closeBtn, _callbackData);
     lv_obj_set_event_cb(_closeBtn, GUI::appEventCallback);
     
     _settingsBtn    = lv_win_add_btn(_container, LV_SYMBOL_SETTINGS);
-    _callbackData   = new AppCallback(this, CALLBACK_SWITCH_APP, APP_LAUNCHER);
+    _callbackData   = new AppCallback(this, CALLBACK_SWITCH_APP, _gui->getApp("Launcher"));
     lv_obj_set_user_data(_settingsBtn, _callbackData);
     lv_obj_set_event_cb(_settingsBtn, GUI::appEventCallback);
 
@@ -47,7 +44,7 @@ void AppTesting::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, A
     {
         if(obj == _closeBtn)
         {
-            _gui->showApp(APP_LAUNCHER);
+            _gui->showApp("Launcher");
         }
         else if(obj == _settingsBtn)
         {
