@@ -107,20 +107,18 @@ void GUI::updateTask(struct _lv_task_t* data){
 
 void GUI::appEventCallback(lv_obj_t * obj, lv_event_t event)
 {
-    Serial.println("appEventCallback");
     AppCallback* data = (AppCallback*)lv_obj_get_user_data(obj);
     switch(data->getCommand())
     {
         case CALLBACK_SWITCH_APP:
-            if(event == LV_EVENT_CLICKED)
+            if(event == LV_EVENT_SHORT_CLICKED)
             {
-                Serial.println("got switch app cb");
-                Serial.println(data->getTarget()->getLabel());
-                showApp(data->getTarget());
+                _ttgo->motor->onec(100);
+                showApp(getApp(data->getTarget()));
             }
             break;
         default:
-            data->getOrigin()->eventCallback(obj, event, data);
+            getApp(data->getOrigin())->eventCallback(obj, event, data);
     }
 }
 
@@ -234,27 +232,17 @@ App* GUI::getApp(String label)
 
 void GUI::showApp(String label)
 {
-    _lastApp = _activeApp;
-    for(uint8_t i = 0; i<_apps.size(); i++)
-    {
-        if(_apps[i] == _lastApp)
-        {
-            _apps[i]->hide();
-        }
-        else if(_apps[i]->getLabel() == label)
-        {
-            _activeApp = _apps[i];
-            _apps[i]->show();
-        }
-    }
+    showApp(getApp(label));
 }
 
 void GUI::showApp(App* app)
 {
     _lastApp = _activeApp;
     _activeApp = app;
-    
-    _lastApp->hide();
+    if(_lastApp != nullptr)
+    {
+        _lastApp->hide();
+    }
     _activeApp->show();
 }
 

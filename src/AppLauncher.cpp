@@ -27,7 +27,7 @@ AppLauncher::AppLauncher():App("Launcher", false)
     for(uint8_t i = 0; i < apps.size(); i++) {
         lv_obj_t * holder = lv_cont_create(_container, NULL);
         
-        _callbackData = new AppCallback(this, CALLBACK_SWITCH_APP, apps[i]);
+        _callbackData = new AppCallback(_label, CALLBACK_SWITCH_APP, apps[i]->getLabel());
         lv_obj_set_user_data(holder, _callbackData);
         lv_obj_set_event_cb(holder, GUI::appEventCallback);
         

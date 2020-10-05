@@ -25,7 +25,7 @@ AppSettings::AppSettings():App("Settings")
 
     // Add control button to the header
     _closeBtn       = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
-    _callbackData   = new AppCallback(this, CALLBACK_SWITCH_APP, _gui->getApp("Launcher"));
+    _callbackData   = new AppCallback(_label, CALLBACK_SWITCH_APP, "Launcher");
     lv_obj_set_user_data(_closeBtn, _callbackData);
     lv_obj_set_event_cb(_closeBtn, GUI::appEventCallback);
 
@@ -37,19 +37,19 @@ AppSettings::AppSettings():App("Settings")
     lv_obj_align(list, NULL, LV_ALIGN_CENTER, 0, 0);
 
     _callbackElement    = lv_list_add_btn(list, LV_SYMBOL_BELL, "Date & Time");
-    _callbackData       = new AppCallback(this, CALLBACK_NONE);
+    _callbackData       = new AppCallback(_label, CALLBACK_NONE);
     lv_obj_set_user_data(_callbackElement, _callbackData);
     lv_obj_set_event_cb(_callbackElement, GUI::appEventCallback);
     _createDateTimeModal();
 
     _callbackWifi       = lv_list_add_btn(list, LV_SYMBOL_WIFI, "WiFi");
-    _callbackData       = new AppCallback(this, CALLBACK_NONE);
+    _callbackData       = new AppCallback(_label, CALLBACK_NONE);
     lv_obj_set_user_data(_callbackWifi, _callbackData);
     lv_obj_set_event_cb(_callbackWifi, GUI::appEventCallback);
     _createWiFiModal();
 
     _callbackElement    = lv_list_add_btn(list, LV_SYMBOL_BLUETOOTH, "Bluetooth");
-    _callbackData       = new AppCallback(this, CALLBACK_NONE);
+    _callbackData       = new AppCallback(_label, CALLBACK_NONE);
     lv_obj_set_user_data(_callbackElement, _callbackData);
     lv_obj_set_event_cb(_callbackElement, GUI::appEventCallback);
     _createBluetoothModal();

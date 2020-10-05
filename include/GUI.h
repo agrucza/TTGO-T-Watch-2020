@@ -36,20 +36,20 @@ typedef enum {
 } icon_battery_t;
 
 class AppCallback{
-    App*            origin;
+    String          origin;
     app_callback_t  command;
-    App*            target;
+    String          target;
     
     public:
-        AppCallback(App* origin, app_callback_t command, App* target = nullptr)
+        AppCallback(String origin, app_callback_t command, String target = "")
         {
             this->origin    = origin;
             this->command   = command;
             this->target    = target;
         };
-        App*            getOrigin(){return origin;};
+        String          getOrigin(){return origin;};
         app_callback_t  getCommand(){return command;};
-        App*            getTarget(){return target;};
+        String          getTarget(){return target;};
 };
 
 class TTGOClass;

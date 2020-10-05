@@ -18,7 +18,7 @@ AppStandby::AppStandby():App("Standby", false)
     lv_obj_set_hidden(_container, true);
     lv_obj_move_background(_container);
     
-    _callbackData = new AppCallback(this, CALLBACK_NONE);
+    _callbackData = new AppCallback(_label, CALLBACK_NONE);
 
     lv_obj_set_user_data(_container,_callbackData);
     lv_obj_set_event_cb(_container,GUI::appEventCallback);

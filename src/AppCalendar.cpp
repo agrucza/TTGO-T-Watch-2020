@@ -18,19 +18,19 @@ AppCalendar::AppCalendar():App("Calendar")
 
     // Add control button to the header
     _closeBtn = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
-    _callbackData = new AppCallback(this, CALLBACK_SWITCH_APP, _gui->getApp("Launcher"));
+    _callbackData = new AppCallback(_label, CALLBACK_SWITCH_APP, "Launcher");
     lv_obj_set_user_data(_closeBtn, _callbackData);
     lv_obj_set_event_cb(_closeBtn,GUI::appEventCallback);
     
     _settingsBtn = lv_win_add_btn(_container, LV_SYMBOL_SETTINGS);
-    _callbackData = new AppCallback(this, CALLBACK_NONE);
+    _callbackData = new AppCallback(_label, CALLBACK_NONE);
     lv_obj_set_user_data(_settingsBtn, _callbackData);
     lv_obj_set_event_cb(_settingsBtn,GUI::appEventCallback);
 
     // calendar
     _calendar = lv_calendar_create(_container, NULL);
     lv_obj_add_style(_calendar, LV_CONT_PART_MAIN, &GUI::styleBorderless);
-    _callbackData = new AppCallback(this, CALLBACK_NONE);
+    _callbackData = new AppCallback(_label, CALLBACK_NONE);
     lv_obj_set_pos(_calendar,0,0);
     lv_obj_set_width(_calendar, TFT_WIDTH);
     lv_obj_set_height(_calendar, TFT_HEIGHT-lv_win_get_header_height(_container));
@@ -78,7 +78,7 @@ AppCalendar::AppCalendar():App("Calendar")
 
 void AppCalendar::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, AppCallback* callback)
 {
-    if(event == LV_EVENT_CLICKED)
+    if(event == LV_EVENT_SHORT_CLICKED)
     {
         if(obj == _closeBtn)
         {

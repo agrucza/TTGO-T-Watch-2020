@@ -17,12 +17,12 @@ AppTesting::AppTesting():App("Testing")
 
     // Add control button to the header
     _closeBtn       = lv_win_add_btn(_container, LV_SYMBOL_CLOSE);
-    _callbackData   = new AppCallback(this, CALLBACK_SWITCH_APP, _gui->getApp("Launcher"));
+    _callbackData   = new AppCallback(_label, CALLBACK_SWITCH_APP, "Launcher");
     lv_obj_set_user_data(_closeBtn, _callbackData);
     lv_obj_set_event_cb(_closeBtn, GUI::appEventCallback);
     
     _settingsBtn    = lv_win_add_btn(_container, LV_SYMBOL_SETTINGS);
-    _callbackData   = new AppCallback(this, CALLBACK_SWITCH_APP, _gui->getApp("Launcher"));
+    _callbackData   = new AppCallback(_label, CALLBACK_SWITCH_APP, "Launcher");
     lv_obj_set_user_data(_settingsBtn, _callbackData);
     lv_obj_set_event_cb(_settingsBtn, GUI::appEventCallback);
 
