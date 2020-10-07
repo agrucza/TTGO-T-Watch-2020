@@ -21,18 +21,20 @@ typedef _lv_obj_t lv_obj_t;
 
 class AppStandby : public App{
     lv_obj_t*           _timeLabel;
-    lv_style_t          _timeLabelStyle;
+    lv_style_t          _styleTimeLabel;
     
     lv_obj_t*           _dateLabel;
-    lv_style_t          _dateLabelStyle;
+    lv_style_t          _styleDateLabel;
 
     lv_obj_t*           _iconContainer;
-    lv_style_t          _iconContainerStyle;
+    lv_style_t          _styleIconContainer;
 
     lv_obj_t*           _touchNotifyLabel;
 
     lv_obj_t*           _touchLabel;
     bool                _touched;
+    
+    void                _generateLauncherIcon(){};
 
     public:
         AppStandby();

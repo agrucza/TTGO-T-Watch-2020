@@ -5,6 +5,7 @@ App::App(String label, bool showInLauncher)
     _gui                = gui;
     _label              = label;
     _showInLauncher     = showInLauncher;
+    _launcherIcon       = nullptr;
     _container          = nullptr;
     _callbackElement    = nullptr;
 }

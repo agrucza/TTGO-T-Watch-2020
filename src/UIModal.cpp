@@ -18,7 +18,7 @@ UIModal::UIModal(App* app, lv_obj_t* trigger, String header, bool accept, bool c
 
     lv_obj_set_size(modalContainer,TFT_WIDTH,TFT_HEIGHT);
     lv_cont_set_layout(modalContainer, LV_LAYOUT_CENTER);
-    lv_obj_add_style(modalContainer, LV_OBJ_PART_MAIN, &GUI::modalStyle);
+    lv_obj_add_style(modalContainer, LV_OBJ_PART_MAIN, &GUI::styleModal);
 
     modalContent = lv_win_create(modalContainer, NULL);
     lv_win_set_title(modalContent, header.c_str());

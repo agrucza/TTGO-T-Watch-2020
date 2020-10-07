@@ -25,7 +25,7 @@ void UIKeyboard::UIKeyboardInit()
     {
         modal = lv_cont_create(lv_scr_act(), NULL);
         lv_obj_set_size(modal, TFT_WIDTH, TFT_HEIGHT);
-        lv_obj_add_style(modal, LV_OBJ_PART_MAIN, &GUI::modalStyle);
+        lv_obj_add_style(modal, LV_OBJ_PART_MAIN, &GUI::styleModal);
     }
     
     if(kb == nullptr)

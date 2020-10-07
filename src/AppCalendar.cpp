@@ -99,6 +99,32 @@ void AppCalendar::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, 
     }
 }
 
+void AppCalendar::_generateLauncherIcon()
+{
+	time_t  curr_time;
+	tm*     curr_tm;
+    
+	time(&curr_time);
+	curr_tm = localtime(&curr_time);
+	
+    char week_day[20];
+	char month_day[3];
+
+    lv_obj_t* label = lv_label_create(_launcherIcon, NULL);
+    strftime(week_day, sizeof(week_day), "%A", curr_tm);
+    lv_style_init(&_styleIconWeekDay);
+    lv_style_set_text_font(&_styleIconWeekDay, LV_STATE_DEFAULT, &lv_font_montserrat_12);
+    lv_obj_add_style(label, LV_CONT_PART_MAIN, &_styleIconWeekDay);
+    lv_label_set_text(label, week_day);
+
+    label = lv_label_create(_launcherIcon, NULL);
+    strftime(month_day, sizeof(month_day), "%d", curr_tm);
+    lv_style_init(&_styleIconMonthDay);
+    lv_style_set_text_font(&_styleIconMonthDay, LV_STATE_DEFAULT, &lv_font_montserrat_48);
+    lv_obj_add_style(label, LV_CONT_PART_MAIN, &_styleIconMonthDay);
+    lv_label_set_text(label, month_day);
+}
+
 void AppCalendar::updateTask(struct _lv_task_t* data)
 {
     RTC_Date rtc_today  = GUI::getDateTime();

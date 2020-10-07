@@ -20,6 +20,8 @@ enum screens_t : uint8_t;
 typedef _lv_obj_t lv_obj_t;
 
 class AppTesting : public App{
+    void        _generateLauncherIcon();
+    
     public:
         AppTesting();
         void    eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, AppCallback* callback = nullptr);

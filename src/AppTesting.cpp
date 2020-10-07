@@ -38,6 +38,12 @@ AppTesting::AppTesting():App("Testing")
                            "See the scroll bar on the right!");
 }
 
+void AppTesting::_generateLauncherIcon()
+{
+    lv_obj_t* label = lv_label_create(_launcherIcon, NULL);
+    lv_label_set_text(label, _label.c_str());
+}
+
 void AppTesting::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, AppCallback* callback)
 {
     if(event == LV_EVENT_CLICKED)

@@ -43,6 +43,7 @@ class AppSettings : public App{
 
     // bluetooth
     void        _createBluetoothModal();
+    void        _generateLauncherIcon();
 
     public:
         AppSettings();

@@ -18,6 +18,8 @@ class TFT_esPI;
 enum screens_t : uint8_t;
 
 class AppLauncher : public App{
+    void    _generateLauncherIcon(){};
+    
     public:
         AppLauncher();
         void    updateLauncherList();

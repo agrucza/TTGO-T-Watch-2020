@@ -42,9 +42,8 @@ AppLauncher::AppLauncher():App("Launcher", false)
         );
         
         lv_cont_set_layout(holder, LV_LAYOUT_PRETTY_MID);
-
-        lv_obj_t * label = lv_label_create(holder, NULL);
-        lv_label_set_text(label, apps[i]->getLabel().c_str());
+        
+        apps[i]->setLauncherIcon(holder);
     }
 }
 

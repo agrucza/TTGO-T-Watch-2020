@@ -182,6 +182,12 @@ void AppSettings::_createBluetoothModal()
     UIModal* modal      = new UIModal(this, _callbackElement, "Bluetooth");
 }
 
+void AppSettings::_generateLauncherIcon()
+{
+    lv_obj_t* label = lv_label_create(_launcherIcon, NULL);
+    lv_label_set_text(label, _label.c_str());
+}
+
 void AppSettings::eventCallback(lv_obj_t* obj, lv_obj_t* ext, lv_event_t event, AppCallback* callback)
 {
     switch(event){

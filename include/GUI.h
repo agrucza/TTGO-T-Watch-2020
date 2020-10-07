@@ -66,7 +66,7 @@ class GUI {
     public:
         static lv_task_t*               lvUpdateTask;
         static lv_style_t               styleBorderless;
-        static lv_style_t               modalStyle;
+        static lv_style_t               styleModal;
         static bool                     isPluggedIn;
         static bool                     isStillConnected;
         static std::vector<icon_t>      systemIcons;

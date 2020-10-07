@@ -16,9 +16,12 @@ class GUI;
 class TFT_esPI;
 
 class AppCalendar: public App{
+    lv_style_t          _styleIconWeekDay;
+    lv_style_t          _styleIconMonthDay;
     lv_obj_t*           _calendar;
     lv_calendar_date_t  _today;
     lv_calendar_date_t* _highlightedDays;
+    void                _generateLauncherIcon();
 
     public:
         AppCalendar();

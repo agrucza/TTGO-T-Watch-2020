@@ -25,7 +25,7 @@ App*                    GUI::_lastApp           = nullptr;
 App*                    GUI::_activeApp         = nullptr;
 int                     GUI::_batteryLevel      = 0;
 lv_style_t              GUI::styleBorderless;
-lv_style_t              GUI::modalStyle;
+lv_style_t              GUI::styleModal;
 std::vector<icon_t>     GUI::systemIcons;
 std::vector<String>     GUI::wifiSSIDs;
 bool                    GUI::isPluggedIn;
@@ -72,11 +72,11 @@ void GUI::init()
     lv_style_init(&styleBorderless);
     lv_style_set_border_width(&styleBorderless,LV_STATE_DEFAULT,0);
 
-    lv_style_init(&modalStyle);
-    lv_style_set_bg_color(&modalStyle, LV_OBJ_PART_MAIN, LV_COLOR_BLACK);
-    lv_style_set_bg_opa(&modalStyle, LV_OBJ_PART_MAIN, LV_OPA_50);
-    lv_style_set_border_width(&modalStyle, LV_OBJ_PART_MAIN, 0);
-    lv_style_set_radius(&modalStyle, LV_OBJ_PART_MAIN, 0);
+    lv_style_init(&styleModal);
+    lv_style_set_bg_color(&styleModal, LV_OBJ_PART_MAIN, LV_COLOR_BLACK);
+    lv_style_set_bg_opa(&styleModal, LV_OBJ_PART_MAIN, LV_OPA_50);
+    lv_style_set_border_width(&styleModal, LV_OBJ_PART_MAIN, 0);
+    lv_style_set_radius(&styleModal, LV_OBJ_PART_MAIN, 0);
 
     systemIcons.push_back({nullptr,LV_SYMBOL_BELL,false,false});
     systemIcons.push_back({nullptr,LV_SYMBOL_WIFI,false,false});
