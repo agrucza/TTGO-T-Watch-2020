@@ -26,8 +26,8 @@ Created by Lewis he on October 10, 2019.
 
 #define DEFAULT_SCREEN_TIMEOUT  30*1000
 
-TTGOClass *ttgo;
-GUI *gui;
+TTGOClass* ttgo;
+GUI* gui;
 
 void setup()
 {

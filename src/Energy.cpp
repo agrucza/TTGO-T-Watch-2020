@@ -26,8 +26,8 @@ enum {
     Q_EVENT_AXP_INT,
 };
 
-TTGOClass       *Energy::_ttgo          = nullptr;
-GUI             *Energy::_gui           = nullptr;
+TTGOClass*      Energy::_ttgo          = nullptr;
+GUI*            Energy::_gui           = nullptr;
 bool            Energy::_lowEnergy      = false;
 TaskHandle_t    GUI::taskHandle;
 
@@ -58,6 +58,7 @@ void Energy::setupIRQ()
     attachInterrupt(BMA423_INT1, [] {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;
         EventBits_t  bits = xEventGroupGetBitsFromISR(Event::isrGroup);
+
         if (bits & WATCH_FLAG_SLEEP_MODE)
         {
             //! For quick wake up, use the group flag
@@ -80,6 +81,7 @@ void Energy::setupIRQ()
     attachInterrupt(AXP202_INT, [] {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;
         EventBits_t  bits = xEventGroupGetBitsFromISR(Event::isrGroup);
+
         if (bits & WATCH_FLAG_SLEEP_MODE)
         {
             //! For quick wake up, use the group flag
@@ -90,6 +92,7 @@ void Energy::setupIRQ()
             uint8_t data = Q_EVENT_AXP_INT;
             xQueueSendFromISR(Event::queueHandle, &data, &xHigherPriorityTaskWoken);
         }
+
         if (xHigherPriorityTaskWoken)
         {
             portYIELD_FROM_ISR ();
@@ -120,12 +123,15 @@ void Energy::network()
 
 void Energy::lowEnergy()
 {
-    if (_ttgo->bl->isOn()) {
+    if (_ttgo->bl->isOn())
+    {
         xEventGroupSetBits(Event::isrGroup, WATCH_FLAG_SLEEP_MODE);
         _ttgo->closeBL();
         _ttgo->bma->enableStepCountInterrupt(false);
         _ttgo->displaySleep();
-        if (!WiFi.isConnected()) {
+
+        if (!WiFi.isConnected())
+        {
             _lowEnergy = true;
             vTaskSuspend(GUI::taskHandle);
             WiFi.mode(WIFI_OFF);
@@ -133,12 +139,14 @@ void Energy::lowEnergy()
             setCpuFrequencyMhz(20);
 
             Serial.println("SLEEP");
-            gpio_wakeup_enable ((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
-            gpio_wakeup_enable ((gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL);
+            gpio_wakeup_enable((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
+            gpio_wakeup_enable((gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL);
             esp_sleep_enable_gpio_wakeup ();
             setSleep();
         }
-    } else {
+    }
+    else
+    {
         _ttgo->displayWakeup();
         _ttgo->rtc->syncToSystem();
         _gui->updateStepCounter();
@@ -161,8 +169,11 @@ void Energy::checkIRQ()
     uint8_t data;
     //! Fast response wake-up interrupt
     EventBits_t  bits = xEventGroupGetBits(Event::isrGroup);
-    if (bits & WATCH_FLAG_SLEEP_EXIT) {
-        if (_lowEnergy) {
+
+    if (bits & WATCH_FLAG_SLEEP_EXIT)
+    {
+        if (_lowEnergy)
+        {
             _lowEnergy = false;
             // rtc_clk_cpu_freq_set(RTC_CPU_FREQ_160M);
             setCpuFrequencyMhz(160);
@@ -170,66 +181,88 @@ void Energy::checkIRQ()
 
         Energy::lowEnergy();
 
-        if (bits & WATCH_FLAG_BMA_IRQ) {
-            do {
+        if (bits & WATCH_FLAG_BMA_IRQ)
+        {
+            do
+            {
                 rlst =  _ttgo->bma->readInterrupt();
-            } while (!rlst);
+            }
+            while (!rlst);
+            
             xEventGroupClearBits(Event::isrGroup, WATCH_FLAG_BMA_IRQ);
         }
-        if (bits & WATCH_FLAG_AXP_IRQ) {
+
+        if (bits & WATCH_FLAG_AXP_IRQ)
+        {
             _ttgo->power->readIRQ();
             _ttgo->power->clearIRQ();
             //TODO: Only accept axp power pek key short press
             xEventGroupClearBits(Event::isrGroup, WATCH_FLAG_AXP_IRQ);
         }
+
         xEventGroupClearBits(Event::isrGroup, WATCH_FLAG_SLEEP_EXIT);
         xEventGroupClearBits(Event::isrGroup, WATCH_FLAG_SLEEP_MODE);
     }
-    if ((bits & WATCH_FLAG_SLEEP_MODE)) {
+
+    if ((bits & WATCH_FLAG_SLEEP_MODE))
+    {
         //! No event processing after entering the information screen
         return;
     }
 
     //! Normal polling
-    if (xQueueReceive(Event::queueHandle, &data, 5 / portTICK_RATE_MS) == pdPASS) {
-        switch (data) {
-        case Q_EVENT_BMA_INT:
-            do {
-                rlst = _ttgo->bma->readInterrupt();
-            } while (!rlst);
+    if (xQueueReceive(Event::queueHandle, &data, 5 / portTICK_RATE_MS) == pdPASS)
+    {
+        switch(data)
+        {
+            case Q_EVENT_BMA_INT:
+                do
+                {
+                    rlst = _ttgo->bma->readInterrupt();
+                }
+                while (!rlst);
 
-            //! setp counter
-            if (_ttgo->bma->isStepCounter()) {
-                _gui->updateStepCounter();
-            }
-            break;
-        case Q_EVENT_AXP_INT:
-            _ttgo->power->readIRQ();
-            if (_ttgo->power->isVbusPlugInIRQ()) {
-                _gui->updateBatteryIcon(ICON_CHARGE);
-            }
-            if (_ttgo->power->isVbusRemoveIRQ()) {
-                _gui->updateBatteryIcon(ICON_CALCULATION);
-            }
-            if (_ttgo->power->isChargingDoneIRQ()) {
-                _gui->updateBatteryIcon(ICON_CALCULATION);
-            }
-            if (_ttgo->power->isPEKShortPressIRQ()) {
+                //! setp counter
+                if (_ttgo->bma->isStepCounter())
+                {
+                    _gui->updateStepCounter();
+                }
+                break;
+            case Q_EVENT_AXP_INT:
+                _ttgo->power->readIRQ();
+
+                if (_ttgo->power->isVbusPlugInIRQ())
+                {
+                    _gui->updateBatteryIcon(ICON_CHARGE);
+                }
+                else if (_ttgo->power->isVbusRemoveIRQ())
+                {
+                    _gui->updateBatteryIcon(ICON_CALCULATION);
+                }
+                else if (_ttgo->power->isChargingDoneIRQ())
+                {
+                    _gui->updateBatteryIcon(ICON_CALCULATION);
+                }
+                else if (_ttgo->power->isPEKShortPressIRQ())
+                {
+                    _ttgo->power->clearIRQ();
+                    lowEnergy();
+                    return;
+                }
+
                 _ttgo->power->clearIRQ();
-                lowEnergy();
-                return;
+                break;
+            case Q_EVENT_WIFI_SCAN_DONE: {
+                int16_t len =  WiFi.scanComplete();
+
+                for (int i = 0; i < len; ++i)
+                {
+                    _gui->wifiListAdd(WiFi.SSID(i).c_str());
+                }
+                break;
             }
-            _ttgo->power->clearIRQ();
-            break;
-        case Q_EVENT_WIFI_SCAN_DONE: {
-            int16_t len =  WiFi.scanComplete();
-            for (int i = 0; i < len; ++i) {
-                _gui->wifiListAdd(WiFi.SSID(i).c_str());
-            }
-            break;
-        }
-        default:
-            break;
+            default:
+                break;
         }
     }
 }

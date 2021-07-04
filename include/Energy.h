@@ -12,11 +12,12 @@ class TTGOClass;
 class GUI;
 
 class Energy {
-    static TTGOClass *_ttgo;
-    static GUI *_gui;
-    static bool _lowEnergy;
+    static TTGOClass*   _ttgo;
+    static GUI*         _gui;
+    static bool         _lowEnergy;
+    
     public:
-        static void setup(TTGOClass *ttgo, GUI *gui)
+        static void setup(TTGOClass* ttgo, GUI* gui)
         {
             _ttgo = ttgo;
             _gui = gui;

@@ -8,10 +8,8 @@
 #ifndef __EVENT_H
 #define __EVENT_H
 
-typedef void * QueueHandle_t;
-typedef void * EventGroupHandle_t;
-
-class TTGOClass;
+typedef void* QueueHandle_t;
+typedef void* EventGroupHandle_t;
 
 class Event
 {
