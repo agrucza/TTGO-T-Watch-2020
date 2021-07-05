@@ -29,7 +29,7 @@ class UIElement{
         String              _name   = "";
         
         const GFXfont*      _font;
-        uint16_t            _textColor;
+        uint16_t            _textColor          = FLAT_UI_V1_CLOUDS;
         uint16_t            _bgColor            = 0;
         uint16_t            _colorActive        = FLAT_UI_V1_PETER_RIVER;
         uint16_t            _colorActiveBg      = FLAT_UI_V1_BELIZE_HOLE;
