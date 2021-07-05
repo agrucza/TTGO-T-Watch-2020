@@ -43,6 +43,7 @@ void AppStandby::draw(bool init, bool task)
     _tft->setFreeFont(&FreeSansBold9pt7b);
     _tft->setTextColor(_tft->color565(127, 140, 141)); //#7f8c8d
     strftime(label, sizeof(label), "%a %d %B", &_timeInfo);
+
     if(init || (_lastMonth != _timeInfo.tm_mon))
     {
         _tft->fillRect(0,labelTop,TFT_WIDTH, _tft->fontHeight(), _bgColor);

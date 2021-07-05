@@ -18,11 +18,11 @@ UIElementButton::UIElementButton(String label, const GFXfont* font, UIContainer*
 void UIElementButton::_setDimensions()
 {
     _tft->setFreeFont(_font);
-    _dimensions                 = _parent->getDimensions();
+    _dimensions                  = _parent->getDimensions();
     _dimensions.topLeft.x       += _parent->getPadding();
     _dimensions.topLeft.y       += _parent->getPadding();
     _dimensions.bottomRight.x   -= 2*_parent->getPadding();
-    _dimensions.bottomRight.y   =  _tft->fontHeight() + 6;
+    _dimensions.bottomRight.y    = _tft->fontHeight() + 6;
     switch(_size)
     {
         case SIZE_ELEMENT:

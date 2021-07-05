@@ -17,11 +17,11 @@ UIElementTextInput::UIElementTextInput(String placeholder, const GFXfont* font, 
 void UIElementTextInput::_setDimensions()
 {
     _tft->setFreeFont(_font);
-    _dimensions                 = _parent->getDimensions();
+    _dimensions                  = _parent->getDimensions();
     _dimensions.topLeft.x       += _parent->getPadding();
     _dimensions.topLeft.y       += _parent->getPadding();
     _dimensions.bottomRight.x   -= 2*_parent->getPadding();
-    _dimensions.bottomRight.y   = _tft->fontHeight()+4;
+    _dimensions.bottomRight.y    = _tft->fontHeight()+4;
 }
 
 void UIElementTextInput::draw(bool task)

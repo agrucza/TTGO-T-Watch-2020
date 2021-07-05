@@ -80,6 +80,7 @@ void GUI::init()
         Serial.print("Free PSRAM: ");
         Serial.println(ESP.getFreePsram());
     }
+    
     _tft->setTextDatum(MC_DATUM);
     _tft->fillScreen(TFT_BLACK);
     _touch = new TouchMetrics();

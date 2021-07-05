@@ -312,7 +312,7 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
 
         if(touchType == TouchMetrics::SWIPE_VERTICAL_STARTED || touchType == TouchMetrics::SWIPE_HORIZONTAL_STARTED)
         {
-            _spritePosOld       = _spritePos;
+            _spritePosOld = _spritePos;
         }
 
         // if we land here we have no gesture compatible element setup so this should be the container guesture

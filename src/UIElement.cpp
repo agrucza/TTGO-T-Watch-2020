@@ -34,8 +34,8 @@ UIPoint_t UIElement::getTopPosition()
         return _dimensions.topLeft;
     }
 
-    UIPoint_t pos       = _dimensions.topLeft;
-    UIPoint_t parentPos = _parent->getTopPosition();
+    UIPoint_t pos        = _dimensions.topLeft;
+    UIPoint_t parentPos  = _parent->getTopPosition();
     pos.x               += parentPos.x;
     pos.y               += parentPos.y;
 
