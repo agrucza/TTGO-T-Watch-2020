@@ -5,7 +5,8 @@
 
 #include "GUI.h"
 
-AppStartup::AppStartup():App("StartUp", false){
+AppStartup::AppStartup():App("StartUp")
+{
     _acceptsGlobalTouch = false;
 }
 

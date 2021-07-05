@@ -6,7 +6,7 @@
 #include "GUI.h"
 #include "UIColors.h"
 
-AppCalendar::AppCalendar():App("Calendar", false)
+AppCalendar::AppCalendar():App("Calendar")
 {
     _weekDayColor       = FLAT_UI_V1_SILVER;
     _weekEndColor       = FLAT_UI_V1_ASBESTOS;

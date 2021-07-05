@@ -7,7 +7,7 @@
 
 extern GUI* gui;
 
-AppLauncher::AppLauncher():App("Launcher", false)
+AppLauncher::AppLauncher():App("Launcher")
 {
     _iconSizeX          = _iconSizeY = 2;
     _iconsMax           = 4;

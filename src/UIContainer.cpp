@@ -256,17 +256,6 @@ void UIContainer::calculateSize()
 
 bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType)
 {
-    // check if we use only a subcontainer of the active one
-    std::vector<UIElement *> elements;
-    if(_drawElement >= 0)
-    {
-        elements = ((UIContainer*)_elements[_drawElement])->getElements();
-    }
-    else
-    {
-        elements = _elements;
-    }
-
     // check if container is using a sprite
     // we cant say for sure if guesture is for this container or a child container
     if(_sprite.created())
@@ -278,12 +267,12 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
         // check for swipe gestures - those will only be for containers by now
         // (and maybe special elements in the future)
         // normal elements should not accept guestures
-        for(uint8_t i = 0; i < elements.size(); i++)
+        for(uint8_t i = 0; i < _elements.size(); i++)
         {
 
             UIContainer* container  = nullptr;
-            UIElement* element      = elements[i];
-            if(UIContainer* tmp = dynamic_cast<UIContainer*>(elements[i]))
+            UIElement* element      = _elements[i];
+            if(UIContainer* tmp = dynamic_cast<UIContainer*>(_elements[i]))
             {
                 container = tmp;
             }
@@ -363,9 +352,9 @@ bool UIContainer::touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int1
         for(uint8_t i = 0; i < _elements.size(); i++)
         {
 
-            if(elements[i]->isWithinDimensions(lastX, lastY))
+            if(_elements[i]->isWithinDimensions(lastX, lastY))
             {
-                if(elements[i]->touchAction(lastX - elements[i]->getDimensions().topLeft.x, lastY - elements[i]->getDimensions().topLeft.y, deltaX, deltaY, touchType)){
+                if(_elements[i]->touchAction(lastX - _elements[i]->getDimensions().topLeft.x, lastY - _elements[i]->getDimensions().topLeft.y, deltaX, deltaY, touchType)){
                     // for sprites
                     reDraw();
                     return true;
@@ -409,23 +398,13 @@ void UIContainer::draw(bool task)
             _tft->fillRect(absPos.x,absPos.y,_dimensions.bottomRight.x,_dimensions.bottomRight.y,_bgColor);
         }
 
-        // check if we use only a subcontainer of the active one
-        std::vector<UIElement *> elements;
-        if(_drawElement >= 0)
+        for(uint8_t element = 0; element < _elements.size(); element++)
         {
-            UIContainer* child = (UIContainer*)_elements[_drawElement];
-            child->draw(task);
+            Serial.println("UIContainer draw - passing draw to element");
+            _elements[element]->draw(task);
+            yield();
         }
-        else
-        {
-            for(uint8_t element = 0; element < _elements.size(); element++)
-            {
-                Serial.println("UIContainer draw - passing draw to element");
-                _elements[element]->draw(task);
-                yield();
-            }
-        }
-
+        
         // first: draw sprite to parent
         if(_sprite.created())
         {

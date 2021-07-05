@@ -5,7 +5,6 @@
 
 #include "GUI.h"
 #include "UIContainer.h"
-#include "UIElementTab.h"
 #include "UIElementLabel.h"
 #include "UIElementSwitch.h"
 #include "UIElementTextInput.h"
@@ -18,16 +17,12 @@ AppTesting::AppTesting():App("Testing")
     Serial.println("#   Init AppTesting   #");
     Serial.println("#######################");
 
-    UIElementTab* tab = (UIElementTab*)_contentContainer;
-    UIContainer* tabContentHome = tab->getTabContent("Home");
     Serial.println("Create label");
-    UIElementLabel* label1 = new UIElementLabel("Test1", &FreeSansBold9pt7b, tabContentHome, ORIENTATION_LEFT);
-    label1->setTextColor(FLAT_UI_V1_CLOUDS);
-    tab->addElementToTabContent("Home", label1);
+    UIElementLabel* label1 = new UIElementLabel("Test1", &FreeSansBold9pt7b, _contentContainer, ORIENTATION_LEFT);
+    _contentContainer->addUIElement(label1);
     
     Serial.println("Create switches");
-    UIElementSwitch* switch1 = new UIElementSwitch("TestSwitch1", &FreeSansBold9pt7b, tabContentHome, ORIENTATION_RIGHT);
-    switch1->setTextColor(FLAT_UI_V1_CLOUDS);
+    UIElementSwitch* switch1 = new UIElementSwitch("TestSwitch1", &FreeSansBold9pt7b, _contentContainer, ORIENTATION_RIGHT);
     switch1->setEnabled(false);
     
     //ui_event_data_t eventData;
@@ -36,29 +31,28 @@ AppTesting::AppTesting():App("Testing")
     //switch1->setEventData(&eventData);
     //switch1->setEventCallback(GUI::handleEventCallback);
     
-    tab->addElementToTabContent("Home", switch1);
+    _contentContainer->addUIElement(switch1);
 
-    UIElementSwitch* switch2 = new UIElementSwitch("TestSwitch2", &FreeSansBold9pt7b, tabContentHome, ORIENTATION_RIGHT);
-    switch2->setTextColor(FLAT_UI_V1_CLOUDS);
+    UIElementSwitch* switch2 = new UIElementSwitch("TestSwitch2", &FreeSansBold9pt7b, _contentContainer, ORIENTATION_RIGHT);
     switch2->setEnabled(true);
-    tab->addElementToTabContent("Home", switch2);
+    _contentContainer->addUIElement(switch2);
     
     Serial.println("Create text input");
-    UIElementTextInput* input1 = new UIElementTextInput("ssid", &FreeSansBold9pt7b, tabContentHome);
-    tab->addElementToTabContent("Home", input1);
+    UIElementTextInput* input1 = new UIElementTextInput("ssid", &FreeSansBold9pt7b, _contentContainer);
+    _contentContainer->addUIElement(input1);
     
     Serial.println("Create checkbox");
-    UIElementCheckbox* checkbox1 = new UIElementCheckbox("checkbox1", &FreeSansBold9pt7b, tabContentHome, ORIENTATION_RIGHT);
-    tab->addElementToTabContent("Home", checkbox1);
+    UIElementCheckbox* checkbox1 = new UIElementCheckbox("checkbox1", &FreeSansBold9pt7b, _contentContainer, ORIENTATION_RIGHT);
+    _contentContainer->addUIElement(checkbox1);
 
     //UIContainer* modal = new UIContainer(this);
     //modal->setPadding(10);
     //modal->setBackgroundColor(FLAT_UI_V1_CLOUDS);
     
     Serial.println("Creating buttonContainer");
-    UIContainer* buttonContainer = new UIContainer(tabContentHome, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL_FILL);
+    UIContainer* buttonContainer = new UIContainer(_contentContainer, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL_FILL);
     //buttonContainer->setBackgroundColor(FLAT_UI_V1_CARROT);
-    tab->addElementToTabContent("Home", buttonContainer);
+    _contentContainer->addUIElement(buttonContainer);
 
     Serial.println("Create horizontal buttons");
     UIElementButton* button1 = new UIElementButton("click me", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
@@ -81,23 +75,23 @@ AppTesting::AppTesting():App("Testing")
     buttonContainer->addUIElement(button4);
 
     Serial.println("Create vertical buttons");
-    UIElementButton* button5 = new UIElementButton("click me", &FreeSansBold9pt7b, tabContentHome, SIZE_FULL);
-    tab->addElementToTabContent("Home", button5);
+    UIElementButton* button5 = new UIElementButton("click me", &FreeSansBold9pt7b, _contentContainer, SIZE_FULL);
+    _contentContainer->addUIElement(button5);
     
-    UIElementButton* button6 = new UIElementButton("click me 2", &FreeSansBold9pt7b, tabContentHome, SIZE_ELEMENT);
-    tab->addElementToTabContent("Home", button6);
+    UIElementButton* button6 = new UIElementButton("click me 2", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
+    _contentContainer->addUIElement(button6);
     
-    UIElementButton* button7 = new UIElementButton("click me 3", &FreeSansBold9pt7b, tabContentHome, SIZE_ELEMENT);
-    tab->addElementToTabContent("Home", button7);
+    UIElementButton* button7 = new UIElementButton("click me 3", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
+    _contentContainer->addUIElement(button7);
     
-    UIElementButton* button8 = new UIElementButton("click me 4", &FreeSansBold9pt7b, tabContentHome, SIZE_ELEMENT);
-    tab->addElementToTabContent("Home", button8);
+    UIElementButton* button8 = new UIElementButton("click me 4", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
+    _contentContainer->addUIElement(button8);
     
-    UIElementButton* button9 = new UIElementButton("click me 5", &FreeSansBold9pt7b, tabContentHome, SIZE_ELEMENT);
-    tab->addElementToTabContent("Home", button9);
+    UIElementButton* button9 = new UIElementButton("click me 5", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
+    _contentContainer->addUIElement(button9);
     
-    UIElementButton* button10 = new UIElementButton("click me 6", &FreeSansBold9pt7b, tabContentHome, SIZE_ELEMENT);
-    tab->addElementToTabContent("Home", button10);
+    UIElementButton* button10 = new UIElementButton("click me 6", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
+    _contentContainer->addUIElement(button10);
     
     Serial.println("Init AppTesting done");
 }

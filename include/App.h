@@ -23,7 +23,6 @@ class App{
         GUI*            _gui;
         TFT_eSPI*       _tft;
         String          _label;
-        bool            _showTab            = true;
         bool            _acceptsGlobalTouch = true;
         bool            _showInLauncher     = true;
         uint16_t        _textColor          = FLAT_UI_V1_CLOUDS;
@@ -36,13 +35,12 @@ class App{
         UIContainer*    _contentContainer   = nullptr;
         
     public:
-        App(String label, bool showTab = true);
+        App(String label);
         bool            acceptsGlobalTouch(){return _acceptsGlobalTouch;};
         bool            getShowInLauncher(){return _showInLauncher;};
         uint8_t         getIconSizeX(){return _iconSizeX;};
         uint8_t         getIconSizeY(){return _iconSizeY;};
         String          getLabel(){return _label;};
-        bool            getShowTab(){return _showTab;};
         void            clean();
         uint16_t        getBackgroundColor(){return _bgColor;};
         

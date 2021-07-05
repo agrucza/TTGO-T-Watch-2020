@@ -5,9 +5,7 @@
 
 #include "GUI.h"
 
-#define DEG2RAD 0.0174532925
-
-AppStandby::AppStandby():App("Standby", false)
+AppStandby::AppStandby():App("Standby")
 {
     _acceptsGlobalTouch = false;
     _lastMinute         = 0;
