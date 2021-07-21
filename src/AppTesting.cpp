@@ -49,13 +49,14 @@ AppTesting::AppTesting():App("Testing")
     //modal->setPadding(10);
     //modal->setBackgroundColor(FLAT_UI_V1_CLOUDS);
     
-    Serial.println("Creating buttonContainer");
-    UIContainer* buttonContainer = new UIContainer(_contentContainer, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL_FILL);
-    //buttonContainer->setBackgroundColor(FLAT_UI_V1_CARROT);
-    _contentContainer->addUIElement(buttonContainer);
+    Serial.println("Creating buttonContainer1");
+    UIContainer* buttonContainer1 = new UIContainer(_contentContainer, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL_FILL);
+    buttonContainer1->setBackgroundColor(FLAT_UI_V1_CARROT);
+    //buttonContainer1->setPadding(0);
+    _contentContainer->addUIElement(buttonContainer1);
 
     Serial.println("Create horizontal buttons");
-    UIElementButton* button1 = new UIElementButton("click me", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
+    UIElementButton* button1 = new UIElementButton("click me", &FreeSansBold9pt7b, buttonContainer1, SIZE_ELEMENT);
     
     //eventData.screen    = this;
     //eventData.source    = button1;
@@ -63,30 +64,37 @@ AppTesting::AppTesting():App("Testing")
     //button1->setEventData(&eventData);
     //button1->setEventCallback(GUI::handleEventCallback);
     
-    buttonContainer->addUIElement(button1);
+    buttonContainer1->addUIElement(button1);
     
-    UIElementButton* button2 = new UIElementButton("click me 2", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
-    buttonContainer->addUIElement(button2);
+    UIElementButton* button2 = new UIElementButton("click me 2", &FreeSansBold9pt7b, buttonContainer1, SIZE_ELEMENT);
+    buttonContainer1->addUIElement(button2);
     
-    UIElementButton* button3 = new UIElementButton("click me 3", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
-    buttonContainer->addUIElement(button3);
+    UIElementButton* button3 = new UIElementButton("click me 3", &FreeSansBold9pt7b, buttonContainer1, SIZE_ELEMENT);
+    buttonContainer1->addUIElement(button3);
     
-    UIElementButton* button4 = new UIElementButton("click me 4", &FreeSansBold9pt7b, buttonContainer, SIZE_ELEMENT);
-    buttonContainer->addUIElement(button4);
+    UIElementButton* button4 = new UIElementButton("click me 4", &FreeSansBold9pt7b, buttonContainer1, SIZE_ELEMENT);
+    buttonContainer1->addUIElement(button4);
+    
+    Serial.println("Creating buttonContainer2");
+    UIContainer* buttonContainer2 = new UIContainer(_contentContainer, SIZE_ELEMENT, ALIGNMENT_HORIZONTAL_FILL);
+    buttonContainer2->setBackgroundColor(FLAT_UI_V1_CARROT);
+    buttonContainer2->setPadding(0);
+    _contentContainer->addUIElement(buttonContainer2);
 
+    Serial.println("Create horizontal buttons");
+    UIElementButton* button5 = new UIElementButton("click me", &FreeSansBold9pt7b, buttonContainer2, SIZE_ELEMENT);
+    buttonContainer2->addUIElement(button5);
+    
+    UIElementButton* button6 = new UIElementButton("click me 2", &FreeSansBold9pt7b, buttonContainer2, SIZE_ELEMENT);
+    buttonContainer2->addUIElement(button6);
+    
+    UIElementButton* button7 = new UIElementButton("click me 3", &FreeSansBold9pt7b, buttonContainer2, SIZE_ELEMENT);
+    buttonContainer2->addUIElement(button7);
+    
+    UIElementButton* button8 = new UIElementButton("click me 4", &FreeSansBold9pt7b, buttonContainer2, SIZE_ELEMENT);
+    buttonContainer2->addUIElement(button8);
+    
     Serial.println("Create vertical buttons");
-    UIElementButton* button5 = new UIElementButton("click me", &FreeSansBold9pt7b, _contentContainer, SIZE_FULL);
-    _contentContainer->addUIElement(button5);
-    
-    UIElementButton* button6 = new UIElementButton("click me 2", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
-    _contentContainer->addUIElement(button6);
-    
-    UIElementButton* button7 = new UIElementButton("click me 3", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
-    _contentContainer->addUIElement(button7);
-    
-    UIElementButton* button8 = new UIElementButton("click me 4", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
-    _contentContainer->addUIElement(button8);
-    
     UIElementButton* button9 = new UIElementButton("click me 5", &FreeSansBold9pt7b, _contentContainer, SIZE_ELEMENT);
     _contentContainer->addUIElement(button9);
     
