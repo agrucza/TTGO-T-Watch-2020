@@ -18,15 +18,15 @@ class GUI;
 class TFT_esPI;
 
 class UIElementButton : public UIElement{
-    String          _label;
-    uint8_t         _padding = 10;
-    void            _setDimensions();
+    String      _label;
+    uint8_t     _padding = 10;
+    void        _setDimensions();
 
     public:
         UIElementButton(String label, const GFXfont* font, UIContainer* parent = nullptr, UIESize_t size = SIZE_FULL);
-        bool            touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
-        void            draw(bool task = false);
-        void            reDraw(bool recursive = false){};
+        bool    touchAction(int16_t lastX, int16_t lastY, int16_t deltaX, int16_t deltaY, TouchMetrics::touch_t touchType);
+        void    draw(bool task = false);
+        void    reDraw(bool recursive = false){};
 };
 
 #endif /*__UIELEMENTBUTTON_H */

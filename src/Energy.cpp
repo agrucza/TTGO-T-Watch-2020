@@ -31,6 +31,12 @@ GUI*            Energy::_gui           = nullptr;
 bool            Energy::_lowEnergy      = false;
 TaskHandle_t    GUI::taskHandle;
 
+void Energy::setup(TTGOClass* ttgo, GUI* gui)
+{
+    _ttgo = ttgo;
+    _gui = gui;
+};
+
 void Energy::setupAXPIRQ()
 {
     _ttgo->power->adc1Enable(AXP202_BATT_VOL_ADC1 | AXP202_BATT_CUR_ADC1 | AXP202_VBUS_VOL_ADC1 | AXP202_VBUS_CUR_ADC1, AXP202_ON);
@@ -138,7 +144,7 @@ void Energy::lowEnergy()
             // rtc_clk_cpu_freq_set(RTC_CPU_FREQ_2M);
             setCpuFrequencyMhz(20);
 
-            Serial.println("SLEEP");
+            //Serial.println("SLEEP");
             gpio_wakeup_enable((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
             gpio_wakeup_enable((gpio_num_t)BMA423_INT1, GPIO_INTR_HIGH_LEVEL);
             esp_sleep_enable_gpio_wakeup ();

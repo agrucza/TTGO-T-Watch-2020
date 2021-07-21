@@ -18,23 +18,24 @@ extern UIPoint_t        defaultUIPoint;
 
 class UIContainer : public UIElement{
     protected:
-        UIEAlignment_t              _alignment;
-        uint8_t                     _padding                = 5;
-        std::vector<UIElement*>     _elements;
-        int16_t                     _drawElement            = -1;
-        UIPoint_t                   _elementSize            = defaultUIPoint;
-        TFT_eSprite                 _sprite                 = TFT_eSprite(_tft);
-        uint16_t*                   _spriteData             = nullptr;
-        UIPoint_t                   _spritePosOld           = defaultUIPoint;
-        UIPoint_t                   _spritePos              = defaultUIPoint;
-        UIPoint_t                   _spritePosMax           = defaultUIPoint;
-        uint8_t                     _spriteBottomSafety     = 32;
         struct{
             bool x = true;
             bool y = true;
         } _spritePosMaxReached;
-        void                        _setDimensions(){};
-        void                        _pushSprite();
+        
+        UIEAlignment_t          _alignment;
+        uint8_t                 _padding                = 5;
+        std::vector<UIElement*> _elements;
+        int16_t                 _drawElement            = -1;
+        UIPoint_t               _elementSize            = defaultUIPoint;
+        TFT_eSprite             _sprite                 = TFT_eSprite(_tft);
+        uint16_t*               _spriteData             = nullptr;
+        UIPoint_t               _spritePosOld           = defaultUIPoint;
+        UIPoint_t               _spritePos              = defaultUIPoint;
+        UIPoint_t               _spritePosMax           = defaultUIPoint;
+        uint8_t                 _spriteBottomSafety     = 32;
+        void                    _setDimensions(){};
+        void                    _pushSprite();
 
     public:
         UIContainer(UIContainer* parent = nullptr, UIESize_t size = SIZE_ELEMENT, UIEAlignment_t alignment = ALIGNMENT_VERTICAL);

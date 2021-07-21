@@ -8,8 +8,9 @@
 #ifndef __GUI_H
 #define __GUI_H
 
-#include "TouchMetrics.h"
 #include "App.h"
+
+#include "TouchMetrics.h"
 #include "UITypes.h"
 
 typedef enum {

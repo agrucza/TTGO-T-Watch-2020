@@ -1,6 +1,6 @@
 /**
     This is the standby app class
-    @file gui.h
+    @file AppStandby.h
     @author Alexander Grucza
     @version 0.1 7/26/2020
 */
@@ -11,10 +11,6 @@
 #include <Arduino.h>
 
 #include "App.h"
-#include "TouchMetrics.h"
-
-class GUI;
-class TFT_esPI;
 
 class AppStandby: public App{
     time_t      _currentTime;
@@ -24,8 +20,6 @@ class AppStandby: public App{
     uint16_t    _iconColor;
     uint8_t     _lastMinute;
     uint8_t     _lastMonth;
-
-    void _fillArc(int x, int y, int start_angle, int seg_count, int rx, int ry, int w, unsigned int colour);
     public:
         AppStandby();
         void    draw(bool init = false, bool task = false);

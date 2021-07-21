@@ -17,19 +17,15 @@ class Energy {
     static bool         _lowEnergy;
     
     public:
-        static void setup(TTGOClass* ttgo, GUI* gui)
-        {
-            _ttgo = ttgo;
-            _gui = gui;
-        };
-        static void setupAXPIRQ();
-        static void setupIRQ();
-        static void disableUnusedPower();
-        static void network();
-        static void lowEnergy();
-        static void checkIRQ();
-        static void getWakeup();
-        static void setSleep();
+        static void     setup(TTGOClass* ttgo, GUI* gui);
+        static void     setupAXPIRQ();
+        static void     setupIRQ();
+        static void     disableUnusedPower();
+        static void     network();
+        static void     lowEnergy();
+        static void     checkIRQ();
+        static void     getWakeup();
+        static void     setSleep();
 };
 
 #endif /*__ENERGY_H */
